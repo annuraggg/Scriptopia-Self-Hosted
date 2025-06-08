@@ -8,7 +8,7 @@
     "build": "node check-types.js",
     "checksilent": "npx tsc -b --diagnostics --noEmit",
     "dev": "doppler run -- npm run start",
-    "selfhost": "npm run dev"
+    "selfhost": "npm run start"
   },
   "dependencies": {
     "@aws-sdk/client-lambda": "^3.614.0",
