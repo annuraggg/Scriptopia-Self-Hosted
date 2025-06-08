@@ -55,7 +55,10 @@ const Sidebar = ({
   const navigate = useNavigate();
 
   useEffect(() => {
-    setActive(window.location.pathname.split("/")[2]);
+    const path = import.meta.env.VITE_BASENAME === "/"
+      ? window.location.pathname.split("/")[2]
+      : window.location.pathname.split("/")[1];
+    setActive(path);
   }, []);
 
   return (

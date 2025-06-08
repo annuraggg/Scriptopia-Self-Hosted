@@ -7,6 +7,7 @@ import { CircularProgress } from "@heroui/progress";
 import { HeartCrack, Link } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 const bgStyle = {
   backgroundImage: "url(./join-bg.svg)",
@@ -35,6 +36,7 @@ const Join = () => {
   const [error, setError] = useState(false);
 
   const [token, setToken] = useState<Token>({} as Token);
+  const navigate = useNavigate();
 
   const { getToken } = useAuth();
   const axios = ax(getToken);
@@ -69,7 +71,8 @@ const Join = () => {
       .then(() => {
         toast.success("Joined institute");
         setTimeout(() => {
-          window.location.href = "/dashboard";
+          // window.location.href = "/dashboard";
+          navigate("/dashboard");
         }, 1000);
       })
       .catch((err) => {

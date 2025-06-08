@@ -1,4 +1,4 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import {
   RedirectToSignIn,
@@ -25,6 +25,7 @@ const Layout = () => {
   const [rerender, setRerender] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const navigate = useNavigate();
 
   const { getToken } = useAuth();
   const axios = ax(getToken);
@@ -74,7 +75,8 @@ const Layout = () => {
       })
       .catch((err) => {
         if (err.response.status === 404) {
-          return (window.location.href = "/onboarding");
+          // return (window.location.href = "/onboarding");
+          return navigate("/onboarding");
         }
         toast;
         toast.error(err.response.data.message || "An error occurred");
@@ -109,7 +111,8 @@ const Layout = () => {
               alt="logo"
               className="h-6 cursor-pointer"
               onClick={() => {
-                window.location.href = "/";
+                //window.location.href = "/";
+                navigate("/");
               }}
             />
             <Button

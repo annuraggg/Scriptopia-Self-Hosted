@@ -8,6 +8,7 @@ import {
   type WorkflowStep,
 } from "@shared-types/Drive";
 import Drawer from "./ImportDrawer";
+import { useNavigate } from "react-router-dom";
 
 const ASSESSMENT_TYPES = {
   CODING_ASSESSMENT: "Coding Assessment",
@@ -32,6 +33,7 @@ const Configure = ({ drive }: ConfigureProps) => {
   const [importType, setImportType] = useState<StepType | null>(null);
 
   const [step, setStep] = useState<number | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const configuredIds = new Set([
@@ -62,9 +64,11 @@ const Configure = ({ drive }: ConfigureProps) => {
       returnUrl: window.location.href,
     });
 
-    window.location.href = `${baseUrl}/assessments/new/${
-      STEP_TYPE_MAP[step.type as keyof typeof STEP_TYPE_MAP]
-    }?${params}`;
+    navigate(
+      `${baseUrl}/assessments/new/${
+        STEP_TYPE_MAP[step.type as keyof typeof STEP_TYPE_MAP]
+      }?${params}`
+    );
   };
 
   const openModal = (type: StepType, index: number): void => {

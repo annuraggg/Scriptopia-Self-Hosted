@@ -152,7 +152,9 @@ const Sidebar = ({ drive, loading, isMobile, onClose }: SidebarProps) => {
   );
 
   useEffect(() => {
-    const currentPath = window.location.pathname.split("/")[4];
+    const currentPath = import.meta.env.VITE_BASENAME === "/"
+      ? window.location.pathname.split("/")[4]
+      : window.location.pathname.split("/")[3];
     setActive(currentPath);
   }, []);
 
@@ -336,7 +338,9 @@ const Sidebar = ({ drive, loading, isMobile, onClose }: SidebarProps) => {
   return (
     <aside
       className={`h-[100vh] -ml-5 bg-foreground text-background  ${
-        subNavbarRoutes.includes(window.location.pathname.split("/")[3])
+        subNavbarRoutes.includes(import.meta.env.VITE_BASENAME === "/"
+          ? window.location.pathname.split("/")[3]  // For mobile, this is the 3rd segment
+          : window.location.pathname.split("/")[2])  // For desktop, this is the 4th segment
           ? "border-r-background/10"
           : "rounded-r-2xl"
       } flex flex-col overflow-hidden transition-all duration-300
