@@ -1,0 +1,26 @@
+{
+    "compilerOptions": {
+      "target": "ESNext",
+      "module": "ESNext",
+      "moduleResolution": "Bundler",
+      "incremental": true,
+      "strict": true,
+      "skipLibCheck": true,
+      "baseUrl": ".",
+      "types": ["node"],
+      "jsx": "react-jsx",
+      "isolatedModules": true,
+      "moduleDetection": "force" /* Linting */,
+      "noUnusedLocals": true,
+      "noUnusedParameters": true,
+      "noFallthroughCasesInSwitch": true,
+      "jsxImportSource": "hono/jsx",
+      "paths": {
+        "@/*": ["./src/*"],
+        "@shared-types/*": ["../common/types/*"],
+        "@shared-data/*": ["../common/data/*"]
+      }
+    },
+    "include": ["src", "../common/types", "check-types.js", "../common/data"]
+  }
+  

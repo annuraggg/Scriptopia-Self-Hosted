@@ -1,0 +1,230 @@
+@import url("./fonts.css");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%; /* #FFFFFF */
+    --foreground: 210 29% 16%; /* #1D2935 */
+    --card: 0 0% 100%; /* #FFFFFF */
+    --card-foreground: 210 29% 16%; /* #1D2935 */
+    --popover: 0 0% 100%; /* #FFFFFF */
+    --popover-foreground: 210 29% 16%; /* #1D2935 */
+    --primary: 122 55% 49%; /* #4CAF50 */
+    --primary-foreground: 0 0% 100%; /* #FFFFFF */
+    --secondary: 210 100% 45%; /* #0073E6 */
+    --secondary-foreground: 0 0% 100%; /* #FFFFFF */
+    --muted: 210 29% 16%; /* #1D2935 with reduced opacity */
+    --muted-foreground: 210 29% 16%; /* #1D2935 with reduced opacity */
+    --accent: 42 100% 52%; /* #FFC107 */
+    --accent-foreground: 210 29% 16%; /* #1D2935 */
+    --destructive: 0 84.2% 60.2%; /* Keeping destructive color for error states */
+    --destructive-foreground: 0 0% 98%;
+    --border: 210 29% 70%; /* Lighter version of text color for borders */
+    --input: 210 29% 90%; /* Very light version of text color for inputs */
+    --ring: 122 55% 49%; /* #4CAF50 - matching primary */
+    --radius: 0.5rem;
+
+    /* Chart Colors */
+    --chart-1: 122 55% 49%; /* #4CAF50 - Primary */
+    --chart-2: 210 100% 45%; /* #0073E6 - Secondary */
+    --chart-3: 42 100% 52%; /* #FFC107 - Support */
+    --chart-4: 122 40% 60%; /* Lighter green variant */
+    --chart-5: 210 70% 65%; /* Lighter blue variant */
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  h1 {
+    @apply text-4xl font-bold;
+    @apply py-3;
+  }
+
+  h2 {
+    @apply text-3xl font-bold;
+    @apply py-3;
+  }
+
+  h3 {
+    @apply text-2xl font-bold;
+    @apply py-3;
+  }
+
+  h4 {
+    @apply text-xl font-bold;
+    @apply py-3;
+  }
+
+  h5 {
+    @apply text-lg font-bold;
+    @apply py-3;
+  }
+
+  h6 {
+    @apply text-base font-bold;
+    @apply py-3;
+  }
+}
+
+html {
+  height: 100%;
+}
+
+:root {
+  font-family: "geist";
+}
+
+.ce-toolbar__plus,
+.ce-toolbar__settings-btn {
+  color: #1d2935;
+}
+
+.ce-toolbar__plus:hover,
+.ce-toolbar__settings-btn:hover,
+.ce-inline-tool:hover {
+  color: #ffffff;
+  background-color: #4caf50;
+}
+
+.ce-inline-toolbar,
+.ce-conversion-toolbar,
+.ce-conversion-tool__icon {
+  background-color: #0073e6;
+  color: #ffffff;
+}
+
+.ce-inline-toolbar__dropdown:hover {
+  background-color: #005bb8;
+}
+
+.ce-block ::selection {
+  background: rgba(76, 175, 80, 0.3); /* #4CAF50 with opacity */
+}
+
+.cdx-notifies {
+  background-color: #ffffff;
+  width: 50vw;
+}
+
+.cdx-notify,
+.cdx-notify,
+.cdx-notify--error,
+.cdx-notify--bounce-in {
+  background-color: #ffffff !important;
+  color: #1d2935;
+  width: 50vw !important;
+}
+
+.cdx-input {
+  background-color: #ffffff !important;
+  color: #1d2935 !important;
+  border: 1px solid #4caf50 !important;
+  border-radius: 20px !important;
+}
+
+.link-tool__input-holder--error {
+  background-color: rgba(29, 41, 53, 0.1); /* #1D2935 with opacity */
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  border-radius: 200px;
+  background: #4caf50;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #3d8b40;
+}
+
+.w-split-bar {
+  background-color: #0073e6;
+  border: none;
+  outline: none;
+  box-shadow: none !important;
+  border-radius: 200px;
+}
+
+.w-split-bar:hover {
+  background-color: #005bb8 !important;
+}
+
+.ql-toolbar {
+  border: none !important;
+  border-radius: 10px;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  background-color: #ffffff;
+}
+
+.ql-toolbar .ql-stroke {
+  fill: none;
+  stroke: #1d2935 !important;
+  background-color: transparent !important;
+}
+
+.ql-editor.ql-blank::before {
+  color: rgba(29, 41, 53, 0.6) !important; /* #1D2935 with opacity */
+}
+
+.ql-toolbar .ql-fill {
+  fill: #1d2935;
+}
+
+.ql-toolbar .ql-fill {
+  fill: #1d2935 !important;
+  stroke: none;
+}
+
+.ql-active .ql-fill {
+  fill: #4caf50 !important;
+  stroke: none;
+}
+
+button:hover .ql-stroke,
+.ql-picker-label:hover .ql-stroke {
+  fill: none;
+  stroke: #4caf50 !important;
+}
+
+.ql-container {
+  border: none !important;
+  border-radius: 10px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  background-color: #ffffff;
+}
+
+.ql-active .ql-stroke {
+  fill: none;
+  stroke: #4caf50 !important;
+}
+
+button:hover .ql-fill,
+.ql-picker-label:hover .ql-fill {
+  fill: #4caf50 !important;
+  stroke: none;
+}
+
+.user-button-small {
+  height: 1.25rem;
+  /* 20px */
+  width: 1.25rem;
+  /* 20px */
+}

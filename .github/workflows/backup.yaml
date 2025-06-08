@@ -1,0 +1,51 @@
+name: Backup
+
+on:
+  schedule:
+    - cron: '21 15 * * *'  # Schedule: Runs at 15:21 UTC every day
+  # push:
+  #   branches: [main, dev] 
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [14.x]
+
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      URI: ${{ secrets.URI }}
+      BUCKET_NAME: ${{ secrets.BUCKET_NAME }}
+      ENDPOINT: ${{ secrets.ENDPOINT }}
+      ENV_TEST: ${{ secrets.ENV_TEST }}
+
+    steps:
+      - name: Checkout Code  
+        uses: actions/checkout@v2
+
+      - name: Install mongo-tools
+        run: |
+          echo "Installing MongoDB tools..."
+          sudo wget https://fastdl.mongodb.org/tools/db/mongodb-database-tools-debian92-x86_64-100.3.1.deb 
+          sudo apt install ./mongodb-database-tools-*.deb
+          echo "MongoDB tools installed successfully."
+
+      - name: Install Node.js and dependencies
+        run: |
+          echo "Installing Node.js..."
+          sudo apt-get install -y nodejs
+          echo "Node.js installed."
+
+          echo "Installing npm dependencies..."
+          cd backups
+          npm i
+          echo "npm dependencies installed."
+
+      - name: Run backup
+        run: |
+          echo "Starting backup process..."
+          cd backups
+          node makeBackup.js
+          echo "Backup process completed."

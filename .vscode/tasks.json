@@ -1,0 +1,595 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "1. All dev Server",
+      "dependsOn": [
+        "Main",
+        "Code",
+        "Enterprise",
+        "Candidate",
+        "Meet",
+        "Campus",
+        "Server"
+      ],
+      "dependsOrder": "parallel",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "icon": {
+        "id": "play",
+        "color": "terminal.ansiGreen"
+      }
+    },
+    {
+      "label": "2. Build All Platforms",
+      "dependsOn": ["Build Batch 1", "Build Batch 2"],
+      "dependsOrder": "sequence",
+      "group": "build",
+      "icon": {
+        "id": "package",
+        "color": "terminal.ansiBlue"
+      }
+    },
+    {
+      "label": "3. Build All Platforms (Supress Errors)",
+      "dependsOn": ["Build Batch 1 (supress)", "Build Batch 2 (supress)"],
+      "dependsOrder": "sequence",
+      "group": "build",
+      "icon": {
+        "id": "package",
+        "color": "terminal.ansiBlue"
+      },
+      "runOptions": { "runOn": "default" }
+    },
+    {
+      "label": "4. Update All Dependencies",
+      "dependsOn": [
+        "Update Code",
+        "Update Main",
+        "Update Enterprise",
+        "Update Candidate",
+        "Update Meet",
+        "Update Campus",
+        "Update Server"
+      ],
+      "dependsOrder": "parallel",
+      "group": "build",
+      "icon": {
+        "id": "refresh",
+        "color": "terminal.ansiYellow"
+      }
+    },
+    {
+      "label": "5. Check All Platforms For Errors",
+      "dependsOn": ["Check Batch 1", "Check Batch 2"],
+      "dependsOrder": "sequence",
+      "group": "test",
+      "icon": {
+        "id": "check",
+        "color": "terminal.ansiCyan"
+      }
+    },
+    {
+      "label": "Build Batch 1",
+      "dependsOn": [
+        "Build Code",
+        "Build Main",
+        "Build Enterprise",
+        "Build Candidate"
+      ],
+      "dependsOrder": "parallel"
+    },
+    {
+      "label": "Build Batch 2",
+      "dependsOn": ["Build Meet", "Build Campus", "Build Server"],
+      "dependsOrder": "parallel"
+    },
+    {
+      "label": "Build Batch 1 (supress)",
+      "dependsOn": [
+        "Build Code (supress)",
+        "Build Main (supress)",
+        "Build Enterprise (supress)",
+        "Build Candidate (supress)"
+      ],
+      "dependsOrder": "parallel"
+    },
+    {
+      "label": "Build Batch 2 (supress)",
+      "dependsOn": [
+        "Build Meet (supress)",
+        "Build Campus (supress)",
+        "Build Server (supress)"
+      ],
+      "dependsOrder": "parallel"
+    },
+    {
+      "label": "Check Batch 1",
+      "dependsOn": [
+        "Check Code",
+        "Check Main",
+        "Check Enterprise",
+        "Check Candidate"
+      ],
+      "dependsOrder": "parallel"
+    },
+    {
+      "label": "Check Batch 2",
+      "dependsOn": ["Check Meet", "Check Campus", "Check Server"],
+      "dependsOrder": "parallel"
+    },
+    {
+      "label": "Code",
+      "type": "shell",
+      "command": "cd code; npm run forceStart",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "isBackground": false,
+      "problemMatcher": ["$tsc-watch"],
+      "runOptions": { "instanceLimit": 1 },
+
+      "presentation": {
+        "panel": "dedicated",
+        "reveal": "always"
+      }
+    },
+    {
+      "label": "Build Code",
+      "type": "shell",
+      "command": "cd code; npm run build",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "panel": "dedicated",
+        "reveal": "always"
+      }
+    },
+    {
+      "label": "Build Code (supress)",
+      "type": "shell",
+      "command": "cd code; npm run build; if ($?) { Write-Host \"Build succeeded\" } else { Write-Host \"Error During Build\" }",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "panel": "dedicated",
+        "reveal": "always"
+      }
+    },
+    {
+      "label": "Check Code",
+      "type": "shell",
+      "command": "cd code; npm run typecheck",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": ["$tsc"],
+      "presentation": {
+        "panel": "dedicated",
+        "reveal": "always"
+      }
+    },
+    {
+      "label": "Update Code",
+      "type": "shell",
+      "command": "cd code; npm update",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "panel": "dedicated",
+        "reveal": "always"
+      }
+    },
+    {
+      "label": "Main",
+      "type": "shell",
+      "command": "cd main; npm run forceStart",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "isBackground": false,
+      "problemMatcher": ["$tsc-watch"],
+      "runOptions": { "instanceLimit": 1 },
+      "presentation": {
+        "panel": "dedicated",
+        "reveal": "always"
+      }
+    },
+    {
+      "label": "Build Main",
+      "type": "shell",
+      "command": "cd main; npm run build",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "panel": "dedicated",
+        "reveal": "always"
+      }
+    },
+    {
+      "label": "Build Main (supress)",
+      "type": "shell",
+      "command": "cd main; npm run build; if ($?) { Write-Host \"Build succeeded\" } else { Write-Host \"Error During Build\" }",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "panel": "dedicated",
+        "reveal": "always"
+      }
+    },
+    {
+      "label": "Check Main",
+      "type": "shell",
+      "command": "cd main; npm run typecheck",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": ["$tsc"],
+      "presentation": {
+        "panel": "dedicated",
+        "reveal": "always"
+      }
+    },
+    {
+      "label": "Update Main",
+      "type": "shell",
+      "command": "cd main; npm update",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "panel": "dedicated",
+        "reveal": "always"
+      }
+    },
+    {
+      "label": "Enterprise",
+      "type": "shell",
+      "command": "cd enterprise; npm run forceStart",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "isBackground": false,
+      "problemMatcher": ["$tsc-watch"],
+      "runOptions": { "instanceLimit": 1 },
+      "presentation": {
+        "panel": "dedicated",
+        "reveal": "always"
+      }
+    },
+    {
+      "label": "Build Enterprise",
+      "type": "shell",
+      "command": "cd enterprise; npm run build",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "panel": "dedicated",
+        "reveal": "always"
+      }
+    },
+    {
+      "label": "Build Enterprise (supress)",
+      "type": "shell",
+      "command": "cd enterprise; npm run build; if ($?) { Write-Host \"Build succeeded\" } else { Write-Host \"Error During Build\" }",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "panel": "dedicated",
+        "reveal": "always"
+      }
+    },
+    {
+      "label": "Check Enterprise",
+      "type": "shell",
+      "command": "cd enterprise; npm run typecheck",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": ["$tsc"],
+      "presentation": {
+        "panel": "dedicated",
+        "reveal": "always"
+      }
+    },
+    {
+      "label": "Update Enterprise",
+      "type": "shell",
+      "command": "cd enterprise; npm update",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "panel": "dedicated",
+        "reveal": "always"
+      }
+    },
+    {
+      "label": "Candidate",
+      "type": "shell",
+      "command": "cd candidate; npm run forceStart",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "isBackground": false,
+      "problemMatcher": ["$tsc-watch"],
+      "runOptions": { "instanceLimit": 1 },
+      "presentation": {
+        "panel": "dedicated",
+        "reveal": "always"
+      }
+    },
+    {
+      "label": "Build Candidate",
+      "type": "shell",
+      "command": "cd candidate; npm run build",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "panel": "dedicated",
+        "reveal": "always"
+      }
+    },
+    {
+      "label": "Build Candidate (supress)",
+      "type": "shell",
+      "command": "cd candidate; npm run build; if ($?) { Write-Host \"Build succeeded\" } else { Write-Host \"Error During Build\" }",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "panel": "dedicated",
+        "reveal": "always"
+      }
+    },
+    {
+      "label": "Check Candidate",
+      "type": "shell",
+      "command": "cd candidate; npm run typecheck",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": ["$tsc"],
+      "presentation": {
+        "panel": "dedicated",
+        "reveal": "always"
+      }
+    },
+    {
+      "label": "Update Candidate",
+      "type": "shell",
+      "command": "cd candidate; npm update",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "panel": "dedicated",
+        "reveal": "always"
+      }
+    },
+    {
+      "label": "Meet",
+      "type": "shell",
+      "command": "cd meet; npm run forceStart",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "isBackground": false,
+      "problemMatcher": ["$tsc-watch"],
+      "runOptions": { "instanceLimit": 1 },
+      "presentation": {
+        "panel": "dedicated",
+        "reveal": "always"
+      }
+    },
+    {
+      "label": "Build Meet",
+      "type": "shell",
+      "command": "cd meet; npm run build",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "panel": "dedicated",
+        "reveal": "always"
+      }
+    },
+    {
+      "label": "Build Meet (supress)",
+      "type": "shell",
+      "command": "cd meet; npm run build; if ($?) { Write-Host \"Build succeeded\" } else { Write-Host \"Error During Build\" }",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "panel": "dedicated",
+        "reveal": "always"
+      }
+    },
+    {
+      "label": "Check Meet",
+      "type": "shell",
+      "command": "cd meet; npm run typecheck",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": ["$tsc"],
+      "presentation": {
+        "panel": "dedicated",
+        "reveal": "always"
+      }
+    },
+    {
+      "label": "Update Meet",
+      "type": "shell",
+      "command": "cd meet; npm update",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "panel": "dedicated",
+        "reveal": "always"
+      }
+    },
+    {
+      "label": "Campus",
+      "type": "shell",
+      "command": "cd campus; npm run forceStart",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "isBackground": false,
+      "problemMatcher": ["$tsc-watch"],
+      "runOptions": { "instanceLimit": 1 },
+      "presentation": {
+        "panel": "dedicated",
+        "reveal": "always"
+      }
+    },
+    {
+      "label": "Build Campus",
+      "type": "shell",
+      "command": "cd campus; npm run build",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "panel": "dedicated",
+        "reveal": "always"
+      }
+    },
+    {
+      "label": "Build Campus (supress)",
+      "type": "shell",
+      "command": "cd campus; npm run build; if ($?) { Write-Host \"Build succeeded\" } else { Write-Host \"Error During Build\" }",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": [],
+      "runOptions": { "instanceLimit": 1 },
+      "presentation": {
+        "panel": "dedicated",
+        "reveal": "always"
+      }
+    },
+    {
+      "label": "Check Campus",
+      "type": "shell",
+      "command": "cd campus; npm run typecheck",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": ["$tsc"],
+      "presentation": {
+        "panel": "dedicated",
+        "reveal": "always"
+      }
+    },
+    {
+      "label": "Update Campus",
+      "type": "shell",
+      "command": "cd campus; npm update",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "panel": "dedicated",
+        "reveal": "always"
+      }
+    },
+    {
+      "label": "Server",
+      "type": "shell",
+      "command": "cd server; npm run forceStart",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "isBackground": false,
+      "runOptions": { "instanceLimit": 1 },
+      "problemMatcher": [],
+      "presentation": {
+        "panel": "dedicated",
+        "reveal": "always"
+      }
+    },
+    {
+      "label": "Build Server",
+      "type": "shell",
+      "command": "cd server; npm run build",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "panel": "dedicated",
+        "reveal": "always"
+      }
+    },
+    {
+      "label": "Build Server (supress)",
+      "type": "shell",
+      "command": "cd server; npm run build; if ($?) { Write-Host \"Build succeeded\" } else { Write-Host \"Error During Build\" }",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "panel": "dedicated",
+        "reveal": "always"
+      }
+    },
+    {
+      "label": "Check Server",
+      "type": "shell",
+      "command": "cd server; npm run check",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": ["$tsc"],
+      "presentation": {
+        "panel": "dedicated",
+        "reveal": "always"
+      }
+    },
+    {
+      "label": "Update Server",
+      "type": "shell",
+      "command": "cd server; npm update",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "panel": "dedicated",
+        "reveal": "always"
+      }
+    }
+  ]
+}
