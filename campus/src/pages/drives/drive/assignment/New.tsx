@@ -3,7 +3,7 @@ import { Input, Textarea } from "@heroui/input";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { Drive } from "@shared-types/Drive";
-import { useOutletContext } from "react-router-dom";
+import { useOutletContext, useNavigate } from "react-router-dom";
 import { useAuth } from "@clerk/clerk-react";
 import ax from "@/config/axios";
 import { toast } from "sonner";
@@ -21,6 +21,7 @@ const New = () => {
   const [name, setName] = useState<string>("");
   const [description, setDescription] = useState<string>("");
   const [type, setType] = useState<string>("file");
+  const navigate = useNavigate();
 
   useEffect(() => {
     console.log(drive);
@@ -49,7 +50,7 @@ const New = () => {
           .split("/")
           .slice(0, 3)
           .join("/");
-        window.location.href = newLOC;
+        navigate(newLOC);
       })
       .catch((err) => {
         toast.error(err.response.data || "An error occurred");

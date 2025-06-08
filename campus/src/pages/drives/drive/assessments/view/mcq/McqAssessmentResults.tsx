@@ -8,6 +8,7 @@ import { MCQAssessment } from "@shared-types/MCQAssessment";
 import { MCQAssessmentSubmission } from "@shared-types/MCQAssessmentSubmission";
 import { toast } from "sonner";
 import Loader from "@/components/Loader";
+import { useParams } from "react-router-dom";
 
 const McqAssessmentResults = () => {
   const [loading, setLoading] = useState(true);
@@ -15,12 +16,18 @@ const McqAssessmentResults = () => {
   const [submissions, setSubmissions] = useState<MCQAssessmentSubmission[]>([]);
 
   const { getToken } = useAuth();
+  const { assessmentId } = useParams<{ assessmentId: string }>();
   const axios = ax(getToken);
 
   const fetchAssessmentData = () => {
-    const id = window.location.pathname.split("/")[5];
+    if (!assessmentId) {
+      toast.error("Invalid assessment ID");
+      setLoading(false);
+      return;
+    }
+
     axios
-      .get(`/assessments/${id}/get-mcq-submissions`)
+      .get(`/assessments/${assessmentId}/get-mcq-submissions`)
       .then((res) => {
         setAssessment(res.data.data.assessment);
         setSubmissions(res.data.data.submissions);
@@ -36,7 +43,7 @@ const McqAssessmentResults = () => {
 
   useEffect(() => {
     fetchAssessmentData();
-  }, []);
+  }, [assessmentId, getToken]);
 
   if (loading) return <Loader />;
 

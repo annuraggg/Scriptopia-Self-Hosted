@@ -1,7 +1,7 @@
 import { Assignment } from "@shared-types/Drive";
 import { AppliedDrive } from "@shared-types/AppliedDrive";
 import { useEffect, useState, useMemo } from "react";
-import { useOutletContext } from "react-router-dom";
+import { useOutletContext, useParams } from "react-router-dom";
 import DataTable from "./DataTable";
 import {
   ClipboardCheck,
@@ -32,6 +32,7 @@ type AssignmentSubmission = AssignmentSubmissionVanilla & {
 
 const ViewAssignment = () => {
   const { drive } = useOutletContext() as { drive: ExtendedDrive };
+  const { assignmentId } = useParams<{ assignmentId: string }>();
   const [assignment, setAssignment] = useState<Assignment>({} as Assignment);
   const [submissions, setSubmissions] = useState<AssignmentSubmission[]>([]);
   const [activeTab, setActiveTab] = useState("overview");
@@ -40,8 +41,7 @@ const ViewAssignment = () => {
   const axios = ax(getToken);
 
   useEffect(() => {
-    if (drive) {
-      const assignmentId = window.location.pathname.split("/").pop();
+    if (drive && assignmentId) {
       const assignment = drive?.assignments?.find(
         (a) => a._id === assignmentId
       );
@@ -92,7 +92,7 @@ const ViewAssignment = () => {
         setSubmissions(submissionsWithGrades);
       }
     }
-  }, [drive]);
+  }, [drive, assignmentId]);
 
   // Analytics calculations
   const analytics = useMemo(() => {

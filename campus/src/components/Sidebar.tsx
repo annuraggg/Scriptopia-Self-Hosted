@@ -151,7 +151,11 @@ const Sidebar = ({
   ];
 
   useEffect(() => {
-    setActive(window.location.pathname.split("/")[1]);
+    const path =
+      import.meta.env.VITE_BASENAME === "/"
+        ? window.location.pathname.split("/")[1]
+        : window.location.pathname.split("/")[0];
+    setActive(path);
   }, []);
 
   const { getToken } = useAuth();
@@ -173,7 +177,8 @@ const Sidebar = ({
       .then((res) => {
         if (res.status === 200) {
           toast.success("You have left the institute successfully.");
-          window.location.href = "/";
+          // window.location.href = "/";
+          navigate("/");
         }
       })
       .catch((err) => {
@@ -193,7 +198,9 @@ const Sidebar = ({
     <>
       <aside
         className={`h-[100vh] bg-foreground text-background ${
-          subNavbarRoutes.includes(window.location.pathname.split("/")[1])
+          subNavbarRoutes.includes( import.meta.env.VITE_BASENAME === "/"
+            ? window.location.pathname.split("/")[1]
+            : window.location.pathname.split("/")[0])
             ? "border-r-background/10"
             : "rounded-r-2xl"
         } border-r flex flex-col overflow-hidden transition-all duration-300 
@@ -220,7 +227,8 @@ const Sidebar = ({
                 alt="logo"
                 className="cursor-pointer h-10"
                 onClick={() => {
-                  window.location.href = "/";
+                  // window.location.href = "/";
+                  navigate("/");
                 }}
               />
             </div>
