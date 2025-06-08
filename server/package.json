@@ -2,13 +2,13 @@
   "name": "server",
   "type": "module",
   "scripts": {
-    "start": "tsx watch src/index.ts",
-    "forceStart": "npx kill-port 4000 && npm run dev",
+    "start": "node build/index.js",
     "check": "node check-types.js",
-    "build": "node check-types.js && tsc",
-    "checksilent": "npx tsc -b --diagnostics --noEmit",
+    "check:silent": "npx tsc -b --diagnostics --noEmit",
+    "build": "node check-types.js && node build.js",
     "dev": "doppler run -- npm run start",
-    "selfhost": "npm run start"
+    "dev:start": "tsx watch src/index.ts",
+    "dev:force": "npx kill-port 4000 && npm run dev"
   },
   "dependencies": {
     "@aws-sdk/client-lambda": "^3.614.0",
@@ -48,6 +48,7 @@
     "@types/jsonwebtoken": "^9.0.6",
     "@types/multer": "^1.4.11",
     "@types/node": "^20.11.17",
+    "esbuild": "^0.25.5",
     "pino-pretty": "^11.2.1",
     "tsx": "^4.7.1"
   }

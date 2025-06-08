@@ -19,7 +19,8 @@
       "@/*": ["./src/*"],
       "@shared-types/*": ["../common/types/*"],
       "@shared-data/*": ["../common/data/*"]
-    }
+    },
+    "rootDir": ".."
   },
   "include": [
     "src/**/*",
