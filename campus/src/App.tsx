@@ -32,9 +32,7 @@ const Drives = lazy(() => import("./pages/drives/Drives"));
 const PlacementGroups = lazy(
   () => import("./pages/placementgroups/PlacementGroups")
 );
-const Companies = lazy(
-  () => import("./pages/companies/Companies")
-);
+const Companies = lazy(() => import("./pages/companies/Companies"));
 const Candidates = lazy(() => import("./pages/candidates/Candidates"));
 const Analytics = lazy(() => import("./pages/analytics/AnalyticsDashboard"));
 const Notifications = lazy(() => import("./pages/notifications/Notifications"));
@@ -126,465 +124,468 @@ function App() {
   }, [isSignedIn]);
 
   // Define routes for each section
-  const router = createBrowserRouter([
-    {
-      path: "/",
-      element: (
-        <Suspense fallback={<Loader />}>
-          <Lander />
-        </Suspense>
-      ),
-    },
-    {
-      path: "/start",
-      element: (
-        <Suspense fallback={<Loader />}>
-          <SignedIn>
-            <Start />
-          </SignedIn>
-          <SignedOut>
-            <RedirectToSignIn />
-          </SignedOut>
-        </Suspense>
-      ),
-    },
-    {
-      path: "/onboarding",
-      element: (
-        <Suspense fallback={<Loader />}>
-          <SignedIn>
-            <Onboarding />
-          </SignedIn>
-          <SignedOut>
-            <RedirectToSignIn />
-          </SignedOut>
-        </Suspense>
-      ),
-    },
-    {
-      path: "/onboarding/start",
-      element: (
-        <Suspense fallback={<Loader />}>
-          <SignedIn>
-            <StartOnboarding />
-          </SignedIn>
-          <SignedOut>
-            <RedirectToSignIn />
-          </SignedOut>
-        </Suspense>
-      ),
-    },
-    {
-      path: "/join",
-      element: (
-        <Suspense fallback={<Loader />}>
-          <SignedIn>
-            <Join />
-          </SignedIn>
-          <SignedOut>
-            <RedirectToSignIn />
-          </SignedOut>
-        </Suspense>
-      ),
-    },
-    {
-      path: "/",
-      element: (
-        <Suspense fallback={<Loader />}>
-          <Layout />
-        </Suspense>
-      ),
-      children: [
-        {
-          path: "drives/:id",
-          element: (
-            <Suspense fallback={<Loader />}>
-              <DriveLayout />
-            </Suspense>
-          ),
-          children: [
-            {
-              path: "info",
-              element: (
-                <Suspense fallback={<Loader />}>
-                  <DriveInfo />
-                </Suspense>
-              ),
-            },
-            {
-              path: "dashboard",
-              element: (
-                <Suspense fallback={<Loader />}>
-                  <DriveDashboard />
-                </Suspense>
-              ),
-            },
-            {
-              path: "workflow",
-              element: (
-                <Suspense fallback={<Loader />}>
-                  <Workflow />
-                </Suspense>
-              ),
-            },
-            {
-              path: "pipeline",
-              element: (
-                <Suspense fallback={<Loader />}>
-                  <Pipeline />
-                </Suspense>
-              ),
-            },
-            {
-              path: "custom",
-              element: (
-                <Suspense fallback={<Loader />}>
-                  <CustomLayout />
-                </Suspense>
-              ),
+  const router = createBrowserRouter(
+    [
+      {
+        path: "/",
+        element: (
+          <Suspense fallback={<Loader />}>
+            <Lander />
+          </Suspense>
+        ),
+      },
+      {
+        path: "/start",
+        element: (
+          <Suspense fallback={<Loader />}>
+            <SignedIn>
+              <Start />
+            </SignedIn>
+            <SignedOut>
+              <RedirectToSignIn />
+            </SignedOut>
+          </Suspense>
+        ),
+      },
+      {
+        path: "/onboarding",
+        element: (
+          <Suspense fallback={<Loader />}>
+            <SignedIn>
+              <Onboarding />
+            </SignedIn>
+            <SignedOut>
+              <RedirectToSignIn />
+            </SignedOut>
+          </Suspense>
+        ),
+      },
+      {
+        path: "/onboarding/start",
+        element: (
+          <Suspense fallback={<Loader />}>
+            <SignedIn>
+              <StartOnboarding />
+            </SignedIn>
+            <SignedOut>
+              <RedirectToSignIn />
+            </SignedOut>
+          </Suspense>
+        ),
+      },
+      {
+        path: "/join",
+        element: (
+          <Suspense fallback={<Loader />}>
+            <SignedIn>
+              <Join />
+            </SignedIn>
+            <SignedOut>
+              <RedirectToSignIn />
+            </SignedOut>
+          </Suspense>
+        ),
+      },
+      {
+        path: "/",
+        element: (
+          <Suspense fallback={<Loader />}>
+            <Layout />
+          </Suspense>
+        ),
+        children: [
+          {
+            path: "drives/:id",
+            element: (
+              <Suspense fallback={<Loader />}>
+                <DriveLayout />
+              </Suspense>
+            ),
+            children: [
+              {
+                path: "info",
+                element: (
+                  <Suspense fallback={<Loader />}>
+                    <DriveInfo />
+                  </Suspense>
+                ),
+              },
+              {
+                path: "dashboard",
+                element: (
+                  <Suspense fallback={<Loader />}>
+                    <DriveDashboard />
+                  </Suspense>
+                ),
+              },
+              {
+                path: "workflow",
+                element: (
+                  <Suspense fallback={<Loader />}>
+                    <Workflow />
+                  </Suspense>
+                ),
+              },
+              {
+                path: "pipeline",
+                element: (
+                  <Suspense fallback={<Loader />}>
+                    <Pipeline />
+                  </Suspense>
+                ),
+              },
+              {
+                path: "custom",
+                element: (
+                  <Suspense fallback={<Loader />}>
+                    <CustomLayout />
+                  </Suspense>
+                ),
 
-              children: [
-                {
-                  path: ":id",
-                  element: (
-                    <Suspense fallback={<Loader />}>
-                      <Custom />
-                    </Suspense>
-                  ),
-                },
-              ],
-            },
-            {
-              path: "offer-letters",
-              element: (
-                <Suspense fallback={<Loader />}>
-                  <OfferLetters />
-                </Suspense>
-              ),
-            },
-            {
-              path: "analytics",
-              element: (
-                <Suspense fallback={<Loader />}>
-                  <DriveAnalytics />
-                </Suspense>
-              ),
-            },
-            {
-              path: "ats",
-              element: (
-                <Suspense fallback={<Loader />}>
-                  <Ats />
-                </Suspense>
-              ),
-            },
-            {
-              path: "candidates",
-              element: (
-                <Suspense fallback={<Loader />}>
-                  <DriveCandidates />
-                </Suspense>
-              ),
-            },
-            {
-              path: "assessments",
-              element: (
-                <Suspense fallback={<Loader />}>
-                  <Assessments />
-                </Suspense>
-              ),
-            },
-            {
-              path: "assessments/m/:id/view/:candId",
-              element: (
-                <Suspense fallback={<Loader />}>
-                  <ViewUserMCQAssessment />
-                </Suspense>
-              ),
-            },
-            {
-              path: "assessments/c/:id/view/:candId",
-              element: (
-                <Suspense fallback={<Loader />}>
-                  <ViewUserCodeAssessment />
-                </Suspense>
-              ),
-            },
-            {
-              path: "assessments/c/:id/view",
-              element: (
-                <Suspense fallback={<Loader />}>
-                  <ViewCodeAssessmentResults />
-                </Suspense>
-              ),
-            },
-            {
-              path: "assessments/c/:id/view",
-              element: (
-                <Suspense fallback={<Loader />}>
-                  <ViewCodeAssessmentResults />
-                </Suspense>
-              ),
-            },
-            {
-              path: "assessments/m/:id/view",
-              element: (
-                <Suspense fallback={<Loader />}>
-                  <ViewMcqAssessmentResults />
-                </Suspense>
-              ),
-            },
-            //   {
-            //     path: "assessments/m/:id/view/:candId",
-            //     element: (
-            //       <Suspense fallback={<Loader />}>
-            //         <ViewMcqAssessmentResult />
-            //       </Suspense>
-            //     ),
-            //   },
-            {
-              path: "assignments",
-              element: (
-                <Suspense fallback={<Loader />}>
-                  <Assignments />
-                </Suspense>
-              ),
-            },
-            {
-              path: "assignments/:id",
-              element: (
-                <Suspense fallback={<Loader />}>
-                  <ViewAssignment />
-                </Suspense>
-              ),
-            },
-            {
-              path: "assignments/new",
-              element: (
-                <Suspense fallback={<Loader />}>
-                  <NewAssignment />
-                </Suspense>
-              ),
-            },
-            {
-              path: "interviews",
-              element: (
-                <Suspense fallback={<Loader />}>
-                  <Interviews />
-                </Suspense>
-              ),
-            },
-          ],
-        },
-        {
-          path: "/settings",
-          element: (
-            <Suspense fallback={<Loader />}>
-              <SettingsLayout />
-            </Suspense>
-          ),
-          children: [
-            {
-              path: "general",
-              element: (
-                <Suspense fallback={<Loader />}>
-                  <GeneralSettings />
-                </Suspense>
-              ),
-            },
-            {
-              path: "members",
-              element: (
-                <Suspense fallback={<Loader />}>
-                  <Members />
-                </Suspense>
-              ),
-            },
-            {
-              path: "roles",
-              element: (
-                <Suspense fallback={<Loader />}>
-                  <Roles />
-                </Suspense>
-              ),
-            },
-            {
-              path: "departments",
-              element: (
-                <Suspense fallback={<Loader />}>
-                  <Departments />
-                </Suspense>
-              ),
-            },
+                children: [
+                  {
+                    path: ":id",
+                    element: (
+                      <Suspense fallback={<Loader />}>
+                        <Custom />
+                      </Suspense>
+                    ),
+                  },
+                ],
+              },
+              {
+                path: "offer-letters",
+                element: (
+                  <Suspense fallback={<Loader />}>
+                    <OfferLetters />
+                  </Suspense>
+                ),
+              },
+              {
+                path: "analytics",
+                element: (
+                  <Suspense fallback={<Loader />}>
+                    <DriveAnalytics />
+                  </Suspense>
+                ),
+              },
+              {
+                path: "ats",
+                element: (
+                  <Suspense fallback={<Loader />}>
+                    <Ats />
+                  </Suspense>
+                ),
+              },
+              {
+                path: "candidates",
+                element: (
+                  <Suspense fallback={<Loader />}>
+                    <DriveCandidates />
+                  </Suspense>
+                ),
+              },
+              {
+                path: "assessments",
+                element: (
+                  <Suspense fallback={<Loader />}>
+                    <Assessments />
+                  </Suspense>
+                ),
+              },
+              {
+                path: "assessments/m/:id/view/:candId",
+                element: (
+                  <Suspense fallback={<Loader />}>
+                    <ViewUserMCQAssessment />
+                  </Suspense>
+                ),
+              },
+              {
+                path: "assessments/c/:id/view/:candId",
+                element: (
+                  <Suspense fallback={<Loader />}>
+                    <ViewUserCodeAssessment />
+                  </Suspense>
+                ),
+              },
+              {
+                path: "assessments/c/:id/view",
+                element: (
+                  <Suspense fallback={<Loader />}>
+                    <ViewCodeAssessmentResults />
+                  </Suspense>
+                ),
+              },
+              {
+                path: "assessments/c/:id/view",
+                element: (
+                  <Suspense fallback={<Loader />}>
+                    <ViewCodeAssessmentResults />
+                  </Suspense>
+                ),
+              },
+              {
+                path: "assessments/m/:id/view",
+                element: (
+                  <Suspense fallback={<Loader />}>
+                    <ViewMcqAssessmentResults />
+                  </Suspense>
+                ),
+              },
+              //   {
+              //     path: "assessments/m/:id/view/:candId",
+              //     element: (
+              //       <Suspense fallback={<Loader />}>
+              //         <ViewMcqAssessmentResult />
+              //       </Suspense>
+              //     ),
+              //   },
+              {
+                path: "assignments",
+                element: (
+                  <Suspense fallback={<Loader />}>
+                    <Assignments />
+                  </Suspense>
+                ),
+              },
+              {
+                path: "assignments/:id",
+                element: (
+                  <Suspense fallback={<Loader />}>
+                    <ViewAssignment />
+                  </Suspense>
+                ),
+              },
+              {
+                path: "assignments/new",
+                element: (
+                  <Suspense fallback={<Loader />}>
+                    <NewAssignment />
+                  </Suspense>
+                ),
+              },
+              {
+                path: "interviews",
+                element: (
+                  <Suspense fallback={<Loader />}>
+                    <Interviews />
+                  </Suspense>
+                ),
+              },
+            ],
+          },
+          {
+            path: "/settings",
+            element: (
+              <Suspense fallback={<Loader />}>
+                <SettingsLayout />
+              </Suspense>
+            ),
+            children: [
+              {
+                path: "general",
+                element: (
+                  <Suspense fallback={<Loader />}>
+                    <GeneralSettings />
+                  </Suspense>
+                ),
+              },
+              {
+                path: "members",
+                element: (
+                  <Suspense fallback={<Loader />}>
+                    <Members />
+                  </Suspense>
+                ),
+              },
+              {
+                path: "roles",
+                element: (
+                  <Suspense fallback={<Loader />}>
+                    <Roles />
+                  </Suspense>
+                ),
+              },
+              {
+                path: "departments",
+                element: (
+                  <Suspense fallback={<Loader />}>
+                    <Departments />
+                  </Suspense>
+                ),
+              },
 
-            {
-              path: "security/audit-logs",
-              element: (
-                <Suspense fallback={<Loader />}>
-                  <AuditLogs />
-                </Suspense>
-              ),
-            },
-            {
-              path: "security/data",
-              element: (
-                <Suspense fallback={<Loader />}>
-                  <OrgData />
-                </Suspense>
-              ),
-            },
-          ],
-        },
+              {
+                path: "security/audit-logs",
+                element: (
+                  <Suspense fallback={<Loader />}>
+                    <AuditLogs />
+                  </Suspense>
+                ),
+              },
+              {
+                path: "security/data",
+                element: (
+                  <Suspense fallback={<Loader />}>
+                    <OrgData />
+                  </Suspense>
+                ),
+              },
+            ],
+          },
 
-        {
-          path: "dashboard",
-          element: (
-            <Suspense fallback={<Loader />}>
-              <Dashboard />
-            </Suspense>
-          ),
-        },
-        {
-          path: "drives",
-          element: (
-            <Suspense fallback={<Loader />}>
-              <Drives />
-            </Suspense>
-          ),
-        },
-        {
-          path: "drives/create",
-          element: (
-            <Suspense fallback={<Loader />}>
-              <CreateDrive />
-            </Suspense>
-          ),
-        },
-        {
-          path: "placement-groups",
-          element: (
-            <Suspense fallback={<Loader />}>
-              <PlacementGroups />
-            </Suspense>
-          ),
-        },
-        {
-          path: "companies",
-          element: (
-            <Suspense fallback={<Loader />}>
-              <Companies />
-            </Suspense>
-          ),
-        },
-        {
-          path: "companies/:id",
-          element: (
-            <Suspense fallback={<Loader />}>
-              <Company />
-            </Suspense>
-          ),
-        },
-        {
-          path: "placement-groups",
-          element: (
-            <Suspense fallback={<Loader />}>
-              <PlacementGroups />
-            </Suspense>
-          ),
-        },
-        {
-          path: "placement-groups/create",
-          element: (
-            <Suspense fallback={<Loader />}>
-              <CreatePlacementGroup />
-            </Suspense>
-          ),
-        },
-        {
-          path: "placement-groups/:id",
-          element: (
-            <Suspense fallback={<Loader />}>
-              <GroupDetails />
-            </Suspense>
-          ),
-        },
-        {
-          path: "candidates",
-          element: (
-            <Suspense fallback={<Loader />}>
-              <CandidateLayout />
-            </Suspense>
-          ),
-          children: [
-            {
-              path: "active",
-              element: (
-                <Suspense fallback={<Loader />}>
-                  <Candidates />
-                </Suspense>
-              ),
-            },
-            {
-              path: "pending",
-              element: (
-                <Suspense fallback={<Loader />}>
-                  <PendingCandidates />
-                </Suspense>
-              ),
-            },
-          ],
-        },
-        {
-          path: "c/:id",
-          element: (
-            <Suspense fallback={<Loader />}>
-              <CandidateProfile />
-            </Suspense>
-          ),
-        },
-        {
-          path: "analytics",
-          element: (
-            <Suspense fallback={<Loader />}>
-              <Analytics />
-            </Suspense>
-          ),
-        },
-        {
-          path: "notifications",
-          element: (
-            <Suspense fallback={<Loader />}>
-              <Notifications />
-            </Suspense>
-          ),
-        },
-        {
-          path: "billing",
-          element: (
-            <Suspense fallback={<Loader />}>
-              <Billing />
-            </Suspense>
-          ),
-        },
-        {
-          path: "documentation",
-          element: (
-            <Suspense fallback={<Loader />}>
-              <Documentation />
-            </Suspense>
-          ),
-        },
-        {
-          path: "support",
-          element: (
-            <Suspense fallback={<Loader />}>
-              <Support />
-            </Suspense>
-          ),
-        },
-      ],
-    },
-  ]);
+          {
+            path: "dashboard",
+            element: (
+              <Suspense fallback={<Loader />}>
+                <Dashboard />
+              </Suspense>
+            ),
+          },
+          {
+            path: "drives",
+            element: (
+              <Suspense fallback={<Loader />}>
+                <Drives />
+              </Suspense>
+            ),
+          },
+          {
+            path: "drives/create",
+            element: (
+              <Suspense fallback={<Loader />}>
+                <CreateDrive />
+              </Suspense>
+            ),
+          },
+          {
+            path: "placement-groups",
+            element: (
+              <Suspense fallback={<Loader />}>
+                <PlacementGroups />
+              </Suspense>
+            ),
+          },
+          {
+            path: "companies",
+            element: (
+              <Suspense fallback={<Loader />}>
+                <Companies />
+              </Suspense>
+            ),
+          },
+          {
+            path: "companies/:id",
+            element: (
+              <Suspense fallback={<Loader />}>
+                <Company />
+              </Suspense>
+            ),
+          },
+          {
+            path: "placement-groups",
+            element: (
+              <Suspense fallback={<Loader />}>
+                <PlacementGroups />
+              </Suspense>
+            ),
+          },
+          {
+            path: "placement-groups/create",
+            element: (
+              <Suspense fallback={<Loader />}>
+                <CreatePlacementGroup />
+              </Suspense>
+            ),
+          },
+          {
+            path: "placement-groups/:id",
+            element: (
+              <Suspense fallback={<Loader />}>
+                <GroupDetails />
+              </Suspense>
+            ),
+          },
+          {
+            path: "candidates",
+            element: (
+              <Suspense fallback={<Loader />}>
+                <CandidateLayout />
+              </Suspense>
+            ),
+            children: [
+              {
+                path: "active",
+                element: (
+                  <Suspense fallback={<Loader />}>
+                    <Candidates />
+                  </Suspense>
+                ),
+              },
+              {
+                path: "pending",
+                element: (
+                  <Suspense fallback={<Loader />}>
+                    <PendingCandidates />
+                  </Suspense>
+                ),
+              },
+            ],
+          },
+          {
+            path: "c/:id",
+            element: (
+              <Suspense fallback={<Loader />}>
+                <CandidateProfile />
+              </Suspense>
+            ),
+          },
+          {
+            path: "analytics",
+            element: (
+              <Suspense fallback={<Loader />}>
+                <Analytics />
+              </Suspense>
+            ),
+          },
+          {
+            path: "notifications",
+            element: (
+              <Suspense fallback={<Loader />}>
+                <Notifications />
+              </Suspense>
+            ),
+          },
+          {
+            path: "billing",
+            element: (
+              <Suspense fallback={<Loader />}>
+                <Billing />
+              </Suspense>
+            ),
+          },
+          {
+            path: "documentation",
+            element: (
+              <Suspense fallback={<Loader />}>
+                <Documentation />
+              </Suspense>
+            ),
+          },
+          {
+            path: "support",
+            element: (
+              <Suspense fallback={<Loader />}>
+                <Support />
+              </Suspense>
+            ),
+          },
+        ],
+      },
+    ],
+    { basename: import.meta.env.VITE_BASENAME || "/" }
+  );
 
   return <RouterProvider router={router} />;
 }

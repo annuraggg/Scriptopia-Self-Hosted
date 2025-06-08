@@ -21,90 +21,93 @@ import Loader from "./components/Loader";
 import Notifications from "./pages/notifications/Notifications";
 
 function App() {
-  const router = createBrowserRouter([
-    {
-      path: "/",
-      errorElement: <ErrorBoundary />,
-      children: [
-        {
-          path: "",
-          element: <Lander />,
-        },
-        {
-          path: "onboarding",
-          element: <Onboarding />,
-        },
-        {
-          path: "",
-          element: <Layout />,
-          children: [
-            {
-              path: "postings/:id",
-              element: <Posting />,
-            },
-            {
-              path: "postings/:id/apply",
-              element: <Apply />,
-            },
-            {
-              path: "postings/:id/assignments/:assignmentId",
-              element: <Assignment />,
-            },
-          ],
-        },
-        {
-          path: "",
-          element: <Layout />,
-          children: [
-            {
-              path: "dashboard",
-              element: <Home />,
-            },
-            {
-              path: "notifications",
-              element: (
-                <Suspense fallback={<Loader />}>
-                  <Notifications />
-                </Suspense>
-              ),
-            },
-            {
-              path: "profile",
-              element: <ProfileLayout />,
-              children: [...profileRoutes],
-            },
+  const router = createBrowserRouter(
+    [
+      {
+        path: "/",
+        errorElement: <ErrorBoundary />,
+        children: [
+          {
+            path: "",
+            element: <Lander />,
+          },
+          {
+            path: "onboarding",
+            element: <Onboarding />,
+          },
+          {
+            path: "",
+            element: <Layout />,
+            children: [
+              {
+                path: "postings/:id",
+                element: <Posting />,
+              },
+              {
+                path: "postings/:id/apply",
+                element: <Apply />,
+              },
+              {
+                path: "postings/:id/assignments/:assignmentId",
+                element: <Assignment />,
+              },
+            ],
+          },
+          {
+            path: "",
+            element: <Layout />,
+            children: [
+              {
+                path: "dashboard",
+                element: <Home />,
+              },
+              {
+                path: "notifications",
+                element: (
+                  <Suspense fallback={<Loader />}>
+                    <Notifications />
+                  </Suspense>
+                ),
+              },
+              {
+                path: "profile",
+                element: <ProfileLayout />,
+                children: [...profileRoutes],
+              },
 
-            {
-              path: "/campus",
-              element: <CampusLayout />,
-              children: [
-                {
-                  path: "drives",
-                  element: <Drives />,
-                },
-                {
-                  path: "drives/:id",
-                  element: <Drive />,
-                },
-                {
-                  path: "placement-groups",
-                  element: <PlacementGroups />,
-                },
-                {
-                  path: "placement-groups/join/:id",
-                  element: <JoinPlacementGroup />,
-                },
-                {
-                  path: "resume",
-                  element: <Resume />,
-                },
-              ],
-            },
-          ],
-        },
-      ],
-    },
-  ]);
+              {
+                path: "/campus",
+                element: <CampusLayout />,
+                children: [
+                  {
+                    path: "drives",
+                    element: <Drives />,
+                  },
+                  {
+                    path: "drives/:id",
+                    element: <Drive />,
+                  },
+                  {
+                    path: "placement-groups",
+                    element: <PlacementGroups />,
+                  },
+                  {
+                    path: "placement-groups/join/:id",
+                    element: <JoinPlacementGroup />,
+                  },
+                  {
+                    path: "resume",
+                    element: <Resume />,
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+    { basename: import.meta.env.VITE_BASENAME || "/" }
+  );
 
   return <RouterProvider router={router} />;
 }
