@@ -26,6 +26,7 @@
     "@web3-react/core": "^8.2.3",
     "@web3-react/injected-connector": "^6.0.7",
     "axios": "^1.7.2",
+    "better-auth": "^1.2.8",
     "chalk": "^5.3.0",
     "dotenv": "^16.4.5",
     "ethers": "^6.13.5",
