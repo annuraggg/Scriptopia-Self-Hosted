@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { EditIcon, Paperclip } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import {
   Textarea,
   Checkbox,
@@ -37,7 +38,8 @@ const Review = ({
   const [isSelected, setIsSelected] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [loading, setLoading] = useState(false);
-
+  const navigate = useNavigate();
+  
   const { getToken } = useAuth();
   const { user } = useUser();
   const axios = ax(getToken);
@@ -186,10 +188,12 @@ const Review = ({
           <ModalFooter>
             <Button
               onClick={() => {
-                window.location.href = window.location.pathname
-                  .split("/")
-                  .slice(0, 3)
-                  .join("/");
+                navigate(
+                  window.location.pathname
+                    .split("/")
+                    .slice(0, 3)
+                    .join("/")
+                );
               }}
             >
               Close

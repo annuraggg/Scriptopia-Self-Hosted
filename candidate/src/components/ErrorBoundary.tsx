@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button } from "@heroui/react";
 import { useRouteError } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 // Friendly error messages mapping
 const friendlyErrorMessages: Record<number, string> = {
@@ -24,6 +25,7 @@ const ErrorPage = (props: {
   const { statusCode = 500, message = "Something went wrong", error } = props;
   const e: any = useRouteError();
   const env = import.meta.env.MODE;
+  const navigate = useNavigate();
 
   error && console.error(error);
   e && console.error(e);
@@ -58,7 +60,7 @@ const ErrorPage = (props: {
             <p className="text-gray-600">
               The page you are looking for doesn't exist or has been moved.
             </p>
-            <Button onPress={() => window.location.href = "/dashboard"} className="mt-5">Go Back to Home</Button>
+            <Button onPress={() => navigate("/dashboard")} className="mt-5">Go Back to Home</Button>
           </div>
         )}
 
