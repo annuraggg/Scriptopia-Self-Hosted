@@ -2,11 +2,13 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Eye, EyeOff } from 'lucide-react';
 
-interface SigninProps {
+interface SignupProps {
   onNavigate?: (path: string) => void;
 }
 
-const Signin: React.FC<SigninProps> = ({ onNavigate }) => {
+const Signup: React.FC<SignupProps> = ({ onNavigate }) => {
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -18,27 +20,39 @@ const Signin: React.FC<SigninProps> = ({ onNavigate }) => {
     setIsLoading(true);
     setError('');
 
+    if (!firstName || !email || !password) {
+      setError('Please fill in all required fields');
+      setIsLoading(false);
+      return;
+    }
+
+    if (password.length < 6) {
+      setError('Password must be at least 6 characters long');
+      setIsLoading(false);
+      return;
+    }
+
     setTimeout(() => {
-      if (email === 'test@example.com' && password === 'password') {
-        console.log('Sign in successful');
-        setError('');
+      if (email === 'existing@example.com') {
+        setError('An account with this email already exists');
       } else {
-        setError('Invalid email or password');
+        console.log('Sign up successful');
+        setError('');
       }
       setIsLoading(false);
     }, 2000);
   };
 
-  const handleGoogleSignIn = () => {
+  const handleGoogleSignUp = () => {
     setIsLoading(true);
     setTimeout(() => {
-      console.log('Google sign in');
+      console.log('Google sign up');
       setIsLoading(false);
     }, 1500);
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-6 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -49,12 +63,12 @@ const Signin: React.FC<SigninProps> = ({ onNavigate }) => {
           <div>
             <div className="flex items-center space-x-2 mb-4">
               <div className="w-6 h-6 bg-black rounded-sm flex items-center justify-center">
-                <span className="text-white text-xs font-bold">S</span>
+                <link rel="icon" type="image/svg+xml" href="/logo.svg" />
               </div>
-              <span className="text-xl font-semibold text-gray-900">Scriptopia</span>
+              <span className="text-xl font-semibold text-gray-900">scriptopia</span>
             </div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Sign in</h2>
-            <p className="text-gray-600">to continue to scriptopia</p>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">Create your account</h2>
+            <p className="text-gray-600">to continue to scriptopia-app</p>
           </div>
 
           {error && (
@@ -69,7 +83,7 @@ const Signin: React.FC<SigninProps> = ({ onNavigate }) => {
 
           <div className="mt-8">
             <button
-              onClick={handleGoogleSignIn}
+              onClick={handleGoogleSignUp}
               disabled={isLoading}
               className="w-full flex items-center justify-center px-4 py-3 border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-50 disabled:cursor-not-allowed"
             >
@@ -92,6 +106,36 @@ const Signin: React.FC<SigninProps> = ({ onNavigate }) => {
             </div>
 
             <form onSubmit={handleSubmit}>
+              <div className="grid grid-cols-2 gap-4 mb-4">
+                <div>
+                  <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-1">
+                    First name
+                  </label>
+                  <input
+                    id="firstName"
+                    name="firstName"
+                    type="text"
+                    required
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    className="appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent focus:z-10 sm:text-sm"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-1">
+                    Last name <span className="text-xs text-gray-400">Optional</span>
+                  </label>
+                  <input
+                    id="lastName"
+                    name="lastName"
+                    type="text"
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                    className="appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent focus:z-10 sm:text-sm"
+                  />
+                </div>
+              </div>
+
               <div className="mb-4">
                 <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
                   Email address
@@ -104,7 +148,6 @@ const Signin: React.FC<SigninProps> = ({ onNavigate }) => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent focus:z-10 sm:text-sm"
-                  placeholder=""
                 />
               </div>
 
@@ -148,7 +191,7 @@ const Signin: React.FC<SigninProps> = ({ onNavigate }) => {
                       transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
                       className="w-4 h-4 border-2 border-white border-t-transparent rounded-full mr-2"
                     />
-                    Signing in...
+                    Creating account...
                   </div>
                 ) : (
                   'CONTINUE'
@@ -156,26 +199,16 @@ const Signin: React.FC<SigninProps> = ({ onNavigate }) => {
               </button>
             </form>
 
-            <div className="text-center space-y-2">
-              <div>
+            <div className="text-center">
+              <span className="text-sm text-gray-600">
+                Have an account?{' '}
                 <button 
-                  onClick={() => onNavigate?.('/forgot-password')}
-                  className="text-sm font-medium text-purple-600 hover:text-purple-500"
+                  onClick={() => onNavigate?.('/sign-in')}
+                  className="font-medium text-purple-600 hover:text-purple-500"
                 >
-                  Forgot your password?
+                  Sign in
                 </button>
-              </div>
-              <div>
-                <span className="text-sm text-gray-600">
-                  No account?{' '}
-                  <button 
-                    onClick={() => onNavigate?.('/sign-up')}
-                    className="font-medium text-purple-600 hover:text-purple-500"
-                  >
-                    Sign up
-                  </button>
-                </span>
-              </div>
+              </span>
             </div>
           </div>
         </div>
@@ -184,4 +217,4 @@ const Signin: React.FC<SigninProps> = ({ onNavigate }) => {
   );
 };
 
-export default Signin;
+export default Signup;
