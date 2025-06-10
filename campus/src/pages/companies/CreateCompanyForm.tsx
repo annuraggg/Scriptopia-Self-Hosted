@@ -7,6 +7,7 @@ import { useAuth } from "@clerk/clerk-react";
 import ax from "@/config/axios";
 import { toast } from "sonner";
 import { Company } from "@shared-types/Company";
+import { useNavigate } from "react-router-dom";
 
 interface CreateCompanyFormProps {
   onClose: () => void;
@@ -33,6 +34,7 @@ const CreateCompanyForm: React.FC<CreateCompanyFormProps> = ({ onClose }) => {
   const [hrPhone, setHrPhone] = useState("");
   const [hrWebsite, setHrWebsite] = useState("");
   const [yearlyStats, setYearlyStats] = useState<YearlyStats[]>([]);
+  const navigate = useNavigate();
 
   const { getToken } = useAuth();
   const axios = ax(getToken);
@@ -119,7 +121,8 @@ const CreateCompanyForm: React.FC<CreateCompanyFormProps> = ({ onClose }) => {
 
       onClose();
 
-      window.location.href = "/companies";
+      // window.location.href = "/companies";
+      navigate("/companies");
     } catch (err: any) {
       console.error("Error creating company:", err);
       toast.error(

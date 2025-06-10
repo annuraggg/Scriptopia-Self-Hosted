@@ -11,6 +11,7 @@ import { useDispatch } from "react-redux";
 import ax from "@/config/axios";
 import Loader from "@/components/Loader";
 import SampleData from "./SampleData";
+import { useNavigate } from "react-router-dom";
 
 interface InvitedMember {
   email: string;
@@ -35,6 +36,7 @@ const Onboarding = () => {
   const [invitedMembers, setInvitedMembers] = useState<InvitedMember[]>([]);
 
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const { getToken } = useAuth();
   const axios = ax(getToken);
@@ -43,7 +45,8 @@ const Onboarding = () => {
     axios
       .get("/institutes")
       .then(() => {
-        window.location.href = "/dashboard";
+        // window.location.href = "/dashboard";
+        navigate("/dashboard");
       })
       .catch(() => setLoading(false));
   }, []);
@@ -157,7 +160,8 @@ const Onboarding = () => {
       })
       .then(() => {
         toast.success("Institute created successfully");
-        window.location.href = "/dashboard";
+        // window.location.href = "/dashboard";
+        navigate("/dashboard");
         const data = {
           _id: user?.publicMetadata?.instituteId,
           role: user?.publicMetadata?.roleName,

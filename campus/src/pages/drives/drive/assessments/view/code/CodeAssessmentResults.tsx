@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import Loader from "@/components/Loader";
 import Analytics from "./Analytics";
 import Results from "./Results";
+import { useParams } from "react-router-dom";
 
 const AnalyticsDashboard: React.FC = () => {
   const [assessment, setAssessment] = useState<CodeAssessment | null>(null);
@@ -17,12 +18,18 @@ const AnalyticsDashboard: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   const { getToken } = useAuth();
+  const { assessmentId } = useParams<{ assessmentId: string }>();
   const axios = ax(getToken);
 
   useEffect(() => {
-    const id = window.location.pathname.split("/")[5];
+    if (!assessmentId) {
+      toast.error("Invalid assessment ID");
+      setLoading(false);
+      return;
+    }
+
     axios
-      .get(`/assessments/${id}/get-code-submissions`)
+      .get(`/assessments/${assessmentId}/get-code-submissions`)
       .then((res) => {
         setAssessment(res.data.data.assessment);
         setSubmissions(res.data.data.submissions);
@@ -34,7 +41,7 @@ const AnalyticsDashboard: React.FC = () => {
       .finally(() => {
         setLoading(false);
       });
-  }, []);
+  }, [assessmentId, getToken]);
 
   if (loading) return <Loader />;
 

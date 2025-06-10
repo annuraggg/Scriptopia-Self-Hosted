@@ -7,6 +7,7 @@ import ax from "@/config/axios";
 import { toast } from "sonner";
 import Result from "./Result";
 import Loader from "@/components/Loader";
+import { useParams } from "react-router-dom";
 
 const View = () => {
   const [submission, setSubmission] = useState<EMAS | null>(null);
@@ -14,15 +15,21 @@ const View = () => {
   const [refetch, setRefetch] = useState<boolean>(false);
 
   const { getToken } = useAuth();
+  const { assessmentId, submissionId } = useParams<{ 
+    assessmentId: string; 
+    submissionId: string; 
+  }>();
   const axios = ax(getToken);
 
   useEffect(() => {
     const fetchSubmission = async (): Promise<void> => {
-      try {
-        const pathParts = window.location.pathname.split("/");
-        const assessmentId = pathParts[5];
-        const submissionId = pathParts[7];
+      if (!assessmentId || !submissionId) {
+        toast.error("Invalid assessment or submission ID");
+        setLoading(false);
+        return;
+      }
 
+      try {
         const response = await axios.get(
           `/assessments/${assessmentId}/get-mcq-submissions/${submissionId}`
         );
@@ -37,7 +44,7 @@ const View = () => {
     };
 
     fetchSubmission();
-  }, [getToken, refetch]);
+  }, [assessmentId, submissionId, getToken, refetch]);
 
   if (loading) {
     return <Loader />;

@@ -17,6 +17,7 @@ import { useAuth, useUser } from "@clerk/clerk-react";
 import ax from "@/config/axios";
 import { useDispatch } from "react-redux";
 import { setInstitute } from "@/reducers/instituteReducer";
+import { useNavigate } from "react-router-dom";
 
 interface InvitedMember {
   email: string;
@@ -42,6 +43,7 @@ const Start = () => {
 
   const [firstLoading, setFirstLoading] = useState(false);
   const [secondLoading, setSecondLoading] = useState(false);
+  const navigate = useNavigate();
 
   const roles: Role[] = [
     { role: "Admin" },
@@ -107,7 +109,9 @@ const Start = () => {
       .then(() => {
         setSecondLoading(false);
         toast.success("Institute created successfully");
-        window.location.href = "/dashboard";
+        // window.location.href = "/dashboard";
+        navigate("/dashboard");
+
         const data = {
           _id: user?.publicMetadata?.orgId,
           role: user?.publicMetadata?.roleName,

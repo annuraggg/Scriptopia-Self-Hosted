@@ -1,7 +1,7 @@
 import { ExtendedDrive } from "@shared-types/ExtendedDrive";
 import { WorkflowStep } from "@shared-types/Drive";
 import { useEffect, useState } from "react";
-import { useOutletContext } from "react-router-dom";
+import { useOutletContext, useParams } from "react-router-dom";
 import DataTable from "./DataTable";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle, InfoIcon } from "lucide-react";
@@ -13,39 +13,36 @@ interface OutletContext {
 }
 
 const Custom = () => {
-  const { drive, active, refetch } = useOutletContext<OutletContext>();
+  const { drive, refetch } = useOutletContext<OutletContext>();
+  const { stepId } = useParams<{ stepId: string }>();
   const [step, setStep] = useState<WorkflowStep | null>(null);
   const [isCurrent, setIsCurrent] = useState(false);
-  const [stepId, setStepId] = useState<string | null>(null);
 
   useEffect(() => {
-    const currentStepId = window.location.pathname.split("/").pop() || null;
-    setStepId(currentStepId);
+    if (!stepId) return;
 
-    const step = drive.workflow?.steps?.find((s) => s._id === currentStepId);
+    const step = drive.workflow?.steps?.find((s) => s._id === stepId);
     const isCurrent =
-      drive?.workflow?.steps?.find((s) => s._id === currentStepId)?.status ===
+      drive?.workflow?.steps?.find((s) => s._id === stepId)?.status ===
       "in-progress";
 
     if (step) {
       setStep(step);
       setIsCurrent(isCurrent);
     }
-  }, [active, drive.workflow?.steps]);
+  }, [stepId, drive.workflow?.steps]);
 
-  {
-    !isCurrent && step?.status === "pending" && (
+  if (!isCurrent && step?.status === "pending") {
+    return (
       <div className="flex h-screen items-center justify-center">
-        {!isCurrent && step?.status === "pending" && (
-          <Alert className="mb-4">
-            <AlertCircle className="h-4 w-4" />
-            <AlertTitle>Step Not Yet Active</AlertTitle>
-            <AlertDescription>
-              This step is not yet active in the recruitment process. Please
-              navigate to the currently active step to manage candidates.
-            </AlertDescription>
-          </Alert>
-        )}
+        <Alert className="mb-4">
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>Step Not Yet Active</AlertTitle>
+          <AlertDescription>
+            This step is not yet active in the recruitment process. Please
+            navigate to the currently active step to manage candidates.
+          </AlertDescription>
+        </Alert>
       </div>
     );
   }
@@ -80,7 +77,7 @@ const Custom = () => {
           data={drive?.candidates}
           refetch={refetch}
           readOnly={!isCurrent}
-          stepId={stepId || undefined}
+          stepId={stepId}
         />
       </div>
     </div>

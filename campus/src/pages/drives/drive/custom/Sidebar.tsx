@@ -26,10 +26,12 @@ const Sidebar = ({ active, setActive, isMobile, onClose }: SidebarProps) => {
       })) || [];
 
   const handleNavigation = (item: NavItem) => {
-    const path = window.location.pathname.split("/").slice(0, 4).join("/");
+    const path = import.meta.env.VITE_BASENAME === "/"
+      ? `/drives/${drive._id}/custom`
+      : `/drives/${drive._id}/custom/${item._id!}`;
 
     setActive(item._id!);
-    navigate(path + "/" + item._id!);
+    navigate(path);
     if (isMobile) onClose?.();
   };
 
