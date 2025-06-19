@@ -59,18 +59,32 @@ ioServer.on("error", (err) => {
   logger.error(err);
 });
 
-
-app.use("*", clerkMiddleware())
+app.use("*", clerkMiddleware());
 app.use(trackRouteHits());
 app.use(prettyJSON());
-app.use(cors());
 app.use(performanceMiddleware);
 app.use(authMiddleware);
+
+app.use(
+  cors({
+    origin: [
+      process.env.MAIN_FRONTEND_URL!,
+      process.env.SCRIPTOPIA_FRONTEND_URL!,
+      process.env.ENTERPRISE_FRONTEND_URL!,
+      process.env.CAMPUS_FRONTEND_URL!,
+      process.env.MEET_FRONTEND_URL!,
+      process.env.CANDIDATE_FRONTEND_URL!,
+      process.env.ACCOUNTS_FRONTEND_URL!,
+    ],
+    credentials: true,
+  })
+);
 
 app.route("/home", homeRoute);
 app.route("/problems", problemRoute);
 app.route("/assessments", assessmentRoute);
 app.route("/submissions", submissionRoute);
+
 app.route("/users", userRoute);
 
 app.route("/organizations", organizationRoute);
