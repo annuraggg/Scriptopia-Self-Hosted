@@ -71,74 +71,90 @@ const Pipeline = () => {
     }).format(date);
   };
 
+  const getCandidatesForStep = (stepIndex: number, stepId: string) => {
+    const isLastStep = stepIndex === (drive?.workflow?.steps?.length ?? 0) - 1;
+    const step = drive?.workflow?.steps?.[stepIndex];
+    
+    return appliedDrives.filter((applied) => {
+      if (step?.status === "in-progress") {
+        return (
+          applied.status === "inprogress" ||
+          applied.status === "hired" ||
+          (applied.status === "rejected" &&
+            applied.disqualifiedStage?.toString() === stepId) ||
+          (stepIndex === 0 && applied.status === "applied")
+        );
+      }
+      else if (isLastStep && step?.status === "completed") {
+        return (
+          applied.status === "hired" ||
+          (!drive?.hasEnded && applied.status === "inprogress") ||
+          (applied.status === "rejected" &&
+            applied.disqualifiedStage?.toString() === stepId)
+        );
+      }
+      else if (step?.status === "completed") {
+        return (
+          applied.status === "rejected" &&
+          applied.disqualifiedStage?.toString() === stepId
+        );
+      }
+      else if (stepIndex === 0 && applied.status === "applied") {
+        return true;
+      }
+      return false;
+    });
+  };
+
   const downloadCSV = () => {
-    if (!drive?.workflow?.steps?.length) return;
+    if (!drive?.workflow?.steps?.length) {
+      toast.error("No workflow steps found");
+      return;
+    }
 
     const headers = drive.workflow.steps.map((step) => {
-      const status = step.status === "in-progress" ? "inprogress" : step.status;
+      const status = step.status === "in-progress" ? "In Progress" : 
+                    step.status === "completed" ? "Completed" : step.status;
       return `${step.name} (${status})`;
     });
 
     const csvRows = [headers.join(",")];
-    const candidatesByStep: Record<number, string[]> = {};
-
-    // Initialize arrays for each step
-    drive.workflow.steps.forEach((_, index) => {
-      candidatesByStep[index] = [];
-    });
-
-    // Sort candidates into their respective steps
-    appliedDrives.forEach((applied) => {
-      let stepIndex;
-      if (applied.status === "inprogress") {
-        stepIndex =
-          drive.workflow?.steps?.findIndex(
-            (step) => step.status === "in-progress"
-          ) ?? -1;
-      } else if (applied.status === "applied") {
-        stepIndex = 0;
-      } else if (applied.status === "hired") {
-        // Put hired candidates in the last step
-        stepIndex = drive.workflow?.steps.length ?? 0 - 1;
-      } else {
-        // For disqualified candidates
-        stepIndex = drive.workflow?.steps.findIndex(
-          (step) =>
-            step._id?.toString() === applied.disqualifiedStage?.toString()
-        );
-        if (stepIndex === -1) stepIndex = 0; // Default to first step if not found
-      }
-
-      if (
-        drive.workflow &&
-        typeof stepIndex === "number" &&
-        stepIndex >= 0 &&
-        stepIndex < drive.workflow.steps.length
-      ) {
-        candidatesByStep[stepIndex].push(applied.user.name);
-      }
+    
+    const candidatesByStep: Record<number, ExtendedAppliedDrive[]> = {};
+    
+    drive.workflow.steps.forEach((step, index) => {
+      candidatesByStep[index] = getCandidatesForStep(index, step._id || "");
     });
 
     const maxCandidates = Math.max(
       ...Object.values(candidatesByStep).map((candidates) => candidates.length),
-      0 // Add 0 to prevent error if no candidates
+      0
     );
 
-    // Create CSV rows with candidate names
     for (let i = 0; i < maxCandidates; i++) {
-      const rowData = [];
+      const rowData: string[] = [];
 
-      for (let j = 0; j < drive.workflow.steps.length; j++) {
-        const candidatesInStep = candidatesByStep[j] || [];
-        rowData.push(
-          i < candidatesInStep.length
-            ? `"${candidatesInStep[i].replace(/"/g, '""')}"`
-            : ""
-        );
+      for (let stepIndex = 0; stepIndex < drive.workflow.steps.length; stepIndex++) {
+        const candidatesInStep = candidatesByStep[stepIndex] || [];
+        
+        if (i < candidatesInStep.length) {
+          const candidate = candidatesInStep[i];
+          const candidateInfo = `${candidate.user.name} (${candidate.user.email}) - ${getStatusLabel(candidate.status)}`;
+          rowData.push(`"${candidateInfo.replace(/"/g, '""')}"`);
+        } else {
+          rowData.push("");
+        }
       }
 
       csvRows.push(rowData.join(","));
     }
+
+    csvRows.push("");
+    const summaryRow = drive.workflow.steps.map((_, index) => {
+      const count = candidatesByStep[index]?.length || 0;
+      return `Total: ${count}`;
+    });
+    csvRows.push(summaryRow.join(","));
 
     const csvString = csvRows.join("\n");
     const blob = new Blob([csvString], { type: "text/csv;charset=utf-8;" });
@@ -152,6 +168,9 @@ const Pipeline = () => {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+
+    toast.success("CSV downloaded successfully!");
   };
 
   const handleViewResume = (candidateId: string, e: React.MouseEvent) => {
@@ -171,7 +190,7 @@ const Pipeline = () => {
   };
 
   const handleViewProfile = (candidateId: string, e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent card collapse
+    e.stopPropagation();
     navigate(`/c/${candidateId}`);
   };
 
@@ -202,8 +221,10 @@ const Pipeline = () => {
         return "Applied";
       case "hired":
         return "Hired";
+      case "rejected":
+        return "Rejected";
       default:
-        return "Disqualified";
+        return "Unknown";
     }
   };
 
@@ -335,10 +356,10 @@ const Pipeline = () => {
               variant="bordered"
               startContent={<Download className="w-4 h-4" />}
               onClick={downloadCSV}
+              isDisabled={!drive?.workflow?.steps?.length || appliedDrives.length === 0}
             >
               Download CSV
             </Button>
-            {/* "View Drive Details" button removed as requested */}
           </div>
         </div>
       </div>
@@ -363,7 +384,6 @@ const Pipeline = () => {
             index === (drive?.workflow?.steps?.length ?? 0) - 1;
 
           const stageApplicants = filteredAppliedDrives.filter((applied) => {
-            // For the in-progress step
             if (step.status === "in-progress") {
               return (
                 applied.status === "inprogress" ||
@@ -374,7 +394,6 @@ const Pipeline = () => {
                 (index === 0 && applied.status === "applied")
               );
             }
-            // For the last step - include both hired and rejected candidates from last stage
             else if (isLastStep && step.status === "completed") {
               return (
                 applied.status === "hired" ||
@@ -384,7 +403,6 @@ const Pipeline = () => {
                     step._id?.toString())
               );
             }
-            // For disqualified candidates in non-last stages
             else if (applied.status === "rejected") {
               return (
                 applied.disqualifiedStage?.toString() === step._id?.toString()
@@ -443,10 +461,10 @@ const Pipeline = () => {
 
 const getStepColor = (index: number) => {
   const colors = [
-    "#4f46e5", // Indigo
-    "#7c3aed", // Purple
-    "#ec4899", // Pink
-    "#f59e0b", // Amber
+    "#4f46e5",
+    "#7c3aed",
+    "#ec4899",
+    "#f59e0b",
   ];
   return colors[index % colors.length];
 };
