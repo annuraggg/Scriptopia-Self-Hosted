@@ -93,7 +93,9 @@ const Posting = () => {
 
   useEffect(() => {
     setLoading(true);
-    const postingId = window.location.pathname.split("/")[2];
+    const postingId = import.meta.env.VITE_BASENAME === "/"
+      ? window.location.pathname.split("/")[1]
+      : window.location.pathname.split("/")[2];
     axios
       .get(`/postings/slug/${postingId}`)
       .then((res) => {

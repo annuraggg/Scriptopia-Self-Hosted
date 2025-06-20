@@ -17,6 +17,7 @@ import { useOutletContext } from "react-router-dom";
 import { Posting } from "@shared-types/Posting";
 import { useAuth, useUser } from "@clerk/clerk-react";
 import ax from "@/config/axios";
+import { useNavigate } from "react-router-dom";
 
 interface ReviewProps {
   onEdit: (section: string) => void;
@@ -48,6 +49,7 @@ const Review = ({
   const [loading, setLoading] = useState(false);
 
   const { posting } = useOutletContext() as { posting: Posting };
+  const navigate = useNavigate();
 
   const { getToken } = useAuth();
   const { user } = useUser();
@@ -202,10 +204,12 @@ const Review = ({
           <ModalFooter>
             <Button
               onClick={() => {
-                window.location.href = window.location.pathname
-                  .split("/")
-                  .slice(0, 3)
-                  .join("/");
+                navigate(
+                  window.location.pathname
+                    .split("/")
+                    .slice(0, 3)
+                    .join("/")
+                );
               }}
             >
               Close
