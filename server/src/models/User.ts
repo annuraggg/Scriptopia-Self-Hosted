@@ -18,17 +18,29 @@ const WalletSchema = new mongoose.Schema({
 
 const userSchema = new mongoose.Schema(
   {
-    clerkId: { type: String, required: true },
     email: { type: String, required: true },
     streak: { type: [Date] },
     wallet: { type: WalletSchema, default: null },
+    name: { type: String, required: true },
 
     isSample: { type: Boolean, default: false },
-    sampleInstituteId: { type: mongoose.Schema.Types.ObjectId, ref: "Institute" },
+    sampleInstituteId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Institute",
+    },
+
+    publicMetadata: {
+      type: Object,
+      default: {},
+    },
+    privateMetadata: {
+      type: Object,
+      default: {},
+    },
   },
   { timestamps: true }
 );
 
-userSchema.plugin(softDeletePlugin)
+userSchema.plugin(softDeletePlugin);
 const User = mongoose.model("User", userSchema);
 export default User;

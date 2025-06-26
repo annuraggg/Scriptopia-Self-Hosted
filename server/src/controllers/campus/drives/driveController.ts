@@ -5,7 +5,6 @@ import logger from "../../../utils/logger";
 import { Context } from "hono";
 import Institute from "@/models/Institute";
 import mongoose from "mongoose";
-import clerkClient from "@/config/clerk";
 import { AuditLog } from "@shared-types/Institute";
 import AssignmentSubmission from "@/models/AssignmentSubmission";
 import { Upload } from "@aws-sdk/lib-storage";
@@ -79,10 +78,10 @@ const createAuditLog = async (
   action: string
 ): Promise<void> => {
   try {
-    const clerkUser = await clerkClient.users.getUser(c.get("auth").userId);
+    const auth = c.get("auth");
     const auditLog: AuditLog = {
-      user: `${clerkUser.firstName || ""} ${clerkUser.lastName || ""}`.trim(),
-      userId: clerkUser.id,
+      user: `${auth.user.name}`.trim(),
+      userId: auth._id,
       action,
       type: "info",
     };

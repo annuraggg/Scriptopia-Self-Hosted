@@ -4,7 +4,6 @@ import checkPermission from "../../../middlewares/checkInstitutePermission";
 import { sendError, sendSuccess } from "../../../utils/sendResponse";
 import logger from "../../../utils/logger";
 import { Context } from "hono";
-import clerkClient from "../../../config/clerk";
 import { AuditLog } from "@shared-types/Institute";
 import mongoose from "mongoose";
 import Drive from "@/models/Drive";
@@ -24,10 +23,10 @@ const createAuditLog = async (
       return;
     }
 
-    const clerkUser = await clerkClient.users.getUser(authData.userId);
+    const auth = c.get("auth");
     const auditLog: AuditLog = {
-      user: `${clerkUser.firstName || ""} ${clerkUser.lastName || ""}`.trim(),
-      userId: clerkUser.id,
+      user: `${auth.user.name}`.trim(),
+      userId: auth._id,
       action,
       type,
     };

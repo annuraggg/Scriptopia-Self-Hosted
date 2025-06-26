@@ -1,15 +1,22 @@
-import { getAuth } from "@hono/clerk-auth";
 import { createMiddleware } from "hono/factory";
 import type { Context } from "hono";
 import { sendError } from "../utils/sendResponse";
+import { auth } from "@/config/betterauth";
 
 const authMiddleware = createMiddleware(async (c: Context, next) => {
-  const auth = getAuth(c);
+  const session = await auth.api.getSession({ headers: c.req.raw.headers });
+
+  if (!session) {
+    c.set("auth", null);
+    return next();
+  }
 
   const credentials = {
-    userId: auth?.userId,
-    _id: auth?.sessionClaims?._id,
+    user: session.user,
+    session: session.session,
+    _id: session.user.id,
   };
+
   c.set("auth", credentials);
 
   if (c.req.path === "/health") return next();
@@ -23,12 +30,6 @@ const authMiddleware = createMiddleware(async (c: Context, next) => {
   if (c.req.path.startsWith("/assessments/submit/mcq")) return next();
   if (c.req.path.startsWith("/assessments/code/check-progress")) return next();
   if (c.req.path.startsWith("/assessments/mcq/check-progress")) return next();
-
-  //  if (c.req.path.startsWith("/candidates")) return next();
-
-  // if (!token) {
-  //   return sendError(c, 401, "Unauthorized");
-  // }
 
   if (!auth) {
     return sendError(c, 401, "Request Unauthorized");
