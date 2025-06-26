@@ -1,11 +1,9 @@
 import { Context } from "hono";
 import { InvokeCommand, LambdaClient } from "@aws-sdk/client-lambda";
 import loops from "@/config/loops";
-import clerkClient from "@/config/clerk";
 import { v4 as uuidv4 } from "uuid";
 import mongoose from "mongoose";
 import { z } from "zod";
-
 import Drive from "../../../models/Drive";
 import Institute from "../../../models/Institute";
 import CandidateModel from "../../../models/Candidate";
@@ -114,7 +112,7 @@ const advanceWorkflow = async (c: Context) => {
           ...workflow.steps[0].schedule,
           startTime: new Date(),
         };
-        workflow.steps[0].startedBy = authUserId;
+        workflow.steps[0].startedBy = new mongoose.Types.ObjectId(authUserId);
       } else {
         // Complete current step and move to next
         workflow.steps[currentStepIndex].status = "completed";
@@ -130,7 +128,8 @@ const advanceWorkflow = async (c: Context) => {
             ...workflow.steps[currentStepIndex + 1].schedule,
             startTime: new Date(),
           };
-          workflow.steps[currentStepIndex + 1].startedBy = authUserId;
+          workflow.steps[currentStepIndex + 1].startedBy =
+            new mongoose.Types.ObjectId(authUserId);
         } else {
           // This was the last step, mark the workflow as completed
           drive.set("status", "completed");
@@ -313,13 +312,15 @@ const handleResumeScreening = async (
   }
 
   const dbUser = await User.findById(member.user?._id).session(session);
-  if (!dbUser || !dbUser.clerkId) {
+  if (!dbUser) {
     throw new Error("User data incomplete for resume screening notification");
   }
 
-  // Get user details from Clerk
-  const clerkUser = await clerkClient.users.getUser(dbUser.clerkId);
-
+  // Get user details from DB
+  const user = await User.findById(step.startedBy).session(session);
+  if (!user) {
+    throw new Error("User not found for resume screening");
+  }
   // Create deterministic request ID for idempotency
   const requestId = uuidv4();
 
@@ -337,9 +338,7 @@ const handleResumeScreening = async (
     driveId: drive._id.toString(),
     resumes: validResumes,
     mailData: {
-      name:
-        `${clerkUser.firstName || ""} ${clerkUser.lastName || ""}`.trim() ||
-        "User",
+      name: user.name.trim() || "User",
       email: member.email || dbUser.email,
       drive: drive.title,
       resumeScreenUrl: `${process.env.ENTERPRISE_FRONTEND_URL}/drives/${drive.url}/ats`,
@@ -770,13 +769,18 @@ const logWorkflowAdvance = async (
   }
 
   try {
-    const authUserId = c.get("auth").userId;
+    const authUserId = c.get("auth")._id;
     if (!authUserId) {
       console.warn("Missing user ID for audit logging");
       return;
     }
 
-    const clerkUser = await clerkClient.users.getUser(authUserId);
+    const user = await User.findById(authUserId).session(session);
+    if (!user) {
+      console.warn("User not found for logging:", authUserId);
+      return;
+    }
+
     const institute = await Institute.findById(
       perms.data.institute._id
     ).session(session);
@@ -787,15 +791,13 @@ const logWorkflowAdvance = async (
       return;
     }
 
-    const userName =
-      `${clerkUser.firstName || ""} ${clerkUser.lastName || ""}`.trim() ||
-      "Unknown User";
+    const userName = user.name.trim() || "Unknown User";
 
     // Add audit log
     institute.auditLogs.push({
       action: `Advanced workflow for ${drive.title} to next step`,
       user: userName,
-      userId: clerkUser.id,
+      userId: user._id,
       type: "info",
       timestamp: new Date(),
     });

@@ -1,7 +1,6 @@
 import Institute from "../../../models/Institute";
 import { sendError, sendSuccess } from "../../../utils/sendResponse";
 import { Context } from "hono";
-import clerkClient from "@/config/clerk";
 import checkInstitutePermission from "../../../middlewares/checkInstitutePermission";
 import PlacementGroup from "@/models/PlacementGroup";
 import Candidate from "@/models/Candidate";
@@ -10,6 +9,7 @@ import { z } from "zod";
 import mongoose from "mongoose";
 import getCampusUsersWithPermission from "@/utils/getUserWithPermission";
 import { sendNotificationToCampus } from "@/utils/sendNotification";
+import User from "@/models/User";
 
 const PlacementGroupSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -41,7 +41,7 @@ const createPlacementGroup = async (c: Context) => {
     }
 
     const validatedData = validationResult.data;
-    const { userId, _id } = c.get("auth");
+    const { _id } = c.get("auth");
 
     const perms = await checkInstitutePermission.all(c, ["manage_institute"]);
     if (!perms.allowed) {
@@ -52,12 +52,12 @@ const createPlacementGroup = async (c: Context) => {
       );
     }
 
-    const clerkUser = await clerkClient.users.getUser(userId);
-    if (!clerkUser) {
+    const user = await User.findById(_id).lean();
+    if (!user) {
       return sendError(c, 403, "User not found");
     }
 
-    const instituteId = (clerkUser.publicMetadata.institute as any)?._id;
+    const instituteId = (user.publicMetadata.institute as any)?._id;
     if (!instituteId) {
       return sendError(c, 400, "Institute not associated with user");
     }
@@ -92,7 +92,7 @@ const createPlacementGroup = async (c: Context) => {
             auditLogs: {
               action: "create_placement_group",
               userId: _id,
-              user: clerkUser.fullName,
+              user: user.name,
               type: "info",
               details: `Created placement group: ${validatedData.name}`,
               timestamp: new Date(),
@@ -145,8 +145,7 @@ const createPlacementGroup = async (c: Context) => {
 
 const getPlacementGroups = async (c: Context) => {
   try {
-    const { userId } = c.get("auth");
-
+    const { _id } = c.get("auth");
     const perms = await checkInstitutePermission.all(c, ["manage_institute"]);
     if (!perms.allowed) {
       return sendError(
@@ -160,12 +159,12 @@ const getPlacementGroups = async (c: Context) => {
     const limit = Math.min(parseInt(c.req.query("limit") || "10"), 50);
     const skip = (page - 1) * limit;
 
-    const clerkUser = await clerkClient.users.getUser(userId);
-    if (!clerkUser) {
+    const user = await User.findById(_id).lean();
+    if (!user) {
       return sendError(c, 403, "User not found");
     }
 
-    const instituteId = (clerkUser.publicMetadata.institute as any)?._id;
+    const instituteId = (user.publicMetadata.institute as any)?._id;
     if (!instituteId) {
       return sendError(c, 400, "Institute not associated with user");
     }
@@ -204,7 +203,7 @@ const getPlacementGroups = async (c: Context) => {
 
 const getPlacementGroup = async (c: Context) => {
   try {
-    const { userId } = c.get("auth");
+    const { _id } = c.get("auth");
     const groupId = c.req.param("id");
 
     if (!mongoose.Types.ObjectId.isValid(groupId)) {
@@ -220,12 +219,12 @@ const getPlacementGroup = async (c: Context) => {
       );
     }
 
-    const clerkUser = await clerkClient.users.getUser(userId);
-    if (!clerkUser) {
+    const user = await User.findById(_id).lean();
+    if (!user) {
       return sendError(c, 403, "User not found");
     }
 
-    const instituteId = (clerkUser.publicMetadata.institute as any)?._id;
+    const instituteId = (user.publicMetadata.institute as any)?._id;
     if (!instituteId) {
       return sendError(c, 400, "Institute not associated with user");
     }
@@ -364,7 +363,7 @@ const acceptCandidate = async (c: Context) => {
   try {
     const groupId = c.req.param("id");
     const { candidateId } = await c.req.json();
-    const { userId, _id } = c.get("auth");
+    const { _id } = c.get("auth");
 
     if (
       !mongoose.Types.ObjectId.isValid(groupId) ||
@@ -382,12 +381,12 @@ const acceptCandidate = async (c: Context) => {
       );
     }
 
-    const clerkUser = await clerkClient.users.getUser(userId);
-    if (!clerkUser) {
+    const user = await User.findById(_id).lean();
+    if (!user) {
       return sendError(c, 403, "User not found");
     }
 
-    const instituteId = (clerkUser.publicMetadata.institute as any)?._id;
+    const instituteId = (user.publicMetadata.institute as any)?._id;
     if (!instituteId) {
       return sendError(c, 400, "Institute not associated with user");
     }
@@ -425,7 +424,7 @@ const acceptCandidate = async (c: Context) => {
         auditLogs: {
           action: "accept_candidate",
           userId: _id,
-          user: clerkUser.fullName,
+          user: user.name,
           type: "info",
           details: `Accepted candidate ${candidate.name} to group: ${group.name}`,
           timestamp: new Date(),
@@ -450,7 +449,7 @@ const rejectCandidate = async (c: Context) => {
   try {
     const groupId = c.req.param("id");
     const { candidateId } = await c.req.json();
-    const { userId, _id } = c.get("auth");
+    const { _id } = c.get("auth");
 
     if (
       !mongoose.Types.ObjectId.isValid(groupId) ||
@@ -468,12 +467,12 @@ const rejectCandidate = async (c: Context) => {
       );
     }
 
-    const clerkUser = await clerkClient.users.getUser(userId);
-    if (!clerkUser) {
+    const user = await User.findById(_id).lean();
+    if (!user) {
       return sendError(c, 403, "User not found");
     }
 
-    const instituteId = (clerkUser.publicMetadata.institute as any)?._id;
+    const instituteId = (user.publicMetadata.institute as any)?._id;
     if (!instituteId) {
       return sendError(c, 400, "Institute not associated with user");
     }
@@ -510,7 +509,7 @@ const rejectCandidate = async (c: Context) => {
         auditLogs: {
           action: "reject_candidate",
           userId: _id,
-          user: clerkUser.fullName,
+          user: user.name,
           type: "info",
           details: `Rejected candidate ${candidate.name} from group: ${group.name}`,
           timestamp: new Date(),
@@ -598,7 +597,7 @@ const getCandidatePlacementGroups = async (c: Context) => {
 
 const updatePlacementGroup = async (c: Context) => {
   try {
-    const { userId } = c.get("auth");
+    const { _id } = c.get("auth");
     const groupId = c.req.param("id");
 
     if (!mongoose.Types.ObjectId.isValid(groupId)) {
@@ -629,12 +628,12 @@ const updatePlacementGroup = async (c: Context) => {
       );
     }
 
-    const clerkUser = await clerkClient.users.getUser(userId);
-    if (!clerkUser) {
+    const user = await User.findById(_id).lean();
+    if (!user) {
       return sendError(c, 403, "User not found");
     }
 
-    const instituteId = (clerkUser.publicMetadata.institute as any)?._id;
+    const instituteId = (user.publicMetadata.institute as any)?._id;
     if (!instituteId) {
       return sendError(c, 400, "Institute not associated with user");
     }
@@ -677,8 +676,8 @@ const updatePlacementGroup = async (c: Context) => {
           $push: {
             auditLogs: {
               action: "update_placement_group",
-              userId,
-              user: clerkUser.fullName,
+              userId: user._id,
+              user: user.name,
               type: "info",
               details: `Updated placement group: ${existingGroup.name}`,
               timestamp: new Date(),
@@ -713,7 +712,7 @@ const updatePlacementGroup = async (c: Context) => {
 
 const deletePlacementGroup = async (c: Context) => {
   try {
-    const { userId } = c.get("auth");
+    const { _id } = c.get("auth");
     const groupId = c.req.param("id");
 
     if (!mongoose.Types.ObjectId.isValid(groupId)) {
@@ -729,12 +728,12 @@ const deletePlacementGroup = async (c: Context) => {
       );
     }
 
-    const clerkUser = await clerkClient.users.getUser(userId);
-    if (!clerkUser) {
+    const user = await User.findById(_id).lean();
+    if (!user) {
       return sendError(c, 403, "User not found");
     }
 
-    const instituteId = (clerkUser.publicMetadata.institute as any)?._id;
+    const instituteId = (user.publicMetadata.institute as any)?._id;
     if (!instituteId) {
       return sendError(c, 400, "Institute not associated with user");
     }
@@ -787,8 +786,8 @@ const deletePlacementGroup = async (c: Context) => {
           $push: {
             auditLogs: {
               action: "delete_placement_group",
-              userId,
-              user: clerkUser.fullName,
+              userId: _id,
+              user: user.name,
               type: "warning",
               details: `Deleted placement group: ${existingGroup.name}`,
               timestamp: new Date(),

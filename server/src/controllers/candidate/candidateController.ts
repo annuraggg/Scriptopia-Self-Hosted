@@ -4,22 +4,22 @@ import Organization from "@/models/Organization";
 import Posting from "@/models/Posting";
 import logger from "@/utils/logger";
 import { sendError, sendSuccess } from "@/utils/sendResponse";
-import { GetObjectCommand } from "@aws-sdk/client-s3";
+// import { GetObjectCommand } from "@aws-sdk/client-s3";
 import { Upload } from "@aws-sdk/lib-storage";
 import { AuditLog } from "@shared-types/Organization";
 import { Context } from "hono";
 import { PDFExtract } from "pdf.js-extract";
-import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+// import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import AppliedPosting from "@/models/AppliedPosting";
 import AppliedDrive from "@/models/AppliedDrive";
 import DriveModel from "@/models/Drive";
 import Institute from "@/models/Institute";
 import Drive from "@/models/Drive";
-import clerkClient from "@/config/clerk";
 import PlacementGroup from "@/models/PlacementGroup";
 import mongoose from "mongoose";
 import getCampusUsersWithPermission from "@/utils/getUserWithPermission";
 import { sendNotificationToCampus } from "@/utils/sendNotification";
+import User from "@/models/User";
 
 // Maximum resume file size (5MB)
 const MAX_RESUME_SIZE = 5 * 1024 * 1024;
@@ -169,110 +169,128 @@ const getCandidate = async (c: Context) => {
 /**
  * Gets a candidate profile by ID (restricted by authorization)
  */
-const getCandidateById = async (c: Context) => {
-  try {
-    const auth = c.get("auth");
-    const candidateId = c.req.param("id");
+// const getCandidateById = async (c: Context) => {
+//   try {
+//     const auth = c.get("auth");
+//     const candidateId = c.req.param("id");
 
-    if (!auth || !auth._id) {
-      return sendError(c, 401, "Authentication required");
-    }
+//     if (!auth || !auth._id) {
+//       return sendError(c, 401, "Authentication required");
+//     }
 
-    // Validate input
-    if (!mongoose.Types.ObjectId.isValid(candidateId)) {
-      return sendError(c, 400, "Invalid candidate ID format");
-    }
+//     const dbUser = await User.findById(auth?._id);
+//     if (!dbUser) {
+//       return sendError(c, 404, "User not found");
+//     }
 
-    // First check if this is the user's own profile or if they have admin rights
-    const requestingCandidate = await Candidate.findOne({ userId: auth._id });
-    const isOwnProfile =
-      requestingCandidate && requestingCandidate._id.toString() === candidateId;
-    const isAdmin = auth.role === "admin";
+//     const institute = await Institute.findById(dbUser.publicMetadata.institute._id);
+//     if (!institute) {
+//       return sendError(c, 404, "Institute not found");
+//     }
 
-    // Check if user has organization permission (recruiters can view applied candidates)
-    const hasOrgPermission =
-      auth.organizationId &&
-      (await AppliedPosting.exists({
-        user: candidateId,
-        posting: {
-          $in: await Posting.find({
-            organizationId: auth.organizationId,
-          }).distinct("_id"),
-        },
-      }));
+//     const user = institute.members.find(
+//       (member) => member.user?._id.toString() === dbUser._id.toString()
+//     );
 
-    // Check if user has institute permission
-    const hasInstitutePermission =
-      auth.instituteId &&
-      (await AppliedDrive.exists({
-        user: candidateId,
-        drive: {
-          $in: await Drive.find({ institute: auth.instituteId }).distinct(
-            "_id"
-          ),
-        },
-      }));
+//     if (!user) {
+//       return sendError(c, 403, "You don't have permission to view this profile");
+//     }
 
-    if (
-      !isOwnProfile &&
-      !isAdmin &&
-      !hasOrgPermission &&
-      !hasInstitutePermission
-    ) {
-      return sendError(
-        c,
-        403,
-        "You don't have permission to view this candidate profile"
-      );
-    }
+//     // Validate input
+//     if (!mongoose.Types.ObjectId.isValid(candidateId)) {
+//       return sendError(c, 400, "Invalid candidate ID format");
+//     }
 
-    const candidate = await Candidate.findOne({ _id: candidateId })
-      .populate({
-        path: "appliedPostings",
-        populate: {
-          path: "posting",
-          model: "Posting",
-          populate: {
-            path: "organizationId",
-            model: "Organization",
-            select: "name logo",
-          },
-          select: "title description applicationRange status",
-        },
-      })
-      .populate("userId", "email");
+//     // First check if this is the user's own profile or if they have admin rights
+//     const requestingCandidate = await Candidate.findOne({ userId: auth._id });
+//     const isOwnProfile =
+//       requestingCandidate && requestingCandidate._id.toString() === candidateId;
+//     const isAdmin = user.role === "admin";
 
-    if (!candidate) {
-      return sendError(c, 404, "Candidate not found");
-    }
+//     // Check if user has organization permission (recruiters can view applied candidates)
+//     const hasOrgPermission =
+//       auth.organizationId &&
+//       (await AppliedPosting.exists({
+//         user: candidateId,
+//         posting: {
+//           $in: await Posting.find({
+//             organizationId: auth.organizationId,
+//           }).distinct("_id"),
+//         },
+//       }));
 
-    // Determine how much data to expose based on requesting user's role
-    const sanitizedCandidate = {
-      ...candidate.toObject(),
-      // Only include sensitive info for admins or self
-      resumeExtract:
-        isAdmin || isOwnProfile ? candidate.resumeExtract : undefined,
-    };
+//     // Check if user has institute permission
+//     const hasInstitutePermission =
+//       auth.instituteId &&
+//       (await AppliedDrive.exists({
+//         user: candidateId,
+//         drive: {
+//           $in: await Drive.find({ institute: auth.instituteId }).distinct(
+//             "_id"
+//           ),
+//         },
+//       }));
 
-    return sendSuccess(
-      c,
-      200,
-      "Candidate profile retrieved",
-      sanitizedCandidate
-    );
-  } catch (error) {
-    logger.error(
-      `Error in getCandidateById: ${
-        error instanceof Error ? error.message : String(error)
-      }`
-    );
-    return sendError(
-      c,
-      500,
-      "An error occurred while retrieving candidate profile"
-    );
-  }
-};
+//     if (
+//       !isOwnProfile &&
+//       !isAdmin &&
+//       !hasOrgPermission &&
+//       !hasInstitutePermission
+//     ) {
+//       return sendError(
+//         c,
+//         403,
+//         "You don't have permission to view this candidate profile"
+//       );
+//     }
+
+//     const candidate = await Candidate.findOne({ _id: candidateId })
+//       .populate({
+//         path: "appliedPostings",
+//         populate: {
+//           path: "posting",
+//           model: "Posting",
+//           populate: {
+//             path: "organizationId",
+//             model: "Organization",
+//             select: "name logo",
+//           },
+//           select: "title description applicationRange status",
+//         },
+//       })
+//       .populate("userId", "email");
+
+//     if (!candidate) {
+//       return sendError(c, 404, "Candidate not found");
+//     }
+
+//     // Determine how much data to expose based on requesting user's role
+//     const sanitizedCandidate = {
+//       ...candidate.toObject(),
+//       // Only include sensitive info for admins or self
+//       resumeExtract:
+//         isAdmin || isOwnProfile ? candidate.resumeExtract : undefined,
+//     };
+
+//     return sendSuccess(
+//       c,
+//       200,
+//       "Candidate profile retrieved",
+//       sanitizedCandidate
+//     );
+//   } catch (error) {
+//     logger.error(
+//       `Error in getCandidateById: ${
+//         error instanceof Error ? error.message : String(error)
+//       }`
+//     );
+//     return sendError(
+//       c,
+//       500,
+//       "An error occurred while retrieving candidate profile"
+//     );
+//   }
+// };
 
 /**
  * Creates a new candidate profile
@@ -292,20 +310,20 @@ const createCandidate = async (c: Context) => {
       return sendError(c, 409, "Candidate profile already exists");
     }
 
-    // Fetch user data from Clerk
-    let clerkUser;
+    // Fetch user data from DB
+    let dbUser;
     try {
-      clerkUser = await clerkClient.users.getUser(auth.userId);
-    } catch (clerkError) {
+      dbUser = await User.findById(auth._id);
+    } catch (e) {
       logger.error(
-        `Clerk API error: ${
-          clerkError instanceof Error ? clerkError.message : String(clerkError)
+        `Authentication error: ${
+          e instanceof Error ? e.message : String(e)
         }`
       );
       return sendError(c, 500, "Unable to verify user information");
     }
 
-    if (!clerkUser) {
+    if (!dbUser) {
       return sendError(c, 404, "User not found in authentication provider");
     }
 
@@ -323,7 +341,7 @@ const createCandidate = async (c: Context) => {
     // Create new candidate with sanitized data
     const newCandidate = new Candidate({
       ...sanitizedData,
-      name: clerkUser.fullName,
+      name: dbUser.name,
       userId: auth._id,
     });
 
@@ -515,91 +533,91 @@ const updateResume = async (c: Context) => {
 /**
  * Gets a temporary signed URL for the candidate's resume
  */
-const getResume = async (c: Context) => {
-  try {
-    const auth = c.get("auth");
+// const getResume = async (c: Context) => {
+//   try {
+//     const auth = c.get("auth");
 
-    if (!auth || !auth._id) {
-      return sendError(c, 401, "Authentication required");
-    }
+//     if (!auth || !auth._id) {
+//       return sendError(c, 401, "Authentication required");
+//     }
 
-    // First determine if the user has permission to access this resume
-    // If candidateId is provided, check permissions to view that candidate's resume
-    const candidateId = c.req.query("candidateId");
+//     // First determine if the user has permission to access this resume
+//     // If candidateId is provided, check permissions to view that candidate's resume
+//     const candidateId = c.req.query("candidateId");
 
-    let targetCandidateId;
+//     let targetCandidateId;
 
-    if (candidateId) {
-      // Validate input
-      if (!mongoose.Types.ObjectId.isValid(candidateId)) {
-        return sendError(c, 400, "Invalid candidate ID format");
-      }
+//     if (candidateId) {
+//       // Validate input
+//       if (!mongoose.Types.ObjectId.isValid(candidateId)) {
+//         return sendError(c, 400, "Invalid candidate ID format");
+//       }
 
-      // Check permissions
-      const requestingCandidate = await Candidate.findOne({ userId: auth._id });
-      const isOwnResume =
-        requestingCandidate &&
-        requestingCandidate._id.toString() === candidateId;
-      const isAdmin = auth.role === "admin";
+//       // Check permissions
+//       const requestingCandidate = await Candidate.findOne({ userId: auth._id });
+//       const isOwnResume =
+//         requestingCandidate &&
+//         requestingCandidate._id.toString() === candidateId;
+//       const isAdmin = auth.role === "admin";
 
-      // Check if user has organization permission (recruiters can view applied candidates)
-      const hasOrgPermission =
-        auth.organizationId &&
-        (await AppliedPosting.exists({
-          user: candidateId,
-          posting: {
-            $in: await Posting.find({
-              organizationId: auth.organizationId,
-            }).distinct("_id"),
-          },
-        }));
+//       // Check if user has organization permission (recruiters can view applied candidates)
+//       const hasOrgPermission =
+//         auth.organizationId &&
+//         (await AppliedPosting.exists({
+//           user: candidateId,
+//           posting: {
+//             $in: await Posting.find({
+//               organizationId: auth.organizationId,
+//             }).distinct("_id"),
+//           },
+//         }));
 
-      if (!isOwnResume && !isAdmin && !hasOrgPermission) {
-        return sendError(
-          c,
-          403,
-          "You don't have permission to access this resume"
-        );
-      }
+//       if (!isOwnResume && !isAdmin && !hasOrgPermission) {
+//         return sendError(
+//           c,
+//           403,
+//           "You don't have permission to access this resume"
+//         );
+//       }
 
-      targetCandidateId = candidateId;
-    } else {
-      // Get the requesting user's own candidate ID
-      const candidate = await Candidate.findOne({ userId: auth._id });
-      if (!candidate) {
-        return sendError(c, 404, "Candidate profile not found");
-      }
-      targetCandidateId = candidate._id.toString();
-    }
+//       targetCandidateId = candidateId;
+//     } else {
+//       // Get the requesting user's own candidate ID
+//       const candidate = await Candidate.findOne({ userId: auth._id });
+//       if (!candidate) {
+//         return sendError(c, 404, "Candidate profile not found");
+//       }
+//       targetCandidateId = candidate._id.toString();
+//     }
 
-    // Retrieve the candidate to get the resume URL
-    const candidate = await Candidate.findById(targetCandidateId);
-    if (!candidate || !candidate.resumeUrl) {
-      return sendError(c, 404, "Resume not found");
-    }
+//     // Retrieve the candidate to get the resume URL
+//     const candidate = await Candidate.findById(targetCandidateId);
+//     if (!candidate || !candidate.resumeUrl) {
+//       return sendError(c, 404, "Resume not found");
+//     }
 
-    // Extract key from URL
-    const urlParts = candidate.resumeUrl.split("/");
-    const fileKey = urlParts[urlParts.length - 1];
+//     // Extract key from URL
+//     const urlParts = candidate.resumeUrl.split("/");
+//     const fileKey = urlParts[urlParts.length - 1];
 
-    // Generate signed URL with short expiration
-    const command = new GetObjectCommand({
-      Bucket: process.env.R2_S3_RESUME_BUCKET!,
-      Key: fileKey,
-    });
+//     // Generate signed URL with short expiration
+//     const command = new GetObjectCommand({
+//       Bucket: process.env.R2_S3_RESUME_BUCKET!,
+//       Key: fileKey,
+//     });
 
-    const url = await getSignedUrl(r2Client, command, { expiresIn: 600 });
+//     const url = await getSignedUrl(r2Client, command, { expiresIn: 600 });
 
-    return sendSuccess(c, 200, "Resume URL generated", { url });
-  } catch (error) {
-    logger.error(
-      `Error in getResume: ${
-        error instanceof Error ? error.message : String(error)
-      }`
-    );
-    return sendError(c, 500, "An error occurred while retrieving resume");
-  }
-};
+//     return sendSuccess(c, 200, "Resume URL generated", { url });
+//   } catch (error) {
+//     logger.error(
+//       `Error in getResume: ${
+//         error instanceof Error ? error.message : String(error)
+//       }`
+//     );
+//     return sendError(c, 500, "An error occurred while retrieving resume");
+//   }
+// };
 
 /**
  * Apply for a job posting
@@ -1051,9 +1069,9 @@ export default {
   updateResume,
   updateCandidate,
   apply,
-  getResume,
+  // getResume,
   getAppliedPostings,
-  getCandidateById,
+  // getCandidateById,
   applyToDrive,
   getAppliedDrives,
 };
