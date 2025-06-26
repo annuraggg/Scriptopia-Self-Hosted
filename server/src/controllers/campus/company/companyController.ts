@@ -18,7 +18,7 @@ const createAuditLog = async (
 ): Promise<void> => {
   try {
     const authData = c.get("auth");
-    if (!authData || !authData.userId) {
+    if (!authData || !authData._id) {
       logger.error("Missing auth data for audit log");
       return;
     }
@@ -55,7 +55,7 @@ const getCompanies = async (c: Context) => {
     const perms = await checkPermission.all(c, ["view_drive"]);
     if (!perms.allowed) {
       logger.warn(
-        `Unauthorized access attempt to view companies by user ${authData.userId}`
+        `Unauthorized access attempt to view companies by user ${authData._id}`
       );
       return sendError(c, 403, "You don't have permission to view companies");
     }
@@ -135,7 +135,7 @@ const getCompany = async (c: Context) => {
     const perms = await checkPermission.all(c, ["view_drive"]);
     if (!perms.allowed) {
       logger.warn(
-        `Unauthorized access attempt to view company by user ${authData.userId}`
+        `Unauthorized access attempt to view company by user ${authData._id}`
       );
       return sendError(c, 403, "You don't have permission to view companies");
     }
@@ -205,7 +205,7 @@ const getCompany = async (c: Context) => {
 
     const candidates = await Candidate.find({
       _id: { $in: candidateIds },
-    }).select("userId name email instituteUid institute instituteDepartment");
+    }).select("_id name email instituteUid institute instituteDepartment");
 
     const finalCandidates = candidates.map((candidate) => ({
       _id: candidate._id?.toString(),
@@ -240,7 +240,7 @@ const createCompany = async (c: Context) => {
     const perms = await checkPermission.all(c, ["manage_drive"]);
     if (!perms.allowed) {
       logger.warn(
-        `Unauthorized access attempt to create company by user ${authData.userId}`
+        `Unauthorized access attempt to create company by user ${authData._id}`
       );
       return sendError(c, 403, "You don't have permission to create companies");
     }
@@ -474,7 +474,7 @@ const updateCompany = async (c: Context) => {
     const perms = await checkPermission.all(c, ["manage_drive"]);
     if (!perms.allowed) {
       logger.warn(
-        `Unauthorized access attempt to update company by user ${authData.userId}`
+        `Unauthorized access attempt to update company by user ${authData._id}`
       );
       return sendError(c, 403, "You don't have permission to update companies");
     }
@@ -774,7 +774,7 @@ const archiveCompany = async (c: Context) => {
     const perms = await checkPermission.all(c, ["manage_drive"]);
     if (!perms.allowed) {
       logger.warn(
-        `Unauthorized access attempt to archive company by user ${authData.userId}`
+        `Unauthorized access attempt to archive company by user ${authData._id}`
       );
       return sendError(
         c,
@@ -872,7 +872,7 @@ const deleteCompany = async (c: Context) => {
     const perms = await checkPermission.all(c, ["manage_drive"]);
     if (!perms.allowed) {
       logger.warn(
-        `Unauthorized access attempt to delete company by user ${authData.userId}`
+        `Unauthorized access attempt to delete company by user ${authData._id}`
       );
       return sendError(c, 403, "You don't have permission to delete companies");
     }

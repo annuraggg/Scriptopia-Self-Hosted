@@ -4,7 +4,6 @@ import Organization from "../../../models/Organization";
 import User from "../../../models/User";
 import jwt from "jsonwebtoken";
 import loops from "../../../config/loops";
-import clerkClient from "../../../config/clerk";
 import logger from "../../../utils/logger";
 import r2Client from "../../../config/s3";
 import { Upload } from "@aws-sdk/lib-storage";
@@ -18,18 +17,13 @@ import Posting from "@/models/Posting";
 import { Candidate } from "@shared-types/Candidate";
 import { UserJSON } from "@clerk/backend";
 import { MemberWithPermission } from "@shared-types/MemberWithPermission";
-import { UserMeta } from "@shared-types/UserMeta";
 import { Types } from "mongoose";
 
 const createOrganization = async (c: Context) => {
   try {
     const { name, email, website, members } = await c.req.json();
-    const clerkUserId = c.get("auth").userId;
-
-    const clerkUser = await clerkClient.users.getUser(clerkUserId);
-    const fName = clerkUser.firstName;
-    const lName = clerkUser.lastName;
-    const uid = clerkUser.publicMetadata._id;
+    const auth = c.get("auth");
+    const username = auth.user.name || "Unknown User";
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const websiteRegex = /(http|https):\/\/[^ "]*/;
@@ -52,7 +46,7 @@ const createOrganization = async (c: Context) => {
     }
 
     const userInOrg = await Organization.findOne({
-      members: { $elemMatch: { user: uid } },
+      members: { $elemMatch: { user: auth._id } },
     });
 
     if (userInOrg) {
@@ -85,27 +79,21 @@ const createOrganization = async (c: Context) => {
       membersArr.push(mem);
     }
 
-    const creator = await clerkClient.users.getUser(clerkUserId);
-
-    if (!creator) {
-      return sendError(c, 404, "User not found");
-    }
-
     const adminRole = defaultOrganizationRoles.find(
       (role) => role.slug === "administrator"
     );
 
     membersArr.push({
-      user: uid,
-      email: creator.emailAddresses[0].emailAddress,
+      user: auth._id,
+      email: auth.user.email,
       role: adminRole?.slug,
       addedOn: new Date(),
       status: "active",
     });
 
     const auditLog: AuditLog = {
-      user: fName + " " + lName,
-      userId: uid as string,
+      user: username,
+      userId: auth._id,
       action: "Organization Created",
       type: "info",
     };
@@ -128,16 +116,21 @@ const createOrganization = async (c: Context) => {
 
     const role = org.roles.find((r: any) => r.slug === "administrator");
 
-    clerkClient.users.updateUser(clerkUserId as string, {
-      publicMetadata: {
-        ...clerkUser.publicMetadata,
-        organization: {
-          _id: org._id,
-          name: org.name,
-          role: role,
-        },
+    const user = await User.findOne({ _id: auth.user.id });
+    if (!user) {
+      return sendError(c, 404, "User not found");
+    }
+
+    user.publicMetadata = {
+      ...user.publicMetadata,
+      organization: {
+        _id: org._id,
+        name: org.name,
+        role: role,
       },
-    });
+    };
+
+    await user.save();
 
     for (const member of members) {
       const role = defaultOrganizationRoles.find(
@@ -148,8 +141,8 @@ const createOrganization = async (c: Context) => {
         email: member.email,
         role: role?.slug,
         organization: org._id,
-        inviter: fName || "",
-        inviterId: uid,
+        inviter: username,
+        inviterId: auth._id,
         organizationname: name,
       };
 
@@ -159,7 +152,7 @@ const createOrganization = async (c: Context) => {
         transactionalId: process.env.LOOPS_INVITE_EMAIL!,
         email: member.email,
         dataVariables: {
-          inviter: fName || "",
+          inviter: username,
           joinlink:
             process.env.ENTERPRISE_FRONTEND_URL! + "/join?token=" + token,
           organizationname: name,
@@ -179,9 +172,8 @@ const createOrganization = async (c: Context) => {
 const verifyInvite = async (c: Context) => {
   try {
     const { token } = await c.req.json();
-    const cid = c.get("auth").userId;
-    const clerkUser = await clerkClient.users.getUser(cid);
-    const email = clerkUser.emailAddresses[0].emailAddress;
+    const auth = c.get("auth");
+    const email = auth.user.email;
 
     if (!token) {
       return sendError(c, 400, "Invalid token");
@@ -216,10 +208,8 @@ const verifyInvite = async (c: Context) => {
 const joinOrganization = async (c: Context) => {
   try {
     const { status, token } = await c.req.json();
-    const userId = c.get("auth")._id;
-    const cid = c.get("auth").userId;
-    const clerkUser = await clerkClient.users.getUser(cid);
-    const email = clerkUser.emailAddresses[0].emailAddress;
+    const auth = c.get("auth");
+    const email = auth.user.email;
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as {
       organization: string;
@@ -250,31 +240,31 @@ const joinOrganization = async (c: Context) => {
     const role = org.roles.find((r: any) => r.slug === decoded.role);
 
     if (status === "accept") {
-      clerkClient.users.updateUser(cid, {
-        publicMetadata: {
-          ...clerkUser.publicMetadata,
-          organization: {
-            _id: decoded.organization,
-            name: org.name,
-            role: role,
-          },
+      const userId = auth._id;
+      const user = await User.findById(userId);
+      if (!user) {
+        return sendError(c, 404, "User not found");
+      }
+
+      user.publicMetadata = {
+        ...user.publicMetadata,
+        organization: {
+          _id: decoded.organization,
+          name: org.name,
+          role: role,
         },
-      });
+      };
+      await user.save();
 
       const inviterUser = await User.findById(decoded.inviterId);
       if (!inviterUser) {
         return sendError(c, 404, "Inviter not found");
       }
 
-      const inviterClerk = await clerkClient.users.getUser(
-        inviterUser?.clerkId
-      );
       const auditLog: AuditLog = {
-        user: clerkUser.firstName + " " + clerkUser.lastName,
+        user: user.name,
         userId: userId,
-        action: `User Joined Organization. Invited By: ${
-          inviterClerk.firstName + " " + inviterClerk.lastName
-        }`,
+        action: `User Joined Organization. Invited By: ${inviterUser.name}`,
         type: "info",
       };
 
@@ -368,10 +358,13 @@ const updateOrganization = async (c: Context) => {
     }
 
     // Get current user for audit and invitation purposes
-    const currentUser = await clerkClient.users.getUser(c.get("auth").userId);
-    const inviterName = `${currentUser.firstName || ""} ${
-      currentUser.lastName || ""
-    }`.trim();
+    const currentUser = await User.findById(c.get("auth")._id);
+    if (!currentUser) {
+      logger.error("Current user not found");
+      return sendError(c, 404, "Current user not found");
+    }
+
+    const inviterName = currentUser.name || "Unknown User";
 
     // Handle member changes
     const oldMembers = org.members || [];
@@ -396,26 +389,20 @@ const updateOrganization = async (c: Context) => {
 
           try {
             const user = await User.findById(member.user);
-            if (!user?.clerkId) return;
+            if (!user?._id) return;
 
-            const clerkUserToUpdate = await clerkClient.users.getUser(
-              user.clerkId
-            );
-            const currentMetadata =
-              clerkUserToUpdate.publicMetadata as unknown as UserMeta;
+            const userToUpdate = await User.findById(member.user);
+            if (!userToUpdate) return;
 
-            // Remove organization from metadata if it matches current org
-            if (currentMetadata.organization?._id === orgId) {
-              await clerkClient.users.updateUser(user.clerkId, {
-                publicMetadata: {
-                  ...currentMetadata,
-                  organization: null,
-                },
-              });
-            }
+            userToUpdate.publicMetadata = {
+              ...(userToUpdate.publicMetadata || {}),
+              organization: null, // Remove organization from metadata
+            };
+
+            await userToUpdate.save();
           } catch (error) {
             logger.error(
-              `Failed to update Clerk metadata for removed user: ${member.user}`
+              `Failed to update metadata for removed user: ${member.user}`
             );
           }
         })
@@ -435,33 +422,25 @@ const updateOrganization = async (c: Context) => {
 
         try {
           const user = await User.findById(oldMember.user);
-          if (!user?.clerkId) return;
+          if (!user) return;
 
-          const clerkUserToUpdate = await clerkClient.users.getUser(
-            user.clerkId
-          );
-          const currentMetadata =
-            clerkUserToUpdate.publicMetadata as unknown as UserMeta;
-
-          if (currentMetadata.organization?._id === orgId) {
+          if (user.publicMetadata.organization?._id === orgId) {
             const role = org.roles.find(
               (r: any) => r.slug === newMember.role
             ) as Role | undefined;
             if (!role) return;
 
-            await clerkClient.users.updateUser(user.clerkId, {
-              publicMetadata: {
-                ...currentMetadata,
-                organization: {
-                  ...currentMetadata.organization,
-                  role: role,
-                },
+            user.publicMetadata = {
+              ...user.publicMetadata,
+              organization: {
+                ...user.publicMetadata.organization,
+                role: role,
               },
-            });
+            };
           }
         } catch (error) {
           logger.error(
-            `Failed to update role in Clerk metadata for user: ${oldMember.user}`
+            `Failed to update role in metadata for user: ${oldMember.user}`
           );
         }
       })
@@ -578,10 +557,10 @@ const updateGeneralSettings = async (c: Context) => {
       return sendError(c, 400, "Invalid website address");
     }
 
-    const user = await clerkClient.users.getUser(c.get("auth").userId);
+    const user = await User.findById(c.get("auth")._id);
 
     const auditLog: AuditLog = {
-      user: user.firstName + " " + user.lastName,
+      user: user?.name || "Unknown User",
       userId: c.get("auth")._id,
       action: "Organization General Settings Updated",
       type: "info",
@@ -597,13 +576,14 @@ const updateGeneralSettings = async (c: Context) => {
         if (!member.user) continue;
         const userDoc = await User.findById(member.user);
         if (!userDoc) continue;
-        const u = await clerkClient.users.getUser(userDoc?.clerkId);
-        const publicMetadata = u.publicMetadata;
-        (publicMetadata.organization as { name: string }).name = name;
 
-        await clerkClient.users.updateUser(userDoc.clerkId, {
-          publicMetadata,
-        });
+        userDoc.publicMetadata = {
+          ...(userDoc.publicMetadata || {}),
+          organization: {
+            ...(userDoc.publicMetadata.organization || {}),
+            name: name,
+          },
+        };
       }
     }
 
@@ -663,9 +643,9 @@ const updateLogo = async (c: Context) => {
 
     await upload.done();
 
-    const user = await clerkClient.users.getUser(c.get("auth").userId);
+    const user = await User.findById(c.get("auth")._id);
     const auditLog: AuditLog = {
-      user: user.firstName + " " + user.lastName,
+      user: user?.name || "Unknown User",
       userId: c.get("auth")._id,
       action: "Organization Logo Updated",
       type: "info",
@@ -690,6 +670,7 @@ const updateLogo = async (c: Context) => {
 const updateMembers = async (c: Context) => {
   try {
     // Check permissions for managing organization
+    const auth = c.get("auth");
     const perms = await checkOrganizationPermission.all(c, [
       "manage_organization",
     ]);
@@ -707,10 +688,12 @@ const updateMembers = async (c: Context) => {
     }
 
     // Get current user details for audit logging
-    const clerkUser = await clerkClient.users.getUser(c.get("auth").userId);
-    const fullName = `${clerkUser.firstName || ""} ${
-      clerkUser.lastName || ""
-    }`.trim();
+    const user = await User.findById(c.get("auth")._id);
+    if (!user) {
+      return sendError(c, 404, "Current user not found");
+    }
+
+    const fullName = user.name;
 
     // Find members that were removed (present in old members but not in new members)
     const oldMemberEmails = organization.members.map((member) => member.email);
@@ -734,27 +717,18 @@ const updateMembers = async (c: Context) => {
 
           try {
             const user = await User.findById(member.user);
-            if (!user?.clerkId) return;
+            if (!user) return;
 
-            const clerkUserToUpdate = await clerkClient.users.getUser(
-              user.clerkId
-            );
-            const currentMetadata: UserMeta =
-              clerkUserToUpdate.publicMetadata as unknown as UserMeta;
+            if (user.publicMetadata.organization?._id === orgId) {
+              user.publicMetadata = {
+                ...user.publicMetadata,
+                organization: null, // Remove organization from metadata
+              };
 
-            // Remove organization from metadata if it matches current org
-            if (currentMetadata.organization?._id === orgId) {
-              await clerkClient.users.updateUser(user.clerkId, {
-                publicMetadata: {
-                  ...currentMetadata,
-                  organization: null,
-                },
-              });
+              await user.save();
             }
           } catch (error) {
-            logger.error(
-              `Failed to update Clerk metadata for user: ${member.user}`
-            );
+            logger.error(`Failed to update metadata for user: ${member.user}`);
           }
         })
       );
@@ -779,33 +753,27 @@ const updateMembers = async (c: Context) => {
         metadataUpdates.push(async () => {
           try {
             const user = await User.findById(oldMember.user);
-            if (!user?.clerkId) return;
-
-            const clerkUserToUpdate = await clerkClient.users.getUser(
-              user.clerkId
-            );
-            const currentMetadata: UserMeta =
-              clerkUserToUpdate.publicMetadata as unknown as UserMeta;
+            if (!user) return;
 
             // Update organization role in metadata
-            if (currentMetadata.organization?._id === orgId) {
+            if (user.publicMetadata.organization?._id === orgId) {
               const role = organization.roles.find(
                 (r: any) => r.slug === newMember.role
               );
 
-              await clerkClient.users.updateUser(user.clerkId, {
-                publicMetadata: {
-                  ...currentMetadata,
-                  organization: {
-                    ...currentMetadata.organization,
-                    role: role,
-                  },
+              if (!role) return;
+
+              user.publicMetadata = {
+                ...user.publicMetadata,
+                organization: {
+                  ...user.publicMetadata.organization,
+                  role: role,
                 },
-              });
+              };
             }
           } catch (error) {
             logger.error(
-              `Failed to update role in Clerk metadata for user: ${oldMember.user}`
+              `Failed to update role in metadata for user: ${oldMember.user}`
             );
           }
         });
@@ -839,7 +807,7 @@ const updateMembers = async (c: Context) => {
             role: member.role.name,
             roleId: member.role._id,
             organization: orgId,
-            inviter: clerkUser.firstName || "",
+            inviter: auth.user.name || "",
             inviterId: c.get("auth")._id,
             organizationname: organization.name,
           };
@@ -850,7 +818,7 @@ const updateMembers = async (c: Context) => {
             transactionalId: process.env.LOOPS_INVITE_EMAIL!,
             email,
             dataVariables: {
-              inviter: clerkUser.firstName || "",
+              inviter: auth.user.name || "Unknown User",
               joinlink: `${process.env
                 .ENTERPRISE_FRONTEND_URL!}/join?token=${token}`,
               organizationname: organization.name,
@@ -933,12 +901,11 @@ const updateRoles = async (c: Context) => {
       return sendError(c, 404, "Organization not found");
     }
 
-    const clerkUser = await clerkClient.users.getUser(c.get("auth").userId);
-    const fName = clerkUser.firstName;
-    const lName = clerkUser.lastName;
+    const user = await User.findById(c.get("auth")._id);
+    const user_name = user?.name || "Unknown User";
 
     const auditLog: AuditLog = {
-      user: fName + " " + lName,
+      user: user_name,
       userId: c.get("auth")._id,
       action: "Organization Roles Updated",
       type: "info",
@@ -1048,9 +1015,8 @@ const updateDepartments = async (c: Context) => {
 
     const orgId = perms.data?.organization?._id;
 
-    const user = await clerkClient.users.getUser(c.get("auth").userId);
-    const fName = user.firstName;
-    const lName = user.lastName;
+    const user = await User.findById(c.get("auth")._id);
+    const name = user?.name || "Unknown User";
 
     const organization = await Organization.findById(orgId);
     if (!organization) {
@@ -1059,7 +1025,7 @@ const updateDepartments = async (c: Context) => {
 
     organization.departments = departments;
     organization.auditLogs.push({
-      user: fName + " " + lName,
+      user: name,
       userId: c.get("auth")._id,
       action: "Departments Updated",
       type: "info",
@@ -1212,9 +1178,9 @@ const getOrganization = async (c: Context): Promise<Response> => {
         try {
           data = await r2Client.send(command);
           const buffer = await data?.Body?.transformToByteArray();
-          const base64 = Buffer.from(buffer as unknown as ArrayBuffer)?.toString(
-            "base64"
-          );
+          const base64 = Buffer.from(
+            buffer as unknown as ArrayBuffer
+          )?.toString("base64");
           selectedOrg.logo = `data:image/png;base64,${base64}`;
         } catch (e) {}
       }
