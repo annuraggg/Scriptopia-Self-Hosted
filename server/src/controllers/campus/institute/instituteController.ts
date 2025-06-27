@@ -56,8 +56,8 @@ const createInstitute = async (c: Context) => {
     console.log(sanitizedAddress);
 
     const auth = c.get("auth");
-    const user_name = auth.user.name || "";
-    const uid = auth._id;
+    const user_name = auth?.user.name || "";
+    const uid = auth?._id;
 
     const user = await User.findById(uid).lean();
 
@@ -149,7 +149,7 @@ const createInstitute = async (c: Context) => {
 
     membersArr.push({
       user: typeof uid === "string" ? uid : "",
-      email: auth.user.email,
+      email: auth?.user.email || "",
       role: adminRole?.slug,
       status: "active",
     });
@@ -281,7 +281,7 @@ const verifyInvite = async (c: Context) => {
     const { token } = await c.req.json();
     const auth = c.get("auth");
 
-    if (!auth._id) {
+    if (!auth?._id) {
       return sendError(c, 401, "Authentication required");
     }
 
@@ -289,7 +289,7 @@ const verifyInvite = async (c: Context) => {
       return sendError(c, 400, "Token is required");
     }
 
-    const user = await User.findById(auth._id).lean();
+    const user = await User.findById(auth?._id).lean();
     const email = user?.email;
 
     let decoded;
@@ -354,7 +354,7 @@ const joinInstitute = async (c: Context) => {
   try {
     const { status, token } = await c.req.json();
     const auth = c.get("auth");
-    const userId = auth._id;
+    const userId = auth?._id;
 
     if (!userId) {
       return sendError(c, 401, "Authentication required");
@@ -368,7 +368,7 @@ const joinInstitute = async (c: Context) => {
       return sendError(c, 400, "Invalid status value");
     }
 
-    const email = auth.user.email;
+    const email = auth?.user.email;
 
     let decoded;
     try {
@@ -494,7 +494,7 @@ const joinInstitute = async (c: Context) => {
       await sendNotificationToCampus({
         userIds: notifyingUsers,
         title: "New Member Joined",
-        message: ` ${auth.user.name} 
+        message: ` ${auth?.user.name} 
          has joined the institute.`,
       });
     }
@@ -617,7 +617,7 @@ const updateInstitute = async (c: Context) => {
 
     const auth = c.get("auth");
 
-    const currentUser = await User.findById(auth._id).lean();
+    const currentUser = await User.findById(auth?._id).lean();
     const inviterName = currentUser?.name || "Unknown";
 
     const oldMembers = institute.members || [];
@@ -868,14 +868,14 @@ const updateGeneralSettings = async (c: Context) => {
       return sendError(c, 400, "Institute with this email already exists");
     }
 
-    const user = await User.findById(c.get("auth")._id).lean();
+    const user = await User.findById(c.get("auth")?._id).lean();
     if (!user) {
       return sendError(c, 404, "User not found");
     }
 
     const auditLog: AuditLog = {
       user: `${user.name}`.trim(),
-      userId: c.get("auth")._id,
+      userId: c.get("auth")?._id as string,
       action: "Institute General Settings Updated",
       type: "info",
     };
@@ -1005,8 +1005,8 @@ const updateLogo = async (c: Context) => {
     const auth = c.get("auth");
 
     const auditLog: AuditLog = {
-      user: `${auth.user.name}`.trim(),
-      userId: auth._id,
+      user: `${auth?.user.name}`.trim(),
+      userId: auth?._id as string,
       action: "Institute Logo Updated",
       type: "info",
     };
@@ -1072,7 +1072,7 @@ const updateMembers = async (c: Context) => {
     }
 
     const auth = c.get("auth");
-    const fullName = auth.user.name || "Unknown User";
+    const fullName = auth?.user.name || "Unknown User";
     const oldMembers = institute.members;
     const oldMemberEmails = oldMembers.map((member) => member.email);
     const newMemberEmails = members.map((member: Member) => member.email);
@@ -1168,8 +1168,8 @@ const updateMembers = async (c: Context) => {
             email,
             role: role.slug,
             institute: instituteId,
-            inviter: auth.user.name || "",
-            inviterId: c.get("auth")._id,
+            inviter: auth?.user.name || "",
+            inviterId: c.get("auth")?._id as string,
             institutename: institute.name,
           };
 
@@ -1182,7 +1182,7 @@ const updateMembers = async (c: Context) => {
               transactionalId: process.env.LOOPS_INVITE_EMAIL!,
               email,
               dataVariables: {
-                inviter: auth.user.name || "",
+                inviter: auth?.user.name || "",
                 joinlink: `${process.env
                   .ENTERPRISE_FRONTEND_URL!}/join?token=${token}`,
                 institutename: institute.name,
@@ -1203,7 +1203,7 @@ const updateMembers = async (c: Context) => {
 
         const auditLog = {
           user: fullName,
-          userId: c.get("auth")._id,
+          userId: c.get("auth")?._id as string,
           action: "Institute Members Updated",
           type: "info",
           timestamp: new Date(),
@@ -1314,11 +1314,11 @@ const updateRoles = async (c: Context) => {
     }
 
     const auth = c.get("auth");
-    const fullName = auth.user.name || "Unknown User";
+    const fullName = auth?.user.name || "Unknown User";
 
     const auditLog: AuditLog = {
       user: fullName,
-      userId: c.get("auth")._id,
+      userId: c.get("auth")?._id as string,
       action: "Institute Roles Updated",
       type: "info",
     };
@@ -1605,7 +1605,7 @@ const requestToJoin = async (c: Context) => {
  */
 const leaveInstitute = async (c: Context) => {
   const auth = c.get("auth");
-  const userId = auth._id;
+  const userId = auth?._id;
   if (!userId) {
     return sendError(c, 401, "Authentication required");
   }
@@ -1695,7 +1695,7 @@ const leaveInstitute = async (c: Context) => {
       await sendNotificationToCampus({
         userIds: notifyingUsers,
         title: "Member Left Institute",
-        message: `${auth.user.name} has left the institute`,
+        message: `${auth?.user.name} has left the institute`,
       });
     }
 

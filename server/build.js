@@ -20,10 +20,8 @@ try {
 
       // Core dependencies
       "@axiomhq/pino",
-      "@clerk/backend",
       "@dopplerhq/node-sdk",
       "@google/generative-ai",
-      "@hono/clerk-auth",
       "@hono/node-server",
       "@lemonsqueezy/lemonsqueezy.js",
       "@stream-io/node-sdk",

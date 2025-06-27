@@ -79,7 +79,7 @@ getIoServer().then((server) => {
 });
 
 const getMeetJWT = async (c: Context) => {
-  const userId = await c.get("auth")._id;
+  const userId = await c.get("auth")?._id;
 
   console.log("Meet JWT", userId);
   if (!userId) return sendError(c, 401, "Unauthorized");
@@ -175,7 +175,8 @@ const getMeetJWT = async (c: Context) => {
 
 const getStreamJWT = async (c: Context) => {
   try {
-    const { _id } = await c.get("auth");
+    const auth = await c.get("auth");
+    const _id = auth?._id;
     const { token } = await c.req.json();
 
     console.log("Stream JWT", token, _id);
@@ -240,7 +241,8 @@ const getStreamJWT = async (c: Context) => {
 const getMeet = async (c: Context) => {
   try {
     const code = c.req.param("code");
-    const { _id } = await c.get("auth");
+    const auth = await c.get("auth");
+    const _id = auth?._id;
 
     console.log("Meet code", code, _id);
     if (!_id) return sendError(c, 401, "Unauthorized");

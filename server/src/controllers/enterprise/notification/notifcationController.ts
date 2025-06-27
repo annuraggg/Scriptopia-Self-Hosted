@@ -8,7 +8,7 @@ import User from "@/models/User";
 const getNotifications = async (c: Context) => {
   try {
     const auth = c.get("auth");
-    const currentUser = await User.findOne({ _id: auth._id }).lean();
+    const currentUser = await User.findOne({ _id: auth?._id }).lean();
 
     const organization = await Organization.findOne({
       _id: currentUser?.publicMetadata.orgId,
@@ -19,7 +19,7 @@ const getNotifications = async (c: Context) => {
     }
 
     const user = organization.members.find(
-      (member) => (member as unknown as Member).user === auth._id
+      (member) => (member as unknown as Member).user === auth?._id
     );
 
     if (!user) {
@@ -44,7 +44,7 @@ const readNotification = async (c: Context) => {
     const { id } = await c.req.json();
     const auth = c.get("auth");
 
-    const currentUser = await User.findOne({ _id: auth._id }).lean();
+    const currentUser = await User.findOne({ _id: auth?._id }).lean();
     const organization = await Organization.findOne({
       _id: currentUser?.publicMetadata.orgId,
     });
@@ -54,7 +54,7 @@ const readNotification = async (c: Context) => {
     }
 
     const user = organization.members.find(
-      (member) => (member as unknown as Member).user === auth._id
+      (member) => (member as unknown as Member).user === auth?._id
     );
 
     if (!user) {

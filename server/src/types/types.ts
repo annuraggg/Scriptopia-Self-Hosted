@@ -6,6 +6,6 @@ declare module "hono" {
       user: User;
       session: Session;
       _id: string;
-    };
+    } | null;
   }
 }

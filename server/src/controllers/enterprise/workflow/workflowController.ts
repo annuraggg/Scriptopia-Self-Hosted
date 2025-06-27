@@ -48,7 +48,7 @@ const advanceWorkflow = async (c: Context) => {
       workflow.steps[0].schedule = {
         ...workflow.steps[0].schedule,
       };
-      workflow.steps[0].startedBy = new mongoose.Types.ObjectId(c.get("auth")._id);
+      workflow.steps[0].startedBy = new mongoose.Types.ObjectId(c.get("auth")?._id);
     } else {
       workflow.steps[currentStepIndex].status = "completed";
       workflow.steps[currentStepIndex + 1].status = "in-progress";
@@ -56,7 +56,7 @@ const advanceWorkflow = async (c: Context) => {
         ...workflow.steps[currentStepIndex].schedule,
         actualCompletionTime: new Date(),
       };
-      workflow.steps[0].startedBy = new mongoose.Types.ObjectId(c.get("auth")._id);
+      workflow.steps[0].startedBy = new mongoose.Types.ObjectId(c.get("auth")?._id);
     }
 
     const currentStep =
@@ -288,8 +288,8 @@ const logWorkflowAdvance = async (c: Context, posting: any, perms: any) => {
 
   organization.auditLogs.push({
     action: `Advanced workflow for ${posting.title} to next step`,
-    user: `${c.get("auth").user.name || "Unknown User"}`,
-    userId: c.get("auth")._id,
+    user: `${c.get("auth")?.user.name || "Unknown User"}`,
+    userId: c.get("auth")?._id,
     type: "info",
   });
 

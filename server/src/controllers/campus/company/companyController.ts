@@ -25,8 +25,8 @@ const createAuditLog = async (
 
     const auth = c.get("auth");
     const auditLog: AuditLog = {
-      user: `${auth.user.name}`.trim(),
-      userId: auth._id,
+      user: `${auth?.user.name}`.trim(),
+      userId: auth?._id || new mongoose.Types.ObjectId().toString(),
       action,
       type,
     };

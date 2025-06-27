@@ -22,7 +22,7 @@ const createOrganization = async (c: Context) => {
   try {
     const { name, email, website, members } = await c.req.json();
     const auth = c.get("auth");
-    const username = auth.user.name || "Unknown User";
+    const username = auth?.user.name || "Unknown User";
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const websiteRegex = /(http|https):\/\/[^ "]*/;
@@ -45,7 +45,7 @@ const createOrganization = async (c: Context) => {
     }
 
     const userInOrg = await Organization.findOne({
-      members: { $elemMatch: { user: auth._id } },
+      members: { $elemMatch: { user: auth?._id } },
     });
 
     if (userInOrg) {
@@ -83,8 +83,8 @@ const createOrganization = async (c: Context) => {
     );
 
     membersArr.push({
-      user: auth._id,
-      email: auth.user.email,
+      user: auth?._id ,
+      email: auth?.user.email,
       role: adminRole?.slug,
       addedOn: new Date(),
       status: "active",
@@ -92,7 +92,7 @@ const createOrganization = async (c: Context) => {
 
     const auditLog: AuditLog = {
       user: username,
-      userId: auth._id,
+      userId: auth?._id || new Types.ObjectId().toString(),
       action: "Organization Created",
       type: "info",
     };
@@ -115,7 +115,7 @@ const createOrganization = async (c: Context) => {
 
     const role = org.roles.find((r: any) => r.slug === "administrator");
 
-    const user = await User.findOne({ _id: auth.user.id });
+    const user = await User.findOne({ _id: auth?.user.id });
     if (!user) {
       return sendError(c, 404, "User not found");
     }
@@ -141,7 +141,7 @@ const createOrganization = async (c: Context) => {
         role: role?.slug,
         organization: org._id,
         inviter: username,
-        inviterId: auth._id,
+        inviterId: auth?._id,
         organizationname: name,
       };
 
@@ -172,7 +172,7 @@ const verifyInvite = async (c: Context) => {
   try {
     const { token } = await c.req.json();
     const auth = c.get("auth");
-    const email = auth.user.email;
+    const email = auth?.user.email;
 
     if (!token) {
       return sendError(c, 400, "Invalid token");
@@ -208,7 +208,7 @@ const joinOrganization = async (c: Context) => {
   try {
     const { status, token } = await c.req.json();
     const auth = c.get("auth");
-    const email = auth.user.email;
+    const email = auth?.user.email;
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as {
       organization: string;
@@ -239,7 +239,7 @@ const joinOrganization = async (c: Context) => {
     const role = org.roles.find((r: any) => r.slug === decoded.role);
 
     if (status === "accept") {
-      const userId = auth._id;
+      const userId = auth?._id || new Types.ObjectId().toString();
       const user = await User.findById(userId);
       if (!user) {
         return sendError(c, 404, "User not found");
@@ -357,7 +357,7 @@ const updateOrganization = async (c: Context) => {
     }
 
     // Get current user for audit and invitation purposes
-    const currentUser = await User.findById(c.get("auth")._id);
+    const currentUser = await User.findById(c.get("auth")?._id);
     if (!currentUser) {
       logger.error("Current user not found");
       return sendError(c, 404, "Current user not found");
@@ -556,11 +556,11 @@ const updateGeneralSettings = async (c: Context) => {
       return sendError(c, 400, "Invalid website address");
     }
 
-    const user = await User.findById(c.get("auth")._id);
+    const user = await User.findById(c.get("auth")?._id);
 
     const auditLog: AuditLog = {
       user: user?.name || "Unknown User",
-      userId: c.get("auth")._id,
+      userId: c.get("auth")?._id || new Types.ObjectId().toString(),
       action: "Organization General Settings Updated",
       type: "info",
     };
@@ -642,10 +642,10 @@ const updateLogo = async (c: Context) => {
 
     await upload.done();
 
-    const user = await User.findById(c.get("auth")._id);
+    const user = await User.findById(c.get("auth")?._id);
     const auditLog: AuditLog = {
       user: user?.name || "Unknown User",
-      userId: c.get("auth")._id,
+      userId: c.get("auth")?._id || new Types.ObjectId().toString(),
       action: "Organization Logo Updated",
       type: "info",
     };
@@ -687,7 +687,7 @@ const updateMembers = async (c: Context) => {
     }
 
     // Get current user details for audit logging
-    const user = await User.findById(c.get("auth")._id);
+    const user = await User.findById(c.get("auth")?._id);
     if (!user) {
       return sendError(c, 404, "Current user not found");
     }
@@ -806,8 +806,8 @@ const updateMembers = async (c: Context) => {
             role: member.role.name,
             roleId: member.role._id,
             organization: orgId,
-            inviter: auth.user.name || "",
-            inviterId: c.get("auth")._id,
+            inviter: auth?.user.name || "",
+            inviterId: c.get("auth")?._id,
             organizationname: organization.name,
           };
 
@@ -817,7 +817,7 @@ const updateMembers = async (c: Context) => {
             transactionalId: process.env.LOOPS_INVITE_EMAIL!,
             email,
             dataVariables: {
-              inviter: auth.user.name || "Unknown User",
+              inviter: auth?.user.name || "Unknown User",
               joinlink: `${process.env
                 .ENTERPRISE_FRONTEND_URL!}/join?token=${token}`,
               organizationname: organization.name,
@@ -835,10 +835,12 @@ const updateMembers = async (c: Context) => {
       status: member.status,
     }));
 
+    const authData = await c.get("auth");
+
     // Create audit log
     const auditLog = {
       user: fullName,
-      userId: c.get("auth")._id,
+      userId: authData?._id,
       action: "Organization Members Updated",
       type: "info",
     };
@@ -900,12 +902,12 @@ const updateRoles = async (c: Context) => {
       return sendError(c, 404, "Organization not found");
     }
 
-    const user = await User.findById(c.get("auth")._id);
+    const user = await User.findById(c.get("auth")?._id);
     const user_name = user?.name || "Unknown User";
 
     const auditLog: AuditLog = {
       user: user_name,
-      userId: c.get("auth")._id,
+      userId: c.get("auth")?._id || new Types.ObjectId().toString(),
       action: "Organization Roles Updated",
       type: "info",
     };
@@ -1014,7 +1016,7 @@ const updateDepartments = async (c: Context) => {
 
     const orgId = perms.data?.organization?._id;
 
-    const user = await User.findById(c.get("auth")._id);
+    const user = await User.findById(c.get("auth")?._id);
     const name = user?.name || "Unknown User";
 
     const organization = await Organization.findById(orgId);
@@ -1025,7 +1027,7 @@ const updateDepartments = async (c: Context) => {
     organization.departments = departments;
     organization.auditLogs.push({
       user: name,
-      userId: c.get("auth")._id,
+      userId: c.get("auth")?._id,
       action: "Departments Updated",
       type: "info",
     });
@@ -1109,7 +1111,7 @@ const permissionFieldMap = {
 
 const getOrganization = async (c: Context): Promise<Response> => {
   try {
-    const userId = c.get("auth")._id;
+    const userId = c.get("auth")?._id;
 
     const org = await Organization.findOne({
       "members.user": userId,

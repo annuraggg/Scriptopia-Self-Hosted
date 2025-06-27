@@ -316,8 +316,8 @@ const createMcqAssessment = async (c: Context) => {
 
       const auth = c.get("auth");
       const auditLog: AuditLog = {
-        user: auth.user.name,
-        userId: auth._id,
+        user: auth?.user.name || "Unknown User",
+        userId: auth?._id || new mongoose.Types.ObjectId()?.toString(),
         action: `Created New Assessment for Job Posting: ${posting.title}`,
         type: "info",
       };
@@ -450,7 +450,7 @@ const createCodeAssessment = async (c: Context) => {
       await Posting.findByIdAndUpdate(postingId, {
         $push: {
           codeAssessments: {
-            assessmentId: newAssessment._id,
+            assessmentId: newAssessment._id ,
             workflowId: workflowId._id,
           },
         },
@@ -459,8 +459,8 @@ const createCodeAssessment = async (c: Context) => {
 
       const auth = c.get("auth");
       const auditLog: AuditLog = {
-        user: auth.user.name,
-        userId: auth._id,
+        user: auth?.user.name || "Unknown User",
+        userId: auth?._id || new mongoose.Types.ObjectId()?.toString(),
         action: `Created New Assessment for Job Posting: ${posting.title}`,
         type: "info",
       };

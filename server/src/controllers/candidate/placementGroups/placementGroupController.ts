@@ -5,8 +5,9 @@ import { Context } from "hono";
 
 const getPlacementGroups = async (c: Context) => {
   try {
-    const { _id } = c.get("auth");
-
+    const auth = c.get("auth");
+    const _id = auth?._id;
+    
     const page = parseInt(c.req.query("page") || "1");
     const limit = Math.min(parseInt(c.req.query("limit") || "10"), 50);
     const skip = (page - 1) * limit;

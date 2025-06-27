@@ -7,7 +7,7 @@ import mongoose from "mongoose";
 const getNotificationsForUser = async (c: Context) => {
   try {
     const platform = c.req.query("platform") as string;
-    const userId = c.get("auth")._id;
+    const userId = c.get("auth")?._id;
 
     if (!platform) {
       return sendError(c, 400, "Platform is required");
@@ -49,7 +49,7 @@ const getNotificationsForUser = async (c: Context) => {
 
 const markNotificationAsRead = async (c: Context) => {
   const { id } = await c.req.param();
-  const userId = c.get("auth")._id;
+  const userId = c.get("auth")?._id;
 
   if (!id) {
     return sendError(c, 400, "Notification ID is required");

@@ -41,7 +41,8 @@ const createPlacementGroup = async (c: Context) => {
     }
 
     const validatedData = validationResult.data;
-    const { _id } = c.get("auth");
+    const auth = c.get("auth")
+const _id = auth?._id
 
     const perms = await checkInstitutePermission.all(c, ["manage_institute"]);
     if (!perms.allowed) {
@@ -145,7 +146,8 @@ const createPlacementGroup = async (c: Context) => {
 
 const getPlacementGroups = async (c: Context) => {
   try {
-    const { _id } = c.get("auth");
+    const auth = c.get("auth");
+    const _id = auth?._id;
     const perms = await checkInstitutePermission.all(c, ["manage_institute"]);
     if (!perms.allowed) {
       return sendError(
@@ -203,7 +205,8 @@ const getPlacementGroups = async (c: Context) => {
 
 const getPlacementGroup = async (c: Context) => {
   try {
-    const { _id } = c.get("auth");
+    const auth = c.get("auth")
+const _id = auth?._id
     const groupId = c.req.param("id");
 
     if (!mongoose.Types.ObjectId.isValid(groupId)) {
@@ -259,7 +262,8 @@ const getPlacementGroup = async (c: Context) => {
 const joinPlacementGroup = async (c: Context) => {
   try {
     const id = c.req.param("id");
-    const { _id } = c.get("auth");
+    const auth = c.get("auth")
+const _id = auth?._id
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return sendError(c, 400, "Invalid placement group ID");
@@ -363,7 +367,8 @@ const acceptCandidate = async (c: Context) => {
   try {
     const groupId = c.req.param("id");
     const { candidateId } = await c.req.json();
-    const { _id } = c.get("auth");
+    const auth = c.get("auth")
+const _id = auth?._id
 
     if (
       !mongoose.Types.ObjectId.isValid(groupId) ||
@@ -449,7 +454,8 @@ const rejectCandidate = async (c: Context) => {
   try {
     const groupId = c.req.param("id");
     const { candidateId } = await c.req.json();
-    const { _id } = c.get("auth");
+    const auth = c.get("auth")
+const _id = auth?._id
 
     if (
       !mongoose.Types.ObjectId.isValid(groupId) ||
@@ -532,7 +538,8 @@ const rejectCandidate = async (c: Context) => {
 
 const getCandidatePlacementGroups = async (c: Context) => {
   try {
-    const { _id } = c.get("auth");
+    const auth = c.get("auth")
+const _id = auth?._id
 
     const page = parseInt(c.req.query("page") || "1");
     const limit = Math.min(parseInt(c.req.query("limit") || "10"), 50);
@@ -597,7 +604,8 @@ const getCandidatePlacementGroups = async (c: Context) => {
 
 const updatePlacementGroup = async (c: Context) => {
   try {
-    const { _id } = c.get("auth");
+    const auth = c.get("auth")
+const _id = auth?._id
     const groupId = c.req.param("id");
 
     if (!mongoose.Types.ObjectId.isValid(groupId)) {
@@ -712,7 +720,8 @@ const updatePlacementGroup = async (c: Context) => {
 
 const deletePlacementGroup = async (c: Context) => {
   try {
-    const { _id } = c.get("auth");
+    const auth = c.get("auth")
+const _id = auth?._id
     const groupId = c.req.param("id");
 
     if (!mongoose.Types.ObjectId.isValid(groupId)) {

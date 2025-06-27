@@ -161,11 +161,11 @@ const createPosting = async (c: Context) => {
     await newPostingFetched.save();
 
     const auth = c.get("auth");
-    const name = auth.user.name || "Unknown User";
+    const name = auth?.user.name || "Unknown User";
 
     const auditLog: AuditLog = {
       user: name,
-      userId: auth._id,
+      userId: auth?._id as string as string,
       action: `Created New Job Posting: ${posting.title}`,
       type: "info",
     };
@@ -200,10 +200,10 @@ const createWorkflow = async (c: Context) => {
     await posting.save();
 
     const auth = c.get("auth");
-    const name = auth.user.name || "Unknown User";
+    const name = auth?.user.name || "Unknown User";
     const auditLog: AuditLog = {
       user: name,
-      userId: auth._id,
+      userId: auth?._id as string,
       action: `Created New Workflow for Job Posting: ${posting.title}`,
       type: "info",
     };
@@ -267,11 +267,11 @@ const updateAts = async (c: Context) => {
     await posting.save();
 
     const auth = c.get("auth");
-    const name = auth.user.name || "Unknown User";
+    const name = auth?.user.name || "Unknown User";
 
     const auditLog: AuditLog = {
       user: name,
-      userId: auth._id,
+      userId: auth?._id as string,
       action: `Updated ATS for Job Posting: ${posting.title}`,
       type: "info",
     };
@@ -321,8 +321,8 @@ const updateAssignment = async (c: Context) => {
     const auth = c.get("auth");
 
     const auditLog: AuditLog = {
-      user: auth.user.name || "Unknown User",
-      userId: auth._id,
+      user: auth?.user.name || "Unknown User",
+      userId: auth?._id as string,
       action: `Created New Assignment for Job Posting: ${posting.title}`,
       type: "info",
     };
@@ -363,10 +363,10 @@ const updateInterview = async (c: Context) => {
     await posting.save();
 
     const auth = c.get("auth");
-    const name = auth.user.name || "Unknown User";
+    const name = auth?.user.name || "Unknown User";
     const auditLog: AuditLog = {
       user: name,
-      userId: auth._id,
+      userId: auth?._id as string,
       action: `Created New Interview for Job Posting: ${posting.title}`,
       type: "info",
     };
@@ -404,10 +404,10 @@ const publishPosting = async (c: Context) => {
     await posting.save();
 
     const auth = c.get("auth");
-    const name = auth.user.name || "Unknown User";
+    const name = auth?.user.name || "Unknown User";
     const auditLog: AuditLog = {
       user: name,
-      userId: auth._id,
+      userId: auth?._id as string,
       action: `Published Job Posting: ${posting.title}`,
       type: "info",
     };
@@ -502,7 +502,7 @@ const saveAssignmentSubmission = async (c: Context) => {
     }
 
     // Check user
-    const userId = c.get("auth")._id;
+    const userId = c.get("auth")?._id;
     if (!userId) {
       return sendError(c, 401, "Unauthorized");
     }
@@ -542,7 +542,7 @@ const saveAssignmentSubmission = async (c: Context) => {
       try {
         const uploadParams = {
           Bucket: process.env.R2_S3_ASSIGNMENT_BUCKET!,
-          Key: `${aid}/${c.get("auth")._id}.zip`,
+          Key: `${aid}/${c.get("auth")?._id}.zip`,
           Body: file, // @ts-expect-error - Type 'File' is not assignable to type 'Body'
           ContentType: file.type,
         };

@@ -769,7 +769,7 @@ const logWorkflowAdvance = async (
   }
 
   try {
-    const authUserId = c.get("auth")._id;
+    const authUserId = c.get("auth")?._id;
     if (!authUserId) {
       console.warn("Missing user ID for audit logging");
       return;
