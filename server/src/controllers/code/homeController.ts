@@ -9,7 +9,7 @@ const getHome = async (c: Context) => {
     const dupTabs = problems.map((problem) => problem.tags).flat();
     const tags = [...new Set(dupTabs)];
 
-    const user = await User.findOne({ clerkId: c.get("auth").userId }).lean();
+    const user = await User.findOne({ _id: c.get("auth")._id }).lean();
 
     if (!user) {
       return sendError(c, 401, "Unauthorized");

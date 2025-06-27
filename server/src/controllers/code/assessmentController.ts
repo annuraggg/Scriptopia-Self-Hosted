@@ -18,7 +18,6 @@ import calculateCodeScore from "@/utils/calculateCodeScore";
 import { MCQAssessmentSubmission as IMCQAssessmentSubmission } from "@shared-types/MCQAssessmentSubmission";
 import Organization from "@/models/Organization";
 import { AuditLog, Member } from "@shared-types/Organization";
-import clerkClient from "@/config/clerk";
 import checkOrganizationPermission from "@/middlewares/checkOrganizationPermission";
 import AppliedPosting from "@/models/AppliedPosting";
 import { AppliedPosting as IAppliedPosting } from "@shared-types/AppliedPosting";
@@ -315,10 +314,10 @@ const createMcqAssessment = async (c: Context) => {
         updatedOn: new Date(),
       });
 
-      const clerkUser = await clerkClient.users.getUser(c.get("auth").userId);
+      const auth = c.get("auth");
       const auditLog: AuditLog = {
-        user: clerkUser.firstName + " " + clerkUser.lastName,
-        userId: clerkUser.publicMetadata?._id as string,
+        user: auth.user.name,
+        userId: auth._id,
         action: `Created New Assessment for Job Posting: ${posting.title}`,
         type: "info",
       };
@@ -458,10 +457,10 @@ const createCodeAssessment = async (c: Context) => {
         updatedOn: new Date(),
       });
 
-      const clerkUser = await clerkClient.users.getUser(c.get("auth").userId);
+      const auth = c.get("auth");
       const auditLog: AuditLog = {
-        user: clerkUser.firstName + " " + clerkUser.lastName,
-        userId: clerkUser.publicMetadata?._id as string,
+        user: auth.user.name,
+        userId: auth._id,
         action: `Created New Assessment for Job Posting: ${posting.title}`,
         type: "info",
       };
@@ -1149,7 +1148,7 @@ const getTakenMcqAssessments = async (c: Context) => {
     const auth = c.get("auth");
 
     const submissions = await MCQAssessmentSubmissions.find({
-      email: auth?.email,
+      email: auth?.user.email,
     });
 
     const takenAssessments = [];
@@ -1178,7 +1177,7 @@ const getTakenCodeAssessments = async (c: Context) => {
     const auth = c.get("auth");
 
     const submissions = await CodeAssessmentSubmissions.find({
-      email: auth?.email,
+      email: auth?.user.email,
     });
 
     const takenAssessments = [];
@@ -1570,7 +1569,7 @@ const getMcqAssessmentSubmissions = async (c: Context) => {
       return sendError(c, 404, "Assessment not found");
     }
 
-    if (assessment.author !== auth?._id) {
+    if (assessment.author?.toString() !== auth?._id) {
       if (assessment.isEnterprise) {
         const perms = await checkOrganizationPermission.all(c, ["view_job"]);
         if (!perms.allowed) {
@@ -1607,7 +1606,7 @@ const getCodeAssessmentSubmissions = async (c: Context) => {
       return sendError(c, 404, "Assessment not found");
     }
 
-    if (assessment.author !== auth?._id) {
+    if (assessment.author.toString() !== auth?._id) {
       if (assessment.isEnterprise) {
         const perms = await checkOrganizationPermission.all(c, ["view_job"]);
         if (!perms.allowed) {
@@ -1649,7 +1648,7 @@ const getMcqAssessmentSubmission = async (c: Context) => {
       return sendError(c, 404, "Assessment not found");
     }
 
-    if (assessment.author !== auth?._id) {
+    if (assessment.author.toString() !== auth?._id) {
       if (assessment.isEnterprise) {
         const perms = await checkOrganizationPermission.all(c, ["view_job"]);
         if (!perms.allowed) {
@@ -1687,7 +1686,7 @@ const getCodeAssessmentSubmission = async (c: Context) => {
       return sendError(c, 404, "Assessment not found");
     }
 
-    if (assessment.author !== auth?._id) {
+    if (assessment.author.toString() !== auth?._id) {
       if (assessment.isEnterprise) {
         const perms = await checkOrganizationPermission.all(c, ["view_job"]);
         if (!perms.allowed) {
@@ -1822,8 +1821,8 @@ const gradeMCQAnswer = async (c: Context) => {
       submission.obtainedGrades?.mcq?.push(newMCQ);
     }
 
-    if (!submission.reviewedBy?.includes(auth?._id)) {
-      submission?.reviewedBy?.push(auth?._id);
+    if (!submission.reviewedBy?.includes(new mongoose.Types.ObjectId(auth?._id))) {
+      submission?.reviewedBy?.push(new mongoose.Types.ObjectId(auth?._id));
     }
 
     await submission.save();
@@ -1876,8 +1875,8 @@ const gradeCodeAnswer = async (c: Context) => {
       submission.obtainedGrades?.problem?.push(newCode);
     }
 
-    if (!submission.reviewedBy?.includes(auth?._id)) {
-      submission?.reviewedBy?.push(auth?._id);
+    if (!submission.reviewedBy?.includes(new mongoose.Types.ObjectId(auth?._id))) {
+      submission?.reviewedBy?.push(new mongoose.Types.ObjectId(auth?._id));
     }
 
     await submission.save();

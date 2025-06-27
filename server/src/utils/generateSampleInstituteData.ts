@@ -1,6 +1,5 @@
 import { faker } from "@faker-js/faker";
 import Institute from "@/models/Institute";
-import clerkClient from "@/config/clerk";
 import { generate } from "generate-passphrase";
 import User from "@/models/User";
 import Candidate from "@/models/Candidate";
@@ -12,6 +11,7 @@ import { Types } from "mongoose";
 import { PlacementGroup as IPlacementGroup } from "@shared-types/PlacementGroup";
 import { Company as ICompany } from "@shared-types/Company";
 import AppliedDrive from "@/models/AppliedDrive";
+import { auth } from "@/config/betterauth";
 
 const CANDIDATES_LIMIT = 20;
 const PLACEMENT_GROUPS_MIN = 3;
@@ -106,18 +106,14 @@ const generateSampleInstituteCandidates = async (instituteId: string) => {
   );
 
   for (const candidate of candidates) {
-    await clerkClient.users.createUser({
-      skipPasswordChecks: true,
-      firstName: candidate.firstName,
-      lastName: candidate.lastName,
-      password: passphrase,
-      emailAddress: [candidate.email],
-      username: candidate.username,
-      legalAcceptedAt: new Date(),
-      privateMetadata: { isSample: true, sampleInstituteId: instituteId },
+    await auth.api.signUpEmail({
+      body: {
+        email: candidate.email,
+        password: passphrase,
+        name: `${candidate.firstName} ${candidate.lastName}`,
+      },
+      asResponse: true,
     });
-
-    console.log("Created user:", candidate.username);
   }
 
   const dbUsers = await User.find({
@@ -128,11 +124,11 @@ const generateSampleInstituteCandidates = async (instituteId: string) => {
   console.log("DB Users", dbUsers);
 
   for (const user of dbUsers) {
-    const clerkUser = await clerkClient.users.getUser(user.clerkId);
+    const currentUser = await User.findOne({ _id: user._id });
 
     const newCandidate = new Candidate({
       userId: user._id,
-      name: `${clerkUser.firstName} ${clerkUser.lastName}`,
+      name: currentUser?.name,
       dob: faker.date.birthdate({ min: 18, max: 30, mode: "age" }),
       gender: faker.helpers.arrayElement(["Male", "Female", "Other"]),
       email: user.email,
@@ -941,7 +937,7 @@ const generateSampleDrives = async (instituteId: string) => {
         })`
       );
     }
-    
+
     await institute.save();
 
     await Institute.updateOne(

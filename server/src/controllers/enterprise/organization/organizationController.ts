@@ -15,7 +15,6 @@ import organizationPermissions from "@/data/organizationPermissions";
 import checkOrganizationPermission from "@/middlewares/checkOrganizationPermission";
 import Posting from "@/models/Posting";
 import { Candidate } from "@shared-types/Candidate";
-import { UserJSON } from "@clerk/backend";
 import { MemberWithPermission } from "@shared-types/MemberWithPermission";
 import { Types } from "mongoose";
 
@@ -830,7 +829,7 @@ const updateMembers = async (c: Context) => {
 
     // Prepare final member updates
     const finalMembers = members.map((member: Member) => ({
-      user: (member.user as unknown as UserJSON)?.id,
+      user: (member.user as any)?.id,
       email: member.email,
       role: member.role,
       status: member.status,

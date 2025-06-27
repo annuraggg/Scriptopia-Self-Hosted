@@ -1,15 +1,17 @@
 import { Context } from "hono";
 import { sendError, sendSuccess } from "../../../utils/sendResponse";
 import Organization from "../../../models/Organization";
-import clerkClient from "../../../config/clerk";
 import logger from "../../../utils/logger";
 import { Member } from "@shared-types/Organization";
+import User from "@/models/User";
 
 const getNotifications = async (c: Context) => {
   try {
-    const clerkUser = await clerkClient.users.getUser(c.get("auth").userId);
+    const auth = c.get("auth");
+    const currentUser = await User.findOne({ _id: auth._id }).lean();
+
     const organization = await Organization.findOne({
-      _id: clerkUser.publicMetadata.orgId,
+      _id: currentUser?.publicMetadata.orgId,
     });
 
     if (!organization) {
@@ -17,7 +19,7 @@ const getNotifications = async (c: Context) => {
     }
 
     const user = organization.members.find(
-      (member) => (member as unknown as Member).user === clerkUser.id
+      (member) => (member as unknown as Member).user === auth._id
     );
 
     if (!user) {
@@ -40,9 +42,11 @@ const getNotifications = async (c: Context) => {
 const readNotification = async (c: Context) => {
   try {
     const { id } = await c.req.json();
-    const clerkUser = await clerkClient.users.getUser(c.get("auth").userId);
+    const auth = c.get("auth");
+
+    const currentUser = await User.findOne({ _id: auth._id }).lean();
     const organization = await Organization.findOne({
-      _id: clerkUser.publicMetadata.orgId,
+      _id: currentUser?.publicMetadata.orgId,
     });
 
     if (!organization) {
@@ -50,14 +54,16 @@ const readNotification = async (c: Context) => {
     }
 
     const user = organization.members.find(
-      (member) => (member as unknown as Member).user === clerkUser.id
+      (member) => (member as unknown as Member).user === auth._id
     );
 
     if (!user) {
       return sendError(c, 401, "Unauthorized");
     }
 
-    const notification = user.notifications.find((notif) => notif._id?.toString() === id.toString());
+    const notification = user.notifications.find(
+      (notif) => notif._id?.toString() === id.toString()
+    );
     if (!notification) {
       return sendError(c, 404, "Notification not found");
     }

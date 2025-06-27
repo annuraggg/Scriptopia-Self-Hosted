@@ -1,10 +1,9 @@
 // @ts-nocheck
 import { sendError } from "../utils/sendResponse";
-import { getAuth } from "@hono/clerk-auth";
-import clerkClient from "../config/clerk";
 import { Context } from "hono";
 import logger from "../utils/logger";
 import { UserMeta } from "@shared-types/UserMeta";
+import User from "@/models/User";
 
 interface ReturnType {
   allowed: boolean;
@@ -12,9 +11,9 @@ interface ReturnType {
 }
 
 class checkInstitutePermission {
-  private static async getUserMeta(userId: string) {
+  private static async getUserMeta(_id: string) {
     try {
-      const user = await clerkClient.users.getUser(userId);
+      const user = await User.findOne({ _id: _id }).lean();
       const perms = user.publicMetadata as UserMeta;
       return perms;
     } catch (error) {
@@ -26,16 +25,14 @@ class checkInstitutePermission {
     c: Context<any, any, {}>,
     permissions: string[]
   ): Promise<ReturnType> => {
-    const auth = getAuth(c);
-    if (!auth?.userId) {
+    const auth = await c.get("auth");
+    if (!auth?._id) {
       sendError(c, 401, "Unauthorized in checkPermission");
       return { allowed: false, data: null };
     }
 
     try {
-      const userMeta = await checkInstitutePermission.getUserMeta(
-        auth.userId
-      );
+      const userMeta = await checkInstitutePermission.getUserMeta(auth._id);
 
       const hasPermission = permissions.every((permission) =>
         userMeta.institute?.role?.permissions.includes(permission)
@@ -52,16 +49,14 @@ class checkInstitutePermission {
     c: Context<any, any, {}>,
     permissions: string[]
   ): Promise<ReturnType> => {
-    const auth = getAuth(c);
-    if (!auth?.userId) {
+    const auth = await c.get("auth");
+    if (!auth?._id) {
       sendError(c, 401, "Unauthorized in checkPermission");
       return { allowed: false, data: null };
     }
 
     try {
-      const userMeta = await checkInstitutePermission.getUserMeta(
-        auth.userId
-      );
+      const userMeta = await checkInstitutePermission.getUserMeta(auth._id);
       const hasPermission = permissions.some((permission) =>
         userMeta.institute?.role?.permissions.includes(permission)
       );

@@ -5,11 +5,11 @@ import { sendError, sendSuccess } from "../../utils/sendResponse";
 
 const getWallet = async (c: Context) => {
   try {
-    const userId = c.req.param("userId");
+    const _id = c.req.param("userId");
 
-    console.log("Fetching wallet for userId:", userId);
+    console.log("Fetching wallet for userId:", _id);
 
-    const user = await User.findOne({ clerkId: userId });
+    const user = await User.findOne({ _id: _id });
 
     console.log("User found:", !!user);
 
