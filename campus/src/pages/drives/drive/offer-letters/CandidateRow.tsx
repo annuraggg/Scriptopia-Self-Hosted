@@ -1,6 +1,6 @@
 import { ExtendedCandidate } from "@shared-types/ExtendedCandidate";
 import { ExtendedAppliedDrive } from "@shared-types/ExtendedAppliedDrive";
-import { useAuth } from "@clerk/clerk-react";
+
 import { useState, useMemo } from "react";
 import { TableRow, TableCell, Chip, Button, Tooltip } from "@nextui-org/react";
 import { Download, Mail } from "lucide-react";
@@ -24,8 +24,8 @@ const CandidateRow: React.FC<CandidateRowProps> = ({
   onViewCandidate,
 }) => {
   const [isDownloading, setIsDownloading] = useState(false);
-  const { getToken } = useAuth();
-  const axios = ax(getToken);
+  
+  const axios = ax();
 
   // Get latest education with memoization
   const latestEducation = useMemo(() => {

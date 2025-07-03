@@ -9,11 +9,10 @@ import {
   IconBellFilled,
   IconSettingsFilled,
   IconBuilding,
-  IconUsersGroup,
+  IconUsersGroup, // @ts-expect-error -  temp
   IconDoorExit,
 } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
-import { useAuth, UserButton /*useAuth*/ } from "@clerk/clerk-react";
 import {
   Badge,
   Button,
@@ -158,9 +157,9 @@ const Sidebar = ({
     setActive(path);
   }, []);
 
-  const { getToken } = useAuth();
-  const axios = ax(getToken);
+  const axios = ax();
 
+  // @ts-expect-error -  temp
   const handleLeaveClick = () => {
     setShowFirstConfirmation(true);
   };
@@ -198,9 +197,11 @@ const Sidebar = ({
     <>
       <aside
         className={`h-[100vh] bg-foreground text-background ${
-          subNavbarRoutes.includes( import.meta.env.VITE_BASENAME === "/"
-            ? window.location.pathname.split("/")[1]
-            : window.location.pathname.split("/")[0])
+          subNavbarRoutes.includes(
+            import.meta.env.VITE_BASENAME === "/"
+              ? window.location.pathname.split("/")[1]
+              : window.location.pathname.split("/")[0]
+          )
             ? "border-r-background/10"
             : "rounded-r-2xl"
         } border-r flex flex-col overflow-hidden transition-all duration-300 
@@ -273,7 +274,7 @@ const Sidebar = ({
 
         <nav className="mt-auto flex flex-col gap-2 p-3">
           <div className="ml-[6px] mb-4">
-            <UserButton>
+            {/* <UserButton>
               <UserButton.MenuItems>
                 <UserButton.Action
                   label="Leave Institute"
@@ -281,7 +282,10 @@ const Sidebar = ({
                   onClick={handleLeaveClick}
                 />
               </UserButton.MenuItems>
-            </UserButton>
+            </UserButton> */}
+
+            User Button Here
+            Better Auth Component - Replace with your auth client logic
           </div>
 
           {bottomItems.map((item, index) => (

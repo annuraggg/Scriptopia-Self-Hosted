@@ -3,6 +3,8 @@ import { betterAuth } from "better-auth";
 import { MongoClient } from "mongodb";
 import { mongodbAdapter } from "better-auth/adapters/mongodb";
 import { sendEmail } from "./email";
+import { customSession } from "better-auth/plugins";
+import User from "@/models/User";
 
 const client = new MongoClient(process.env.MONGO_URI!);
 const db = client.db(process.env.MONGO_DB);
@@ -31,4 +33,16 @@ export const auth = betterAuth({
       });
     },
   },
+  plugins: [
+    customSession(async ({ user, session }) => {
+      const publicMetadata = await User.findById(user.id)
+        .select("publicMetadata")
+        .lean();
+      return {
+        ...publicMetadata,
+        user,
+        session,
+      };
+    }),
+  ],
 });

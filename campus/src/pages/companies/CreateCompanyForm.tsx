@@ -3,7 +3,6 @@ import { ChevronRight } from "lucide-react";
 import CompanyDetailsTab from "./CompanyDetailsTab";
 import CompanyHRTab from "./CompanyHRTab";
 import CompanyStatsTab from "./CompanyStatsTab";
-import { useAuth } from "@clerk/clerk-react";
 import ax from "@/config/axios";
 import { toast } from "sonner";
 import { Company } from "@shared-types/Company";
@@ -36,8 +35,8 @@ const CreateCompanyForm: React.FC<CreateCompanyFormProps> = ({ onClose }) => {
   const [yearlyStats, setYearlyStats] = useState<YearlyStats[]>([]);
   const navigate = useNavigate();
 
-  const { getToken } = useAuth();
-  const axios = ax(getToken);
+  
+  const axios = ax();
   const [loading, setLoading] = useState(false);
 
   // Function to update a specific stat for a specific year

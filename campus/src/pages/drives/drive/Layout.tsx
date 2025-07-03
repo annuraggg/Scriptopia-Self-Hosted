@@ -1,7 +1,7 @@
 import { Outlet } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import { Drive } from "@shared-types/Drive";
-import { useAuth } from "@clerk/clerk-react";
+
 import ax from "@/config/axios";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -12,8 +12,8 @@ const Layout = () => {
   const [driveLoading, setDriveLoading] = useState(true);
   const [refetch, setRefetch] = useState(false);
 
-  const { getToken } = useAuth();
-  const axios = ax(getToken);
+  
+  const axios = ax();
   useEffect(() => {
     setDriveLoading(true);
     axios

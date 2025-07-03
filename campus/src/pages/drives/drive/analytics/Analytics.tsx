@@ -26,7 +26,7 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 import Loader from "@/components/Loader";
-import { useAuth } from "@clerk/clerk-react";
+
 import ax from "@/config/axios";
 import { toast } from "sonner";
 import {
@@ -109,8 +109,8 @@ const cardVariants = {
 
 const DriveAnalyticsPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const { getToken } = useAuth();
-  const axios = ax(getToken);
+  
+  const axios = ax();
   const [data, setData] = useState<DriveAnalyticsResponse | null>(null);
   const [pipelineData, setPipelineData] = useState<ExtendedAppliedDrive[]>([]);
   const [selected, setSelected] = useState("overview");

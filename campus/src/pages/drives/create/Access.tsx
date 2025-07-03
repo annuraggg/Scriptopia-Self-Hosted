@@ -2,7 +2,7 @@ import { Button, Card, Radio, RadioGroup } from "@nextui-org/react";
 import { PlacementGroup } from "@shared-types/PlacementGroup";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { useAuth } from "@clerk/clerk-react";
+
 import ax from "@/config/axios";
 
 interface AccessProps {
@@ -20,8 +20,8 @@ const Access = ({
 }: AccessProps) => {
   const [loadedGroups, setLoadedGroups] = useState<PlacementGroup[]>([]);
   const [loading, setLoading] = useState(false);
-  const { getToken } = useAuth();
-  const axios = ax(getToken);
+  
+  const axios = ax();
 
   useEffect(() => {
     const fetchPlacementGroups = async () => {

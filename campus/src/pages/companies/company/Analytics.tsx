@@ -22,7 +22,7 @@ import {
   TableCell,
   Pagination,
 } from "@nextui-org/react";
-import { useAuth } from "@clerk/clerk-react";
+
 import { motion } from "framer-motion";
 import ax from "@/config/axios";
 import { toast } from "react-toastify";
@@ -299,8 +299,8 @@ const renderCustomizedTreemapContent = (props: any) => {
 const CompanyAnalytics: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { getToken } = useAuth();
-  const axios = ax(getToken);
+
+  const axios = ax();
 
   const [analytics, setAnalytics] = useState<CompanyAnalytics | null>(null);
   const [hiringTrends, setHiringTrends] = useState<HiringTrends | null>(null);

@@ -28,7 +28,6 @@ import {
   FileBadgeIcon,
 } from "lucide-react";
 import ax from "@/config/axios";
-import { useAuth } from "@clerk/clerk-react";
 import { toast } from "sonner";
 import { Candidate } from "@shared-types/Candidate";
 
@@ -53,8 +52,8 @@ const ProfilePage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string>("workExperience");
   const [error, setError] = useState<string | null>(null);
 
-  const { getToken } = useAuth();
-  const axios = ax(getToken);
+  
+  const axios = ax();
 
   useEffect(() => {
     const fetchCandidateData = async () => {

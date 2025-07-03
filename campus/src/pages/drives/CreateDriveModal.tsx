@@ -10,7 +10,7 @@ import {
   Textarea,
 } from "@nextui-org/react";
 import { Select, SelectItem } from "@nextui-org/select";
-import { useAuth } from "@clerk/clerk-react";
+
 import ax from "@/config/axios";
 import { toast } from "sonner";
 import { Department } from "@shared-types/Institute";
@@ -69,8 +69,8 @@ const CreateDriveModal: React.FC<createDriveModalProps> = ({
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const { getToken } = useAuth();
-  const axios = ax(getToken);
+  
+  const axios = ax();
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};

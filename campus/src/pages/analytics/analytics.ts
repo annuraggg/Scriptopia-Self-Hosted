@@ -5,12 +5,10 @@
     OfferLetterStats,
     TimeRangeStats,
   } from "@shared-types/InstituteAnalytics";
-  import { useAuth } from "@clerk/clerk-react";
   import ax from "@/config/axios";
 
   export const useAnalyticsService = () => {
-    const { getToken } = useAuth();
-    const axios = ax(getToken);
+    const axios = ax();
 
     const fetchAnalytics = async (): Promise<AnalyticsData> => {
       const response = await axios.get("/institutes/analytics");

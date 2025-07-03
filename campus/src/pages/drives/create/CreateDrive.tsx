@@ -4,7 +4,7 @@ import DriveDetails from "./DriveDetails";
 import Workflow from "./Workflow";
 import { today, getLocalTimeZone, DateValue } from "@internationalized/date";
 import Summary from "./Summary";
-import { useAuth } from "@clerk/clerk-react";
+
 import ax from "@/config/axios";
 import {
   Drive,
@@ -69,8 +69,8 @@ const CreateDrive = () => {
   // Workflow States
   const [addedComponents, setAddedComponents] = useState<Component[]>([]);
 
-  const { getToken } = useAuth();
-  const axios = ax(getToken);
+  
+  const axios = ax();
   const [loading, setLoading] = useState(false);
   const { institute, setInstitute } = useOutletContext() as RootContext;
   const navigate = useNavigate();

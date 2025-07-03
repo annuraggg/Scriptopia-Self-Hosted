@@ -19,7 +19,7 @@ import { Download, UserCheck, UserX, Search, User } from "lucide-react";
 import { Input } from "@heroui/input";
 import { Button } from "@heroui/button";
 import { Skeleton } from "@heroui/skeleton";
-import { useAuth } from "@clerk/clerk-react";
+
 import ax from "@/config/axios";
 import { toast } from "sonner";
 import { useOutletContext, useNavigate } from "react-router-dom";
@@ -65,8 +65,8 @@ const DataTable = ({
   });
 
   const navigate = useNavigate();
-  const { getToken } = useAuth();
-  const axios = ax(getToken);
+  
+  const axios = ax();
   const { drive } = useOutletContext() as { drive: Drive };
 
   // Remove current date time functionality

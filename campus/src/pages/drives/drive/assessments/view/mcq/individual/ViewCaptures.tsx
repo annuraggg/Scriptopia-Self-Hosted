@@ -1,6 +1,6 @@
 import Loader from "@/components/Loader";
 import ax from "@/config/axios";
-import { useAuth } from "@clerk/clerk-react";
+
 import { Button } from "@heroui/button";
 import { Image } from "@heroui/image";
 import {
@@ -30,8 +30,8 @@ const ViewCaptures = ({ isOpen, onOpenChange, email }: ViewCaptureProps) => {
   const [urls, setUrls] = useState<ImageData[]>([]);
   const [currentImage, setCurrentImage] = useState(0);
 
-  const { getToken } = useAuth();
-  const axios = ax(getToken);
+  
+  const axios = ax();
 
   const assessmentId = window.location.pathname.split("/")[5];
 

@@ -5,13 +5,14 @@ import Contact from "./Contact";
 import Team from "./Team";
 import { Button } from "@nextui-org/react";
 import { toast } from "sonner";
-import { SignOutButton, useAuth, useUser } from "@clerk/clerk-react";
 import { setInstitute } from "@/reducers/instituteReducer";
 import { useDispatch } from "react-redux";
 import ax from "@/config/axios";
 import Loader from "@/components/Loader";
 import SampleData from "./SampleData";
 import { useNavigate } from "react-router-dom";
+import { authClient } from "@/lib/auth-client";
+import { SignOutButton } from "@/components/auth/SignOutButton";
 
 interface InvitedMember {
   email: string;
@@ -38,8 +39,7 @@ const Onboarding = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const { getToken } = useAuth();
-  const axios = ax(getToken);
+  const axios = ax();
 
   useEffect(() => {
     axios
@@ -137,7 +137,7 @@ const Onboarding = () => {
     return true;
   };
 
-  const { user } = useUser();
+  const { data: user } = authClient.useSession();
   const dispatch = useDispatch();
 
   const submit = () => {
@@ -162,12 +162,15 @@ const Onboarding = () => {
         toast.success("Institute created successfully");
         // window.location.href = "/dashboard";
         navigate("/dashboard");
-        const data = {
-          _id: user?.publicMetadata?.instituteId,
-          role: user?.publicMetadata?.roleName,
-          permissions: user?.publicMetadata?.permissions,
-        };
-        dispatch(setInstitute(data));
+        // Better Auth Component - Strategy - use publicMetadata and fetch it inside user or session and show it here
+        // const data = {
+        //   _id: user?.publicMetadata?.instituteId,
+        //   role: user?.publicMetadata?.roleName,
+        //   permissions: user?.publicMetadata?.permissions,
+        // };
+
+        // Better Auth Component - Place data inside brackets of setInstitute
+        dispatch(setInstitute({}));
       })
       .catch((err) => {
         console.error(err);
@@ -208,7 +211,7 @@ const Onboarding = () => {
           {currentStep + 1} of {steps.length}
         </p>{" "}
         <div className="mt-5 flex gap-2">
-          <p>Signed in as {user?.emailAddresses[0].emailAddress}</p>
+          <p>Signed in as {user?.user.email!}</p>
           <SignOutButton>
             <p className="text-danger underline cursor-pointer">Logout</p>
           </SignOutButton>

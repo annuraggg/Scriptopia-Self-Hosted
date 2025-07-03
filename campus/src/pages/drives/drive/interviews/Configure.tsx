@@ -1,4 +1,4 @@
-import { useAuth } from "@clerk/clerk-react";
+
 import { Divider } from "@heroui/divider";
 import { Button } from "@heroui/button";
 import { Checkbox } from "@heroui/checkbox";
@@ -22,8 +22,8 @@ const Configure = () => {
 
   const [loading, setLoading] = useState(false);
 
-  const { getToken } = useAuth();
-  const axios = ax(getToken);
+  
+  const axios = ax();
 
   useEffect(() => {
     axios

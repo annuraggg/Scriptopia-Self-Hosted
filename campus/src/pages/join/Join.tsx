@@ -1,5 +1,4 @@
 import ax from "@/config/axios";
-import { SignOutButton, useAuth, useUser } from "@clerk/clerk-react";
 import { Avatar } from "@heroui/avatar";
 import { Button } from "@heroui/button";
 import { Card, CardBody, CardFooter, CardHeader } from "@heroui/card";
@@ -8,6 +7,8 @@ import { HeartCrack, Link } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+import { SignOutButton } from "@/components/auth/SignOutButton";
+import { authClient } from "@/lib/auth-client";
 
 const bgStyle = {
   backgroundImage: "url(./join-bg.svg)",
@@ -28,7 +29,7 @@ interface Token {
 
 const Join = () => {
   const [loading, setLoading] = useState(true);
-  const { isSignedIn, user, isLoaded } = useUser();
+  const { data: user, isPending: isLoaded } = authClient.useSession();
 
   const [cancelLoading, setCancelLoading] = useState(false);
   const [acceptLoading, setAcceptLoading] = useState(false);
@@ -38,8 +39,7 @@ const Join = () => {
   const [token, setToken] = useState<Token>({} as Token);
   const navigate = useNavigate();
 
-  const { getToken } = useAuth();
-  const axios = ax(getToken);
+  const axios = ax();
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const token = urlParams.get("token");
@@ -93,7 +93,7 @@ const Join = () => {
       } transition-all flex flex-col gap-5`}
     >
       <div>
-        {!isSignedIn || !isLoaded || loading ? (
+        {!user?.session || !isLoaded || loading ? (
           <CircularProgress />
         ) : error ? (
           <Card>
@@ -114,7 +114,7 @@ const Join = () => {
             <CardHeader className="justify-center">Institute Invite</CardHeader>
             <CardBody className="items-center px-10 w-[30vw]">
               <div className="flex gap-5 items-center">
-                <Avatar src={user?.imageUrl} size="lg" />
+                <Avatar src={user?.user?.image!} size="lg" />
                 <Link />
                 <Avatar size="lg" />
               </div>
@@ -156,10 +156,7 @@ const Join = () => {
       <Card>
         <CardBody className="flex flex-col items-center justify-center p-5 w-full">
           <p>
-            Signed In as{" "}
-            <span className="underline">
-              {user?.emailAddresses[0].emailAddress}
-            </span>
+            Signed In as <span className="underline">{user?.user.email!}</span>
           </p>
 
           <SignOutButton signOutOptions={{ redirectUrl: "/join" }}>

@@ -20,7 +20,7 @@ import {
   Pagination,
 } from "@nextui-org/react";
 import { Search, Plus, MoreVertical, Copy, Trash } from "lucide-react";
-import { useAuth } from "@clerk/clerk-react";
+
 import ax from "@/config/axios";
 import Filter from "./Filter";
 import { PlacementGroup } from "@shared-types/PlacementGroup";
@@ -72,8 +72,8 @@ const PlacementGroups = () => {
   } = useDisclosure();
   const [isDeleting, setIsDeleting] = useState(false);
 
-  const { getToken } = useAuth();
-  const axios = ax(getToken);
+  
+  const axios = ax();
 
   const fetchGroups = async (page = 1) => {
     try {

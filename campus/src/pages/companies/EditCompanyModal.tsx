@@ -11,7 +11,6 @@ import {
   Divider,
 } from "@nextui-org/react";
 import { Save, ArrowLeft, Plus, Trash2 } from "lucide-react";
-import { useAuth } from "@clerk/clerk-react";
 import ax from "@/config/axios";
 import { Company, YearStats } from "@shared-types/Company";
 
@@ -49,8 +48,8 @@ const EditCompanyModal = ({
     average: 0,
   });
 
-  const { getToken } = useAuth();
-  const axios = ax(getToken);
+  
+  const axios = ax();
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>

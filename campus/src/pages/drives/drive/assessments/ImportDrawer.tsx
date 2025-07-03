@@ -1,5 +1,5 @@
 import ax from "@/config/axios";
-import { useAuth } from "@clerk/clerk-react";
+
 import {
   Drawer as HeroDrawer,
   DrawerContent,
@@ -54,8 +54,8 @@ const Drawer = ({
   step,
   addToConfiguredAssessments,
 }: DrawerProps) => {
-  const { getToken } = useAuth();
-  const axios = ax(getToken);
+  
+  const axios = ax();
 
   const [mcqAssessments, setMCQAssessments] = useState<MCQAssessment[]>([]);
   const [codeAssessments, setCodeAssessments] = useState<CodeAssessment[]>([]);

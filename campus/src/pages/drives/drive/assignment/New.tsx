@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { Drive } from "@shared-types/Drive";
 import { useOutletContext, useNavigate } from "react-router-dom";
-import { useAuth } from "@clerk/clerk-react";
+
 import ax from "@/config/axios";
 import { toast } from "sonner";
 import { Button } from "@heroui/button";
@@ -32,8 +32,8 @@ const New = () => {
     }
   }, [drive]);
 
-  const { getToken } = useAuth();
-  const axios = ax(getToken);
+  
+  const axios = ax();
   const step = window.history.state.usr.step;
   const handleCreateAssignment = () => {
     axios

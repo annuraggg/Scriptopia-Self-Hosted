@@ -21,7 +21,6 @@ import {
   Users,
   DollarSign,
 } from "lucide-react";
-import { useAuth } from "@clerk/clerk-react";
 import ax from "@/config/axios";
 import { toast } from "sonner";
 import CreateCompanyForm from "./CreateCompanyForm";
@@ -85,8 +84,8 @@ const CompanyProfiles = () => {
   });
   const [isFiltersApplied, setIsFiltersApplied] = useState(false);
 
-  const { getToken } = useAuth();
-  const axios = ax(getToken);
+  
+  const axios = ax();
 
   // Helper functions for getting metrics from yearStats array
   const getTotalStudentsHired = (company: Company): number => {

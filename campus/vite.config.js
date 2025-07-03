@@ -9,14 +9,15 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
-import { loadEnv } from "vite";
+import { defineConfig, loadEnv } from "vite";
 export default defineConfig(function (_a) {
     var mode = _a.mode;
     process.env = __assign(__assign({}, process.env), loadEnv(mode, process.cwd()));
+    var env = loadEnv(mode, process.cwd(), "");
     return {
+        base: env.VITE_BASENAME || "/",
         server: {
             port: parseInt(process.env.VITE_PORT),
         },

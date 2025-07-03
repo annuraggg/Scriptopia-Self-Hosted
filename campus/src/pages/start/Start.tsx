@@ -13,11 +13,11 @@ import {
 } from "@nextui-org/react";
 import { useState } from "react";
 import { toast } from "sonner";
-import { useAuth, useUser } from "@clerk/clerk-react";
 import ax from "@/config/axios";
 import { useDispatch } from "react-redux";
 import { setInstitute } from "@/reducers/instituteReducer";
 import { useNavigate } from "react-router-dom";
+import { authClient } from "@/lib/auth-client";
 
 interface InvitedMember {
   email: string;
@@ -94,10 +94,10 @@ const Start = () => {
     }, 2000);
   };
 
-  const { getToken } = useAuth();
-  const { user } = useUser();
+  // @ts-expect-error -  temp
+  const { data: user } = authClient.useSession();
   const submit = () => {
-    const axios = ax(getToken);
+    const axios = ax();
     setSecondLoading(true);
     axios
       .post("/institutes/create", {
@@ -111,13 +111,15 @@ const Start = () => {
         toast.success("Institute created successfully");
         // window.location.href = "/dashboard";
         navigate("/dashboard");
+        // Better Auth Component - Strategy - use publicMetadata and fetch it inside user or session and show it here
+        // const data = {
+        //   _id: user?.publicMetadata?.instituteId,
+        //   role: user?.publicMetadata?.roleName,
+        //   permissions: user?.publicMetadata?.permissions,
+        // };
 
-        const data = {
-          _id: user?.publicMetadata?.orgId,
-          role: user?.publicMetadata?.roleName,
-          permissions: user?.publicMetadata?.permissions,
-        };
-        dispatch(setInstitute(data));
+        // Better Auth Component - Place data inside brackets of setInstitute
+        dispatch(setInstitute({}));
       })
       .catch((err) => {
         console.error(err);

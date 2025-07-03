@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { DataTable } from "./DataTable";
 import { useEffect, useState } from "react";
-import { useAuth } from "@clerk/clerk-react";
+
 import ax from "@/config/axios";
 import { Button } from "@heroui/button";
 import { Pagination } from "@heroui/pagination";
@@ -36,8 +36,8 @@ const Candidates = () => {
   const searchParams = new URLSearchParams(location.search);
   const searchQuery = searchParams.get("search") || "";
 
-  const { getToken } = useAuth();
-  const axios = ax(getToken);
+  
+  const axios = ax();
 
   const fetchCandidates = async (page: number = 1, search: string = "") => {
     setIsLoading(true);

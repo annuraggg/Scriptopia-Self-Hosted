@@ -3,7 +3,7 @@ import { Button, Input } from "@nextui-org/react";
 import { useRef, useState } from "react";
 import { Breadcrumbs, BreadcrumbItem } from "@nextui-org/breadcrumbs";
 import { Upload } from "lucide-react";
-import { useAuth } from "@clerk/clerk-react";
+
 import ax from "@/config/axios";
 import { toast } from "sonner";
 import {
@@ -30,8 +30,8 @@ const General = () => {
   const { institute, setInstitute } =
     useOutletContext() as SettingsContext;
 
-  const { getToken } = useAuth();
-  const axios = ax(getToken);
+  
+  const axios = ax();
 
   const handleInputChange =
     (key: string) => (e: React.ChangeEvent<HTMLInputElement>) => {

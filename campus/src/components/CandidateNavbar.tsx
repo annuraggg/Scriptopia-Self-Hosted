@@ -1,4 +1,4 @@
-import { UserButton } from "@clerk/clerk-react";
+;
 
 const CandidateNavbar = () => {
   return (
@@ -8,7 +8,8 @@ const CandidateNavbar = () => {
           <img src="/logo.svg" alt="logo" className="w-7" />
           <p className="text-md ml-2 opacity-80">Campus</p>
         </div>
-        <UserButton />
+        {/* better auth component */}
+        User Button Here
       </div>
     </div>
   );

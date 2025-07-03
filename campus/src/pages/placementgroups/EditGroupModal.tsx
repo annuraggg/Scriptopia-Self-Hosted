@@ -14,7 +14,7 @@ import {
 import { PlacementGroup } from "@shared-types/PlacementGroup";
 import { Department } from "@shared-types/Institute";
 import { Candidate as CandidateType } from "@shared-types/Candidate";
-import { useAuth } from "@clerk/clerk-react";
+
 import ax from "@/config/axios";
 import { toast } from "sonner";
 interface EditGroupModalProps {
@@ -44,8 +44,8 @@ const EditGroupModal: React.FC<EditGroupModalProps> = ({
   const [selectedCandidates] = useState<string[]>(group.candidates);
   const [loading, setLoading] = useState(false);
 
-  const { getToken } = useAuth();
-  const axios = ax(getToken);
+  
+  const axios = ax();
 
   const generateYears = () => {
     const currentYear = new Date().getFullYear();

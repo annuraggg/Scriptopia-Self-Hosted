@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { ChevronRight } from "lucide-react";
 import GroupDetailsTab from "./Details";
 import CandidatesTab from "./Candidates";
-import { useAuth } from "@clerk/clerk-react";
+
 import ax from "@/config/axios";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
@@ -27,8 +27,8 @@ const CreateGroupForm: React.FC = () => {
   // Candidates State
   const [candidates, setCandidates] = useState<string[]>([]);
 
-  const { getToken } = useAuth();
-  const axios = ax(getToken);
+  
+  const axios = ax();
   const [loading, setLoading] = useState(false);
 
   const handleSave = () => {

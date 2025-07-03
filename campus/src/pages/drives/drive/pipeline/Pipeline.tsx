@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useOutletContext, useNavigate } from "react-router-dom";
-import { useAuth } from "@clerk/clerk-react";
+
 import { toast } from "sonner";
 import {
   Phone,
@@ -41,8 +41,8 @@ const Pipeline = () => {
   const [resumeLoading, setResumeLoading] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  const { getToken } = useAuth();
-  const axios = ax(getToken);
+  
+  const axios = ax();
 
   useEffect(() => {
     const driveId = window.location.pathname.split("/")[2];

@@ -15,7 +15,7 @@ import {
 import { AlertCircle, CalendarDays, Users, CheckCircle2 } from "lucide-react";
 import { motion } from "framer-motion";
 import Loader from "@/components/Loader";
-import { useAuth } from "@clerk/clerk-react";
+
 import ax from "@/config/axios";
 import { toast } from "sonner";
 import { RootContext } from "@/types/RootContext";
@@ -66,8 +66,8 @@ const toSentenceCase = (str: string): string => {
 
 const GroupDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const { getToken } = useAuth();
-  const axios = ax(getToken);
+  
+  const axios = ax();
   const { institute } = useOutletContext<RootContext>();
 
   const [group, setGroup] = useState<ExtendedPlacementGroup | null>(null);

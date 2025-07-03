@@ -24,7 +24,7 @@ import {
   Search,
 } from "lucide-react";
 import Filter from "./Filter";
-import { useAuth } from "@clerk/clerk-react";
+
 import ax from "@/config/axios";
 import { toast } from "sonner";
 import { Drive } from "@shared-types/Drive";
@@ -176,8 +176,8 @@ const Drives: React.FC = () => {
     console.log(institute?.drives);
   }, [rerender]);
 
-  const { getToken } = useAuth();
-  const axios = ax(getToken);
+  
+  const axios = ax();
 
   const handleDelete = () => {
     const newInstitute = { ...institute };

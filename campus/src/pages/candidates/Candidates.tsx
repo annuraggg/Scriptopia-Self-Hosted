@@ -4,7 +4,6 @@ import { DataTable } from "./DataTable";
 import { RootState } from "@/types/Reducer";
 import { Breadcrumbs, BreadcrumbItem } from "@nextui-org/breadcrumbs";
 import { useSelector } from "react-redux";
-import { useAuth } from "@clerk/clerk-react";
 import ax from "@/config/axios";
 import { Spinner } from "@nextui-org/react";  
 import { Candidate } from "@shared-types/Candidate";
@@ -14,13 +13,11 @@ const Candidates = () => {
   const [candidates, setCandidates] = useState<Candidate[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
-  const { getToken } = useAuth();
   
   const fetchCandidates = async () => {
     setLoading(true);
     try {
-      const axios = ax(getToken);
+      const axios = ax();
       const response = await axios.get("/institutes/candidates");
       setCandidates(response.data.data || []);
       setLoading(false);

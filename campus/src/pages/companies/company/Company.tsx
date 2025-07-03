@@ -15,7 +15,6 @@ import {
 import { MoreVertical } from "lucide-react";
 import { motion } from "framer-motion";
 import Filter from "./Filter";
-import { useAuth } from "@clerk/clerk-react";
 import ax from "@/config/axios";
 import { CompanyTable } from "./CompanyTable";
 import { Company as ICompany } from "@shared-types/Company";
@@ -42,8 +41,8 @@ const formatCurrency = (amount: number) => `₹${(amount / 100000).toFixed(1)}L`
 const Company = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { getToken } = useAuth();
-  const axios = ax(getToken);
+  
+  const axios = ax();
 
   const [company, setCompany] = useState<ICompany | null>(null);
   const [loading, setloading] = useState(true);

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { ExtendedCodeAssessmentSubmission } from "@shared-types/ExtendedCodeAssessmentSubmission";
 import { User, Mail, CheckCircle, XCircle } from "lucide-react";
-import { useAuth } from "@clerk/clerk-react";
+
 import ax from "@/config/axios";
 import { toast } from "sonner";
 import { NumberInput } from "@heroui/number-input";
@@ -23,8 +23,8 @@ const CodeAssessmentResults: React.FC<CodeAssessmentResultsProps> = ({
     timer,
   } = submission;
 
-  const { getToken } = useAuth();
-  const axios = ax(getToken);
+  
+  const axios = ax();
 
   // Local state for grades that can be edited
   const [grades, setGrades] = useState<Record<string, number>>(

@@ -3,7 +3,7 @@ import Sidebar from "./Sidebar";
 import { RootContext } from "@/types/RootContext";
 import { useEffect, useState } from "react";
 import UnsavedToast from "@/components/UnsavedToast";
-import { useAuth } from "@clerk/clerk-react";
+
 import ax from "@/config/axios";
 import { toast as sonner } from "sonner";
 import { ExtendedInstitute } from "@shared-types/ExtendedInstitute";
@@ -23,8 +23,8 @@ const Layout = () => {
     setRerender(!rerender);
   }, [institute]);
 
-  const { getToken } = useAuth();
-  const axios = ax(getToken);
+  
+  const axios = ax();
 
   const action = () => {
     setToast(false);

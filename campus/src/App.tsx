@@ -1,14 +1,12 @@
 import "./App.css";
 import { Suspense, lazy, useEffect } from "react";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import {
+  createBrowserRouter,
+  RouterProvider,
+  useNavigate,
+} from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setInstitute } from "./reducers/instituteReducer";
-import {
-  RedirectToSignIn,
-  SignedIn,
-  SignedOut,
-  useUser,
-} from "@clerk/clerk-react";
 import CreateDrive from "./pages/drives/create/CreateDrive";
 import GroupDetails from "./pages/placementgroups/GroupDetails";
 
@@ -16,6 +14,7 @@ import GroupDetails from "./pages/placementgroups/GroupDetails";
 import Loader from "./components/Loader";
 import PendingCandidates from "./pages/candidates/PendingCandidates";
 import OfferLetters from "./pages/drives/drive/offer-letters/OfferLetters";
+import { authClient } from "./lib/auth-client";
 const Lander = lazy(() => import("./pages/lander/Lander"));
 const Layout = lazy(() => import("./components/Layout"));
 const DriveLayout = lazy(() => import("./pages/drives/drive/Layout"));
@@ -107,21 +106,29 @@ const DriveAnalytics = lazy(
 );
 
 function App() {
-  const { user, isSignedIn } = useUser();
+  const { data, error, isPending } = authClient.useSession();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   // Sync user data with Redux
   useEffect(() => {
-    if (isSignedIn) {
-      const data = {
-        _id: (user?.publicMetadata?.institute as any)?._id,
-        role: (user?.publicMetadata?.institute as any)?.role.slug,
-        permissions: (user?.publicMetadata?.institute as any)?.role.permissions,
-        name: (user?.publicMetadata?.institute as any)?.name,
-      };
-      dispatch(setInstitute(data));
+    if (!isPending && data) {
+      console.log("Session Data:", data);
+      console.log("Session Error:", error);
+      console.log("Session Pending:", isPending);
+
+      navigate("/dashboard");
+      // Better Auth Component - Strategy - use publicMetadata and fetch it inside user or session and show it here
+      // const data = {
+      //   _id: user?.publicMetadata?.instituteId,
+      //   role: user?.publicMetadata?.roleName,
+      //   permissions: user?.publicMetadata?.permissions,
+      // };
+
+      // Better Auth Component - Place data inside brackets of setInstitute
+      dispatch(setInstitute({}));
     }
-  }, [isSignedIn]);
+  }, []);
 
   // Define routes for each section
   const router = createBrowserRouter(
@@ -138,12 +145,7 @@ function App() {
         path: "/start",
         element: (
           <Suspense fallback={<Loader />}>
-            <SignedIn>
-              <Start />
-            </SignedIn>
-            <SignedOut>
-              <RedirectToSignIn />
-            </SignedOut>
+            <Start />
           </Suspense>
         ),
       },
@@ -151,12 +153,7 @@ function App() {
         path: "/onboarding",
         element: (
           <Suspense fallback={<Loader />}>
-            <SignedIn>
-              <Onboarding />
-            </SignedIn>
-            <SignedOut>
-              <RedirectToSignIn />
-            </SignedOut>
+            <Onboarding />
           </Suspense>
         ),
       },
@@ -164,12 +161,7 @@ function App() {
         path: "/onboarding/start",
         element: (
           <Suspense fallback={<Loader />}>
-            <SignedIn>
-              <StartOnboarding />
-            </SignedIn>
-            <SignedOut>
-              <RedirectToSignIn />
-            </SignedOut>
+            <StartOnboarding />
           </Suspense>
         ),
       },
@@ -177,12 +169,7 @@ function App() {
         path: "/join",
         element: (
           <Suspense fallback={<Loader />}>
-            <SignedIn>
-              <Join />
-            </SignedIn>
-            <SignedOut>
-              <RedirectToSignIn />
-            </SignedOut>
+            <Join />
           </Suspense>
         ),
       },

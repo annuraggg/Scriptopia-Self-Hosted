@@ -33,7 +33,7 @@ import {
   User as UserIcon,
 } from "lucide-react";
 import { ExtendedCandidate } from "@shared-types/ExtendedCandidate";
-import { useAuth } from "@clerk/clerk-react";
+
 import ax from "@/config/axios";
 import { toast } from "sonner";
 import { ExtendedAppliedDrive } from "@shared-types/ExtendedAppliedDrive";
@@ -248,8 +248,8 @@ const OfferLetters: React.FC = () => {
   const [selectedCandidate, setSelectedCandidate] =
     useState<ExtendedCandidate | null>(null);
   const navigate = useNavigate();
-  const { getToken } = useAuth();
-  const axios = ax(getToken);
+  
+  const axios = ax();
 
   const [appliedDrives, setAppliedDrives] = useState<ExtendedAppliedDrive[]>(
     []

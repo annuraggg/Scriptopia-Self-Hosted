@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Tabs, Tab } from "@heroui/tabs";
 import { CodeAssessment } from "@shared-types/CodeAssessment";
 import { CodeAssessmentSubmission } from "@shared-types/CodeAssessmentSubmission";
-import { useAuth } from "@clerk/clerk-react";
+
 import ax from "@/config/axios";
 import { toast } from "sonner";
 import Loader from "@/components/Loader";
@@ -17,9 +17,9 @@ const AnalyticsDashboard: React.FC = () => {
   );
   const [loading, setLoading] = useState(true);
 
-  const { getToken } = useAuth();
+  
   const { assessmentId } = useParams<{ assessmentId: string }>();
-  const axios = ax(getToken);
+  const axios = ax();
 
   useEffect(() => {
     if (!assessmentId) {
@@ -41,7 +41,7 @@ const AnalyticsDashboard: React.FC = () => {
       .finally(() => {
         setLoading(false);
       });
-  }, [assessmentId, getToken]);
+  }, [assessmentId]);
 
   if (loading) return <Loader />;
 

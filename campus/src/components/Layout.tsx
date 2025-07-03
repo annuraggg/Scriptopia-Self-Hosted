@@ -1,11 +1,5 @@
 import { Outlet, useNavigate } from "react-router-dom";
 import Sidebar from "./Sidebar";
-import {
-  RedirectToSignIn,
-  SignedIn,
-  SignedOut,
-  useAuth,
-} from "@clerk/clerk-react";
 import { useEffect, useState, useCallback } from "react";
 import ax from "@/config/axios";
 import { toast } from "sonner";
@@ -15,6 +9,8 @@ import { Button } from "@nextui-org/react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ExtendedInstitute } from "@shared-types/ExtendedInstitute";
 import { Notification } from "@shared-types/Notification";
+import { SignedIn, SignedOut } from "./auth/LoggedIn";
+import RedirectToSignIn from "./auth/RedirectToSignIn";
 
 const Layout = () => {
   const [notifications, setNotificationsState] = useState<Notification[]>([]);
@@ -27,8 +23,7 @@ const Layout = () => {
   const [isMobile, setIsMobile] = useState(false);
   const navigate = useNavigate();
 
-  const { getToken } = useAuth();
-  const axios = ax(getToken);
+  const axios = ax();
 
   const setNotifications = useCallback(
     (updatedNotifications: Notification[], notificationId: string) => {
@@ -50,7 +45,7 @@ const Layout = () => {
     },
     [notifications, user._id, axios]
   );
-  
+
   useEffect(() => {
     const checkMobile = () => {
       const mobile = window.innerWidth < 640;

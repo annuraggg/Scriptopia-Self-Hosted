@@ -2,7 +2,6 @@ import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { DataTable } from "./DataTable";
 import { Breadcrumbs, BreadcrumbItem } from "@nextui-org/breadcrumbs";
-import { useAuth } from "@clerk/clerk-react";
 import ax from "@/config/axios";
 import { Button, Spinner } from "@nextui-org/react";
 import { useOutletContext } from "react-router-dom";
@@ -16,9 +15,9 @@ const Candidates = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const { getToken } = useAuth();
+  
   useEffect(() => {
-    const axios = ax(getToken);
+    const axios = ax();
     axios
       .get("/institutes/candidates/pending")
       .then((response) => {
