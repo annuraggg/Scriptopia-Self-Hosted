@@ -9,7 +9,7 @@ export const SignOutButton = ({
   children = "Sign out",
   signOutOptions,
 }: SignOutButtonProps) => {
-  const redirectUrl = signOutOptions?.redirectUrl || "/login";
+  const redirectUrl = signOutOptions?.redirectUrl || "/";
 
   const handleSignOut = () => {
     localStorage.removeItem("token"); // or clear cookies/session/etc.

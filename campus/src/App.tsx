@@ -1,10 +1,6 @@
 import "./App.css";
 import { Suspense, lazy, useEffect } from "react";
-import {
-  createBrowserRouter,
-  RouterProvider,
-  useNavigate,
-} from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setInstitute } from "./reducers/instituteReducer";
 import CreateDrive from "./pages/drives/create/CreateDrive";
@@ -107,7 +103,6 @@ const DriveAnalytics = lazy(
 
 function App() {
   const { data, error, isPending } = authClient.useSession();
-  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   // Sync user data with Redux
@@ -117,7 +112,7 @@ function App() {
       console.log("Session Error:", error);
       console.log("Session Pending:", isPending);
 
-      navigate("/dashboard");
+      // navigate("/dashboard");
       // Better Auth Component - Strategy - use publicMetadata and fetch it inside user or session and show it here
       // const data = {
       //   _id: user?.publicMetadata?.instituteId,
@@ -128,7 +123,7 @@ function App() {
       // Better Auth Component - Place data inside brackets of setInstitute
       dispatch(setInstitute({}));
     }
-  }, []);
+  }, [isPending]);
 
   // Define routes for each section
   const router = createBrowserRouter(

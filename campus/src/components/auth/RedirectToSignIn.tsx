@@ -8,7 +8,7 @@ function RedirectToSignIn() {
 
   useEffect(() => {
     if (!isPending && !session) {
-      navigate("/sign-in");
+      window.location.href = import.meta.env.VITE_ACCOUNTS_CENTER
     }
   }, [isPending, session, navigate]);
 

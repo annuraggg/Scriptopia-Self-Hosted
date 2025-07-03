@@ -52,16 +52,16 @@ const createInstitute = async (c: Context) => {
     const sanitizedEmail = sanitizeInput(email);
     const sanitizedWebsite = sanitizeInput(website);
     const sanitizedAddress = address;
-
-    console.log(sanitizedAddress);
-
+    
     const auth = c.get("auth");
     const user_name = auth?.user.name || "";
     const uid = auth?._id;
 
     const user = await User.findById(uid).lean();
 
-    if (!user?.publicMetadata) {
+    console.log("User: ", uid);
+
+    if (!user) {
       return sendError(c, 400, "User metadata is missing");
     }
 
@@ -1778,6 +1778,7 @@ const permissionFieldMap = {
 const getInstitute = async (c: Context) => {
   try {
     const userId = c.get("auth")?._id;
+    console.log(`User ID: ${userId}`);
     if (!userId) {
       return sendError(c, 401, "Authentication required");
     }

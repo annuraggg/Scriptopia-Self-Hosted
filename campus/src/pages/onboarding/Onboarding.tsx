@@ -137,7 +137,16 @@ const Onboarding = () => {
     return true;
   };
 
-  const { data: user } = authClient.useSession();
+  const { data: user, isPending } = authClient.useSession();
+
+  useEffect(() => {
+    if (isPending) return;
+    console.log("User data:", user);
+    if (!user) {
+      window.location.href = import.meta.env.VITE_ACCOUNTS_CENTER;
+    }
+  }, [isPending]);
+
   const dispatch = useDispatch();
 
   const submit = () => {

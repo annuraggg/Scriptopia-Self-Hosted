@@ -39,8 +39,7 @@ export const auth = betterAuth({
         .select("publicMetadata")
         .lean();
       return {
-        ...publicMetadata,
-        user,
+        user: {...user, publicMetadata },
         session,
       };
     }),
