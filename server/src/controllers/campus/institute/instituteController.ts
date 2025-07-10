@@ -52,7 +52,7 @@ const createInstitute = async (c: Context) => {
     const sanitizedEmail = sanitizeInput(email);
     const sanitizedWebsite = sanitizeInput(website);
     const sanitizedAddress = address;
-    
+
     const auth = c.get("auth");
     const user_name = auth?.user.name || "";
     const uid = auth?._id;
@@ -1778,6 +1778,7 @@ const permissionFieldMap = {
 const getInstitute = async (c: Context) => {
   try {
     const userId = c.get("auth")?._id;
+    console.log("Fetching institute for user: " + c.get("auth"));
     console.log(`User ID: ${userId}`);
     if (!userId) {
       return sendError(c, 401, "Authentication required");

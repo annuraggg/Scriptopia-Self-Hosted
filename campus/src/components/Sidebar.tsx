@@ -26,6 +26,7 @@ import { MemberWithPermission } from "@shared-types/MemberWithPermission";
 import { ExtendedInstitute } from "@shared-types/ExtendedInstitute";
 import ax from "@/config/axios";
 import { toast } from "sonner";
+import BetterUserButton from "./auth/UserButton";
 
 const Sidebar = ({
   notifications,
@@ -159,7 +160,6 @@ const Sidebar = ({
 
   const axios = ax();
 
-  // @ts-expect-error -  temp
   const handleLeaveClick = () => {
     setShowFirstConfirmation(true);
   };
@@ -274,18 +274,7 @@ const Sidebar = ({
 
         <nav className="mt-auto flex flex-col gap-2 p-3">
           <div className="ml-[6px] mb-4">
-            {/* <UserButton>
-              <UserButton.MenuItems>
-                <UserButton.Action
-                  label="Leave Institute"
-                  labelIcon={<IconDoorExit className="text-zinc" size={16} />}
-                  onClick={handleLeaveClick}
-                />
-              </UserButton.MenuItems>
-            </UserButton> */}
-
-            User Button Here
-            Better Auth Component - Replace with your auth client logic
+            <BetterUserButton onLeaveInstitute={handleLeaveClick} />
           </div>
 
           {bottomItems.map((item, index) => (

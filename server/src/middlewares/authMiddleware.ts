@@ -5,6 +5,9 @@ import { auth } from "@/config/betterauth";
 
 const authMiddleware = createMiddleware(async (c: Context, next) => {
   const session = await auth.api.getSession({ headers: c.req.raw.headers });
+  const AuthHeader = await c.req.header("Authorization")
+
+  console.log("Auth Header:", AuthHeader);
 
   if (!session) {
     c.set("auth", null);

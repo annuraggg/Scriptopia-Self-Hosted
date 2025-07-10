@@ -13,6 +13,7 @@ import SampleData from "./SampleData";
 import { useNavigate } from "react-router-dom";
 import { authClient } from "@/lib/auth-client";
 import { SignOutButton } from "@/components/auth/SignOutButton";
+import { UserData } from "@/types/UserSessionData";
 
 interface InvitedMember {
   email: string;
@@ -169,17 +170,16 @@ const Onboarding = () => {
       })
       .then(() => {
         toast.success("Institute created successfully");
-        // window.location.href = "/dashboard";
         navigate("/dashboard");
-        // Better Auth Component - Strategy - use publicMetadata and fetch it inside user or session and show it here
-        // const data = {
-        //   _id: user?.publicMetadata?.instituteId,
-        //   role: user?.publicMetadata?.roleName,
-        //   permissions: user?.publicMetadata?.permissions,
-        // };
 
-        // Better Auth Component - Place data inside brackets of setInstitute
-        dispatch(setInstitute({}));
+        const u = user?.user as unknown as UserData;
+
+        const dataObj = {
+          _id: u?.publicMetadata?.instituteId,
+          role: u?.publicMetadata?.roleName,
+          permissions: u?.publicMetadata?.permissions,
+        };
+        dispatch(setInstitute(dataObj));
       })
       .catch((err) => {
         console.error(err);

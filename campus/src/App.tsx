@@ -11,6 +11,7 @@ import Loader from "./components/Loader";
 import PendingCandidates from "./pages/candidates/PendingCandidates";
 import OfferLetters from "./pages/drives/drive/offer-letters/OfferLetters";
 import { authClient } from "./lib/auth-client";
+import { type UserData } from "./types/UserSessionData";
 const Lander = lazy(() => import("./pages/lander/Lander"));
 const Layout = lazy(() => import("./components/Layout"));
 const DriveLayout = lazy(() => import("./pages/drives/drive/Layout"));
@@ -102,26 +103,21 @@ const DriveAnalytics = lazy(
 );
 
 function App() {
-  const { data, error, isPending } = authClient.useSession();
+  const { data, isPending } = authClient.useSession();
   const dispatch = useDispatch();
 
   // Sync user data with Redux
   useEffect(() => {
     if (!isPending && data) {
-      console.log("Session Data:", data);
-      console.log("Session Error:", error);
-      console.log("Session Pending:", isPending);
+      const user = data?.user as unknown as UserData;
 
-      // navigate("/dashboard");
-      // Better Auth Component - Strategy - use publicMetadata and fetch it inside user or session and show it here
-      // const data = {
-      //   _id: user?.publicMetadata?.instituteId,
-      //   role: user?.publicMetadata?.roleName,
-      //   permissions: user?.publicMetadata?.permissions,
-      // };
+      const dataObj = {
+        _id: user?.publicMetadata?.instituteId,
+        role: user?.publicMetadata?.roleName,
+        permissions: user?.publicMetadata?.permissions,
+      };
 
-      // Better Auth Component - Place data inside brackets of setInstitute
-      dispatch(setInstitute({}));
+      dispatch(setInstitute(dataObj));
     }
   }, [isPending]);
 
