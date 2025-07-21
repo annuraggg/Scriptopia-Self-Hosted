@@ -5,17 +5,12 @@ import Contact from "./Contact";
 import { Button } from "@heroui/react";
 import { CalendarDate } from "@internationalized/date";
 import { toast } from "sonner";
-import {
-  RedirectToSignIn,
-  SignedIn,
-  SignedOut,
-  SignOutButton,
-  useAuth,
-  useUser,
-} from "@clerk/clerk-react";
 import ax from "@/config/axios";
 import Address from "./Address";
 import Loader from "@/components/Loader";
+import { SignedIn, SignedOut } from "@/components/auth/LoggedIn";
+import { SignOutButton } from "@/components/auth/SignOutButton";
+import RedirectToSignIn from "@/components/auth/RedirectToSignIn";
 
 const Onboarding = () => {
   const [currentStep, setCurrentStep] = useState(0);
@@ -29,7 +24,7 @@ const Onboarding = () => {
   const { user, isLoaded } = useUser();
 
   useEffect(() => {
-    const axios = ax(getToken);
+    const axios = ax();
     axios
       .get("candidates/candidate")
       .then(() => (window.location.href = "/dashboard"))
@@ -88,12 +83,12 @@ const Onboarding = () => {
     return true;
   };
 
-  const { getToken } = useAuth();
+
 
   const submit = () => {
     if (!validate()) return;
 
-    const axios = ax(getToken);
+    const axios = ax();
     setLoading(true);
     axios
       .post("/candidates/candidate", {

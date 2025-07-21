@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "@clerk/clerk-react";
 import {
   Button,
   Card,
@@ -100,9 +99,9 @@ const Home = () => {
   const DEFAULT_LIMIT = 10;
 
   // Hooks
-  const { getToken } = useAuth();
+
   const navigate = useNavigate();
-  const axios = ax(getToken);
+  const axios = ax();
 
   // Fetch job postings when page or filters change
   useEffect(() => {

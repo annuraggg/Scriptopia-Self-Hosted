@@ -44,7 +44,6 @@ import {
 import { useState, useEffect } from "react";
 import ax from "@/config/axios";
 import { toast } from "sonner";
-import { useAuth } from "@clerk/clerk-react";
 import { Candidate } from "@shared-types/Candidate";
 
 interface DataTableProps<TData extends Candidate> {
@@ -78,8 +77,7 @@ export function DataTable<TData extends Candidate>({
     onClose: onCloseRejectModal,
   } = useDisclosure();
 
-  const { getToken } = useAuth();
-  const axios = ax(getToken);
+  const axios = ax();
 
   // Log data for debugging
   useEffect(() => {

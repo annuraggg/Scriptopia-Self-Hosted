@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { useAuth, useUser } from "@clerk/clerk-react";
 import { toast } from "sonner";
 import ax from "@/config/axios";
 import { Button } from "@/components/ui/button";
@@ -22,6 +21,7 @@ import {
   FileText,
   AlertCircle,
 } from "lucide-react";
+import { authClient } from "@/lib/auth-client";
 
 // Updated interface according to new schema
 interface Assignment {
@@ -41,9 +41,9 @@ const Assignment = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const { user } = useUser();
-  const { getToken } = useAuth();
-  const axios = ax(getToken);
+  const { data } = authClient.useSession();
+
+  const axios = ax();
 
   useEffect(() => {
     const fetchAssignment = async () => {
@@ -130,7 +130,7 @@ const Assignment = () => {
         // For text or link submissions
         await axios.post(url, {
           postingId,
-          userId: user?.id,
+          userId: data?.user?.id,
           assignmentId: assignment?._id,
           textSubmission: textSubmission.trim(),
           linkSubmission: linkSubmission.trim(),

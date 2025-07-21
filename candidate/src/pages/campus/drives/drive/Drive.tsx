@@ -1,6 +1,5 @@
 // At the top of your file, keep the imports exactly as they were in your original code
 import { useEffect, useState } from "react";
-import { useAuth, useUser } from "@clerk/clerk-react";
 import { toast } from "sonner";
 import ax from "@/config/axios";
 import {
@@ -83,8 +82,7 @@ interface SafeAdditionalFieldConfig {
 }
 
 const Drive: React.FC = () => {
-  const { getToken } = useAuth();
-  const axios = ax(getToken);
+  const axios = ax();
   const [loading, setLoading] = useState<boolean>(true);
   const [drive, setDrive] = useState<ExtendedDrive>({} as ExtendedDrive);
   const [applied, setApplied] = useState<boolean>(false);

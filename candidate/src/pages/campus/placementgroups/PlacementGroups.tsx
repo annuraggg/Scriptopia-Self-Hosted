@@ -1,6 +1,5 @@
 import Loader from "@/components/Loader";
 import ax from "@/config/axios";
-import { useAuth } from "@clerk/clerk-react";
 import { PlacementGroup } from "@shared-types/PlacementGroup";
 import { Candidate } from "@shared-types/Candidate";
 import { useEffect, useState } from "react";
@@ -42,8 +41,7 @@ const PlacementGroups = () => {
     limit: 10,
   });
 
-  const { getToken } = useAuth();
-  const axios = ax(getToken);
+  const axios = ax();
 
   useEffect(() => {
     fetchPlacementGroups();

@@ -39,7 +39,7 @@ import { toast } from "sonner";
 import { z } from "zod";
 import { useOutletContext } from "react-router-dom";
 import { Candidate } from "@shared-types/Candidate";
-import { useAuth } from "@clerk/clerk-react";
+
 import ax from "@/config/axios";
 import { debounce } from "lodash";
 
@@ -77,8 +77,8 @@ const General = () => {
     user: Candidate;
     setUser: (user: Candidate) => void;
   }>();
-  const { getToken } = useAuth();
-  const axios = ax(getToken);
+
+  const axios = ax();
 
   useEffect(() => {
     try {

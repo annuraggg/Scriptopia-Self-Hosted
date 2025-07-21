@@ -21,8 +21,8 @@ import {
   IconBooks,
   IconUsersGroup,
 } from "@tabler/icons-react";
-import { UserButton } from "@clerk/clerk-react";
 import { ExtendedCandidate } from "@shared-types/ExtendedCandidate";
+import BetterUserButton from "./auth/UserButton";
 
 interface SidebarProps {
   icon: any;
@@ -322,7 +322,7 @@ const Sidebar = ({
           ))}
         </div>
         <div className="justify-self-end flex flex-col items-center gap-4">
-          <UserButton />
+          <BetterUserButton />
           {bottomItems.map((item) => (
             <Tooltip key={item.label} content={item.label} placement="right">
               <div

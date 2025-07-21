@@ -1,26 +1,21 @@
 import { Outlet, useNavigate } from "react-router-dom";
 import Sidebar from "./Sidebar";
-import {
-  RedirectToSignIn,
-  SignedIn,
-  SignedOut,
-  useAuth,
-} from "@clerk/clerk-react";
 import { useCallback, useEffect, useState } from "react";
 import ax from "@/config/axios";
 import { toast } from "sonner";
 import Loader from "./Loader";
 import { ExtendedCandidate } from "@shared-types/ExtendedCandidate";
 import { Notification } from "@shared-types/Notification";
+import { SignedIn, SignedOut } from "./auth/LoggedIn";
+import RedirectToSignIn from "./auth/RedirectToSignIn";
 
 const Layout = () => {
-  const { getToken } = useAuth();
   const [user, setUser] = useState<ExtendedCandidate>({} as ExtendedCandidate);
   const [notifications, setNotificationsState] = useState<Notification[]>([]);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
 
-  const axios = ax(getToken);
+  const axios = ax();
 
   const setNotifications = useCallback(
     (updatedNotifications: Notification[], notificationId: string) => {

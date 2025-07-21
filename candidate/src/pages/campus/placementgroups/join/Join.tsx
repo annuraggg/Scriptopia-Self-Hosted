@@ -4,15 +4,13 @@ import { Card, CardBody, Button } from "@heroui/react";
 import { motion } from "framer-motion";
 import Loader from "@/components/Loader";
 import { PlacementGroup } from "@shared-types/PlacementGroup";
-import { useAuth } from "@clerk/clerk-react";
 import ax from "@/config/axios";
 import { toast } from "sonner";
 // Main Component
 const GroupDetails: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const { id } = useParams<{ id: string }>();
-  const { getToken } = useAuth();
-  const axios = ax(getToken);
+  const axios = ax();
 
   const [group, setGroup] = useState<PlacementGroup | null>(null);
 

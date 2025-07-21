@@ -14,7 +14,6 @@ import {
 } from "@heroui/react";
 import { UserCircle, Send, Briefcase, Book, Award, FileBadge, Globe, Check, X, ChevronDown } from 'lucide-react';
 import type { Candidate } from '@shared-types/Candidate';
-import { useAuth } from "@clerk/clerk-react";
 import ax from "@/config/axios";
 
 interface PostingForForm {
@@ -93,8 +92,7 @@ function ApplicationForm({ posting, onClose, onSubmit }: ApplicationFormProps) {
     return '';
   };
 
-  const { getToken } = useAuth();
-  const axios = ax(getToken);
+  const axios = ax();
 
   const fetchCandidateData = async () => {
     try {

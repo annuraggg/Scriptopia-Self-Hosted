@@ -11,9 +11,9 @@ import {
   CircleHelpIcon,
   ScanSearchIcon,
 } from "lucide-react";
-import { useAuth, useUser } from "@clerk/clerk-react";
 import ax from "@/config/axios";
 import { toast } from "sonner";
+import { authClient } from "@/lib/auth-client";
 
 interface StepCard {
   step: string;
@@ -55,16 +55,15 @@ const Apply = () => {
     setCurrentStep(newStep);
   };
 
-  const { user, isSignedIn } = useUser();
-  const { getToken } = useAuth();
-  const axios = ax(getToken);
+  const { data, isPending } = authClient.useSession();
+
+  const axios = ax();
 
   useEffect(() => {
-    if (user && isSignedIn) {
-      console.log(user?.primaryEmailAddress?.emailAddress);
-      setEmail(user?.primaryEmailAddress?.emailAddress || "");
+    if (data?.user && !isPending) {
+      setEmail(data.user?.email);
     }
-  }, [isSignedIn, user]);
+  }, [isPending]);
 
   useEffect(() => {
     axios

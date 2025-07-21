@@ -2,7 +2,7 @@ import { ExtendedCandidate } from "@shared-types/ExtendedCandidate";
 import ax from "./axios";
 
 const useCandidate = (getToken?: any): ExtendedCandidate | null => {
-  const axios = ax(getToken);
+  const axios = ax();
   axios
     .get("/candidates")
     .then((res) => {

@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "@clerk/clerk-react";
 import {
   Button,
   Card,
@@ -112,9 +111,8 @@ const Home = () => {
   const [isSearchFocused, setIsSearchFocused] = useState<boolean>(false);
   const itemsPerPage = 9; // For 3x3 grid
 
-  const { getToken } = useAuth();
   const navigate = useNavigate();
-  const axios = ax(getToken);
+  const axios = ax();
 
   // Fetch job drives on component mount and when page changes
   useEffect(() => {

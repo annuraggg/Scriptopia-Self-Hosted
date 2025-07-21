@@ -12,8 +12,8 @@ import {
 } from "@heroui/react";
 
 import { toast } from "sonner";
-import { useAuth, useUser } from "@clerk/clerk-react";
 import ax from "@/config/axios";
+import { authClient } from "@/lib/auth-client";
 
 interface ReviewProps {
   onEdit: (section: string) => void;
@@ -38,20 +38,20 @@ const Review = ({
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const { getToken } = useAuth();
-  const { user } = useUser();
-  const axios = ax(getToken);
+  const { data } = authClient.useSession();
+  const axios = ax();
   const handleSubmit = () => {
     setLoading(true);
     const formData = new FormData();
-    const postingId = new URLSearchParams(window.location.search).get("id") ?? "";
+    const postingId =
+      new URLSearchParams(window.location.search).get("id") ?? "";
 
     formData.append("name", name);
     formData.append("phone", phone);
     formData.append("email", email);
     formData.append("website", website);
     formData.append("postingId", postingId);
-    formData.append("userId", user?.id.toString() || "");
+    formData.append("userId", data?.user?.id.toString() || "");
 
     if (resume) {
       formData.append("resume", resume);

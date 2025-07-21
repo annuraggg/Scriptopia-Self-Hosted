@@ -1,6 +1,6 @@
 import { Outlet, useOutletContext } from "react-router-dom";
 import { Candidate } from "@shared-types/Candidate";
-import { useAuth } from "@clerk/clerk-react";
+
 import ax from "@/config/axios";
 import { toast } from "sonner";
 
@@ -11,8 +11,8 @@ const Layout = () => {
   };
 
   // on setUser, save to db
-  const { getToken } = useAuth();
-  const axios = ax(getToken);
+
+  const axios = ax();
 
   const updateUser = (newUser: Candidate) => {
     const oldState = user;

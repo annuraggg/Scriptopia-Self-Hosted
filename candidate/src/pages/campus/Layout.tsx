@@ -1,26 +1,21 @@
 import { Outlet, useNavigate } from "react-router-dom";
-import {
-  RedirectToSignIn,
-  SignedIn,
-  SignedOut,
-  useAuth,
-} from "@clerk/clerk-react";
 import { useEffect, useState } from "react";
 import ax from "@/config/axios";
 import { toast } from "sonner";
 import Loader from "@/components/Loader";
 import { ExtendedCandidate } from "@shared-types/ExtendedCandidate";
 import InstituteOnboarding from "./InstituteOnboarding";
+import { SignedIn, SignedOut } from "@/components/auth/LoggedIn";
+import RedirectToSignIn from "@/components/auth/RedirectToSignIn";
 
 const Layout = () => {
-  const { getToken } = useAuth();
   const [user, setUser] = useState<ExtendedCandidate>({} as ExtendedCandidate);
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const axios = ax(getToken);
+    const axios = ax();
     axios
       .get("candidates/candidate")
       .then((res) => {

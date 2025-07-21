@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useAuth, useUser } from "@clerk/clerk-react";
 import { toast } from "sonner";
 import ax from "@/config/axios";
 import {
@@ -45,6 +44,7 @@ import {
 } from "@heroui/react";
 import { useOutletContext } from "react-router-dom";
 import { Candidate } from "@shared-types/Candidate";
+import { authClient } from "@/lib/auth-client";
 
 const routineMap = {
   full_time: "Full Time",
@@ -66,8 +66,7 @@ type FieldPathInfo = {
 };
 
 const Posting = () => {
-  const { getToken } = useAuth();
-  const axios = ax(getToken);
+  const axios = ax();
   const [loading, setLoading] = useState(false);
   const [posting, setPosting] = useState<PostingOrganization>(
     {} as PostingOrganization
@@ -78,7 +77,7 @@ const Posting = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [applyLoading, setApplyLoading] = useState(false);
 
-  const { user } = useUser();
+  const { data } = authClient.useSession();
   const { user: userDoc } = useOutletContext() as { user: Candidate };
 
   useEffect(() => {
@@ -89,7 +88,7 @@ const Posting = () => {
     if (filter && filter.length > 0) {
       setApplied(true);
     }
-  }, [user, posting, userDoc]);
+  }, [data, posting, userDoc]);
 
   useEffect(() => {
     setLoading(true);
@@ -905,10 +904,7 @@ const Posting = () => {
                         (Array.isArray(field.userField) &&
                           field.userField.length === 0);
 
-                      const status = getFieldStatus(
-                        fieldConfig,
-                        isEmpty
-                      );
+                      const status = getFieldStatus(fieldConfig, isEmpty);
 
                       if (!status) return null;
 

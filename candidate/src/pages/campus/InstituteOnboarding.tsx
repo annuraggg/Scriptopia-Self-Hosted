@@ -1,6 +1,5 @@
 import Loader from "@/components/Loader";
 import ax from "@/config/axios";
-import { useAuth } from "@clerk/clerk-react";
 import {
   Button,
   Input,
@@ -22,8 +21,7 @@ const InstituteOnboarding = () => {
   const [hasRequested, setHasRequested] = useState(false);
   const [requestedName, setRequestedName] = useState("");
 
-  const { getToken } = useAuth();
-  const axios = ax(getToken);
+  const axios = ax();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   useEffect(() => {
