@@ -11,6 +11,7 @@ import Loader from "@/components/Loader";
 import { SignedIn, SignedOut } from "@/components/auth/LoggedIn";
 import { SignOutButton } from "@/components/auth/SignOutButton";
 import RedirectToSignIn from "@/components/auth/RedirectToSignIn";
+import { authClient } from "@/lib/auth-client";
 
 const Onboarding = () => {
   const [currentStep, setCurrentStep] = useState(0);
@@ -21,7 +22,7 @@ const Onboarding = () => {
   const [phone, setPhone] = useState<string>("");
   const [address, setAddress] = useState<string>("");
   const [loading, setLoading] = useState(true);
-  const { user, isLoaded } = useUser();
+  const { data, isPending } = authClient.useSession();
 
   useEffect(() => {
     const axios = ax();
@@ -51,7 +52,7 @@ const Onboarding = () => {
       description: "Contact details of yourself",
       component: (
         <Contact
-          email={user?.emailAddresses[0].emailAddress || ""}
+          email={data?.user?.email || ""}
           phone={phone}
           setPhone={setPhone}
         />
@@ -95,7 +96,7 @@ const Onboarding = () => {
         name,
         dob: dob?.toDate("UTC"),
         gender,
-        email: user?.emailAddresses[0].emailAddress,
+        email: data?.user?.email,
         phone,
         address,
       })
@@ -111,7 +112,7 @@ const Onboarding = () => {
       });
   };
 
-  if (loading || !isLoaded) return <Loader />;
+  if (loading || isPending) return <Loader />;
 
   return (
     <>
@@ -140,7 +141,7 @@ const Onboarding = () => {
             </p>
 
             <div className="mt-5 flex gap-2">
-              <p>Signed in as {user?.emailAddresses[0].emailAddress}</p>
+              <p>Signed in as {data?.user?.email}</p>
               <SignOutButton>
                 <p className="text-danger underline cursor-pointer">Logout</p>
               </SignOutButton>

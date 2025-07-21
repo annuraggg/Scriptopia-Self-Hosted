@@ -45,6 +45,7 @@ import { Alert, AlertTitle } from "@/components/ui/alert";
 import UploadOfferLetter from "./UploadOfferLetter";
 import { Company } from "@shared-types/Company";
 import clsx from "clsx";
+import { authClient } from "@/lib/auth-client";
 
 enum StepType {
   RESUME_SCREENING = "RESUME_SCREENING",
@@ -94,7 +95,7 @@ const Drive: React.FC = () => {
   const [successModalOpen, setSuccessModalOpen] = useState<boolean>(false);
   const [uploadModalOpen, setUploadModalOpen] = useState<boolean>(false);
 
-  const { user } = useUser();
+  const { data } = authClient.useSession();
   const { user: userDoc } = useOutletContext() as { user: Candidate };
 
   useEffect(() => {
@@ -105,7 +106,7 @@ const Drive: React.FC = () => {
     if (filter && filter.length > 0) {
       setApplied(true);
     }
-  }, [user, drive, userDoc?._id]);
+  }, [data, drive, userDoc?._id]);
 
   useEffect(() => {
     setLoading(true);

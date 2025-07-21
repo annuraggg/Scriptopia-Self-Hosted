@@ -1,7 +1,7 @@
 import { ExtendedCandidate } from "@shared-types/ExtendedCandidate";
 import ax from "./axios";
 
-const useCandidate = (getToken?: any): ExtendedCandidate | null => {
+const useCandidate = (): ExtendedCandidate | null => {
   const axios = ax();
   axios
     .get("/candidates")
