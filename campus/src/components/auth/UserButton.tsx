@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useLayoutEffect } from "react";
 import { createPortal } from "react-dom";
-import { Cog, LogOut, UserPlus2, User2 } from "lucide-react";
+import { Cog, LogOut } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
@@ -11,7 +11,6 @@ import UserSettings from "./UserSettings";
 // ---------------------------------------------------------------------------
 const useAuthUser = () => ({
   name: "Anurag Sawant",
-  username: "annuraggg",
   avatarUrl: "",
 });
 const signOut = () => new Promise((r) => setTimeout(r, 500));
@@ -180,7 +179,7 @@ const BetterUserButton = ({
                 position: "absolute",
                 top: coords.top,
                 left: coords.left,
-                width: 420,
+                width: 400,
                 maxWidth: "99vw",
                 zIndex: 1200,
               }}
@@ -203,7 +202,6 @@ const BetterUserButton = ({
                   <div className="font-medium text-black text-sm leading-tight">
                     {user.name}
                   </div>
-                  <div className="text-gray-400 text-xs">{user.username}</div>
                 </div>
               </div>
 
@@ -221,19 +219,6 @@ const BetterUserButton = ({
                   >
                     <Cog className="w-4 h-4 opacity-80" />
                     Manage account
-                  </button>
-                </li>
-                <li>
-                  <button
-                    className="w-full flex items-center gap-3 px-6 py-3 text-sm text-gray-800 rounded transition hover:bg-gray-100"
-                    role="menuitem"
-                    onClick={() => {
-                      setMenuOpen(false);
-                      // Insert your account logic here
-                    }}
-                  >
-                    <User2 className="w-4 h-4 opacity-80" />
-                    Account
                   </button>
                 </li>
                 <li>
@@ -266,12 +251,7 @@ const BetterUserButton = ({
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-[2100]"
           >
-            <UserSettings />
-            <button
-              className="fixed inset-0 z-[2101] cursor-default"
-              onClick={() => setShowSettings(false)}
-              aria-label="Close user settings"
-            />
+            <UserSettings setShowSettings={setShowSettings} />
           </motion.div>
         )}
       </AnimatePresence>

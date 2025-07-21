@@ -13,7 +13,19 @@ export const auth = betterAuth({
   database: mongodbAdapter(db),
   emailAndPassword: { enabled: true, requireEmailVerification: true },
   basePath: "/users/auth",
-  user: { modelName: "users" },
+  user: {
+    modelName: "users",
+    changeEmail: {
+      enabled: true,
+      sendChangeEmailVerification: async ({ user, token }) => {
+        await sendEmail({
+          to: user.email,
+          subject: "Change your email",
+          text: `Click the link to confirm your email change: ${process.env.ACCOUNTS_FRONTEND_URL}/change-email?token=${token}`,
+        });
+      },
+    },
+  },
   trustedOrigins: [
     process.env.MAIN_FRONTEND_URL!,
     process.env.SCRIPTOPIA_FRONTEND_URL!,
@@ -39,7 +51,7 @@ export const auth = betterAuth({
         .select("publicMetadata")
         .lean();
       return {
-        user: {...user, publicMetadata },
+        user: { ...user, publicMetadata },
         session,
       };
     }),
