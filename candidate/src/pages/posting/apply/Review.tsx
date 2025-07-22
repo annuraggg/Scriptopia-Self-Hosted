@@ -39,6 +39,8 @@ const Review = ({
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  const navigate = useNavigate();
+
   const { data } = authClient.useSession();
   const axios = ax();
   const handleSubmit = () => {

@@ -12,6 +12,7 @@ import { SignedIn, SignedOut } from "@/components/auth/LoggedIn";
 import { SignOutButton } from "@/components/auth/SignOutButton";
 import RedirectToSignIn from "@/components/auth/RedirectToSignIn";
 import { authClient } from "@/lib/auth-client";
+import { useNavigate } from "react-router-dom";
 
 const Onboarding = () => {
   const [currentStep, setCurrentStep] = useState(0);

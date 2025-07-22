@@ -160,9 +160,9 @@ const Sidebar = ({
 
   const axios = ax();
 
-  const handleLeaveClick = () => {
-    setShowFirstConfirmation(true);
-  };
+  // const handleLeaveClick = () => {
+  //   setShowFirstConfirmation(true);
+  // };
 
   const handleFirstConfirmation = () => {
     setShowFirstConfirmation(false);
@@ -274,7 +274,8 @@ const Sidebar = ({
 
         <nav className="mt-auto flex flex-col gap-2 p-3">
           <div className="ml-[6px] mb-4">
-            <BetterUserButton onLeaveInstitute={handleLeaveClick} />
+            {/* Better Auth - Add onLeaveInstitute  */}
+            <BetterUserButton />
           </div>
 
           {bottomItems.map((item, index) => (

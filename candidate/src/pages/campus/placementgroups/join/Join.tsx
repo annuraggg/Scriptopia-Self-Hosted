@@ -13,6 +13,8 @@ const GroupDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const axios = ax();
 
+  const navigate = useNavigate();
+
   const [group, setGroup] = useState<PlacementGroup | null>(null);
 
   const joinGroup = () => {

@@ -3000,3 +3000,4 @@ server/tsconfig.app.tsbuildinfo
 scripts/mongodb/.env
 accounts/.env
 candidate/.env
+server/dist/
