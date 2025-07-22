@@ -110,7 +110,9 @@ const Drive: React.FC = () => {
 
   useEffect(() => {
     setLoading(true);
-    const driveId = window.location.pathname.split("/")[3];
+    const driveId = import.meta.env.VITE_BASENAME === "/"
+      ? window.location.pathname.split("/")[2]
+      : window.location.pathname.split("/")[3];
     axios
       .get(`/candidates/drives/${driveId}`)
       .then((res) => {

@@ -48,8 +48,12 @@ const Assignment = () => {
   useEffect(() => {
     const fetchAssignment = async () => {
       try {
-        const postingId = window.location.pathname.split("/")[2];
-        const assignmentId = window.location.pathname.split("/")[4];
+        const postingId = import.meta.env.VITE_BASENAME === "/"
+          ? window.location.pathname.split("/")[2]
+          : window.location.pathname.split("/")[3];
+        const assignmentId = import.meta.env.VITE_BASENAME === "/"
+          ? window.location.pathname.split("/")[3]
+          : window.location.pathname.split("/")[4];
         setLoading(true);
         await axios
           .get(`/postings/${postingId}/assignment/${assignmentId}`)
@@ -96,7 +100,9 @@ const Assignment = () => {
 
     try {
       setLoading(true);
-      const postingId = window.location.pathname.split("/")[2];
+      const postingId = import.meta.env.VITE_BASENAME === "/"
+        ? window.location.pathname.split("/")[2]
+        : window.location.pathname.split("/")[3];
 
       if (assignment.submissionType === "file" && !file) {
         toast.error("Please upload a file");

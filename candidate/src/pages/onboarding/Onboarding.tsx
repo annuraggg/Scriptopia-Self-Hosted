@@ -15,6 +15,7 @@ import { authClient } from "@/lib/auth-client";
 
 const Onboarding = () => {
   const [currentStep, setCurrentStep] = useState(0);
+  const navigate = useNavigate();
 
   const [name, setName] = useState<string>("");
   const [dob, setDob] = useState<CalendarDate | undefined>();
@@ -28,7 +29,7 @@ const Onboarding = () => {
     const axios = ax();
     axios
       .get("candidates/candidate")
-      .then(() => (window.location.href = "/dashboard"))
+      .then(() => (navigate("/dashboard")))
       .catch(() => setLoading(false));
   }, []);
 
@@ -103,7 +104,7 @@ const Onboarding = () => {
       .then(() => {
         setLoading(false);
         toast.success("Profile Created successfully");
-        window.location.href = "/dashboard";
+        navigate("/dashboard");
       })
       .catch((err) => {
         console.error(err);

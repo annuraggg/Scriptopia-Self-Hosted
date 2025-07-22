@@ -6,6 +6,7 @@ import Loader from "@/components/Loader";
 import { PlacementGroup } from "@shared-types/PlacementGroup";
 import ax from "@/config/axios";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 // Main Component
 const GroupDetails: React.FC = () => {
   const [loading, setLoading] = useState(true);
@@ -20,7 +21,7 @@ const GroupDetails: React.FC = () => {
       .post(`/placement-groups/${id}/join`)
       .then((res) => {
         toast.success(res.data.message);
-        window.location.href = "/campus/placement-groups";
+        navigate("/campus/placement-groups");
       })
       .catch((err) => {
         toast.error(err.response.data.message || "An error occurred");

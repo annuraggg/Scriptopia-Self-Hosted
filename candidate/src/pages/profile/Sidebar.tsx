@@ -119,13 +119,17 @@ const Sidebar = () => {
   const subNavbarRoutes = ["education", "work", "skills"];
 
   useEffect(() => {
-    setActive(window.location.pathname.split("/")[2]);
+    setActive(import.meta.env.VITE_BASENAME === "/"
+      ? window.location.pathname.split("/")[2]
+      : window.location.pathname.split("/")[3]);
   }, []);
 
   return (
     <aside
       className={`h-[100vh] bg-foreground text-background ${
-        subNavbarRoutes.includes(window.location.pathname.split("/")[1])
+        subNavbarRoutes.includes(import.meta.env.VITE_BASENAME === "/"
+          ? window.location.pathname.split("/")[1]
+          : window.location.pathname.split("/")[2])
           ? "border-r-background/10"
           : "rounded-r-2xl"
       } border-r flex flex-col overflow-hidden transition-all duration-300 

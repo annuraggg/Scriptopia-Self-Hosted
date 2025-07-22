@@ -11,9 +11,12 @@ import {
   FiUsers,
   FiAward,
 } from "react-icons/fi";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const LandingPage: React.FC = () => {
+
+  const navigate = useNavigate();
+
   return (
     <div className="bg-gradient-to-b from-indigo-50 to-white min-h-screen">
       {/* Header Section */}
@@ -36,6 +39,7 @@ const LandingPage: React.FC = () => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               className="bg-indigo-600 text-white font-medium px-8 py-3 rounded-lg shadow-lg hover:bg-indigo-700 transition duration-300"
+              onClick={() => navigate("/dashboard")}
             >
               Register Now
             </motion.button>
