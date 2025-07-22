@@ -2,7 +2,7 @@
   "name": "server",
   "type": "module",
   "scripts": {
-    "start": "node build/index.js && node build.js",
+    "start": "node dist/index.js ",
     "check": "node check-types.js",
     "check:silent": "npx tsc -b --diagnostics --noEmit",
     "build": "node check-types.js && node build.js",
