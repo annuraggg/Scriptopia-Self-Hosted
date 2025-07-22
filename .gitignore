@@ -2999,3 +2999,4 @@ server/tsconfig.tsbuildinfo
 server/tsconfig.app.tsbuildinfo
 scripts/mongodb/.env
 accounts/.env
+candidate/.env
