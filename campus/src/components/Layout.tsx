@@ -11,6 +11,7 @@ import { ExtendedInstitute } from "@shared-types/ExtendedInstitute";
 import { Notification } from "@shared-types/Notification";
 import { SignedIn, SignedOut } from "./auth/LoggedIn";
 import RedirectToSignIn from "./auth/RedirectToSignIn";
+import logo from "@/assets/logo.svg";
 
 const Layout = () => {
   const [notifications, setNotificationsState] = useState<Notification[]>([]);
@@ -102,7 +103,7 @@ const Layout = () => {
           {/* Mobile Header */}
           <div className="sm:hidden fixed top-0 left-0 right-0 h-16 border-b z-40 px-5 flex items-center justify-between">
             <img
-              src="/logo.svg"
+              src={logo}
               alt="logo"
               className="h-6 cursor-pointer"
               onClick={() => {

@@ -9,9 +9,10 @@ import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { SignOutButton } from "@/components/auth/SignOutButton";
 import { authClient } from "@/lib/auth-client";
+import joinBg from "@/assets/join-bg.svg";
 
 const bgStyle = {
-  backgroundImage: "url(./join-bg.svg)",
+  backgroundImage: `url(${joinBg})`,
   backgroundSize: "cover",
   height: "100vh",
   display: "flex",

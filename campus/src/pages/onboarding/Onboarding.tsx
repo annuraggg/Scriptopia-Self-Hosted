@@ -14,6 +14,7 @@ import { useNavigate } from "react-router-dom";
 import { authClient } from "@/lib/auth-client";
 import { SignOutButton } from "@/components/auth/SignOutButton";
 import { UserData } from "@/types/UserSessionData";
+import logo from "@/assets/logo.svg";
 
 interface InvitedMember {
   email: string;
@@ -200,7 +201,7 @@ const Onboarding = () => {
   return (
     <div className="flex items-center justify-center h-screen p-10 py-5">
       <div className="min-w-[60%] h-full pr-10 overflow-auto">
-        <img src="logo.svg" alt="logo" className="w-14 h-14" />
+        <img src={logo} alt="logo" className="w-14 h-14" />
         <div className="flex gap-3 mt-10">
           {steps.map((_s, i) => (
             <div

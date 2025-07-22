@@ -7,6 +7,15 @@ import { ContainerScroll } from "@/components/ui/container-scroll-animation";
 import { HoverEffect } from "@/components/ui/card-hover-effect";
 import { Timeline } from "@/components/ui/timeline";
 import { SparklesCore } from "@/components/ui/sparkles";
+import logo from "@/assets/logo.svg";
+import t11 from "@/assets/t11.png";
+import t12 from "@/assets/t12.png";
+import t21 from "@/assets/t21.png";
+import t31 from "@/assets/t31.png";
+import t32 from "@/assets/t32.png";
+import t41 from "@/assets/t41.png";
+import t42 from "@/assets/t42.png";
+import lander1 from "@/assets/lander1.png";
 
 const LargeHeading = ({ children }: any) => {
   return (
@@ -74,11 +83,11 @@ const Lander = () => {
             institution.
           </p>{" "}
           <img
-            src="/t11.png"
+            src={t11}
             className="rounded-lg h-[500px] w-[500px] object-cover md:h-44 lg:h-60 shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
           />{" "}
           <img
-            src="/t12.png"
+            src={t12}
             className="rounded-lg mt-5 h-[500px] w-[500px] object-cover md:h-44 lg:h-60 shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
           />{" "}
         </div>
@@ -94,7 +103,7 @@ const Lander = () => {
             activities.
           </p>
           <img
-            src="/t21.png"
+            src={t21}
             className="rounded-lg mt-5 h-[500px] w-[500px] object-cover md:h-44 lg:h-60 shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
           />{" "}
         </div>
@@ -110,11 +119,11 @@ const Lander = () => {
             stage-wise tracking.
           </p>
           <img
-            src="/t31.png"
+            src={t31}
             className="rounded-lg h-[500px] w-[500px] object-cover md:h-44 lg:h-60 shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
           />
           <img
-            src="/t32.png"
+            src={t32}
             className="rounded-lg mt-5 h-[500px] w-[500px] object-cover md:h-44 lg:h-60 shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
           />{" "}
         </div>
@@ -130,11 +139,11 @@ const Lander = () => {
             reporting.
           </p>
           <img
-            src="/t41.png"
+            src={t41}
             className="rounded-lg h-[500px] w-[500px] object-cover md:h-44 lg:h-60 shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
           />
           <img
-            src="/t42.png"
+            src={t42}
             className="rounded-lg h-[500px] w-[500px] object-cover md:h-44 lg:h-60 shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
           />
         </div>
@@ -158,7 +167,8 @@ const Lander = () => {
     <div className="relative min-h-screen bg-white text-gray-900 ">
       {/* Header */}
       <header className="relative z-20 px-6 lg:px-20 py-6 flex justify-between items-center border-b border-gray-100">
-        <img src="/logo.svg" alt="logo" className="w-12 h-12" />
+        <img src={logo} alt="logo" className="w-12 h-12" />
+
         <div className="flex items-center gap-4">
           <Button
             onClick={redirectUser}
@@ -187,7 +197,7 @@ const Lander = () => {
             }
           >
             <img
-              src={`/lander1.png`}
+              src={lander1}
               alt="hero"
               height={720}
               width={1400}

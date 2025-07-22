@@ -27,6 +27,7 @@ import { ExtendedInstitute } from "@shared-types/ExtendedInstitute";
 import ax from "@/config/axios";
 import { toast } from "sonner";
 import BetterUserButton from "./auth/UserButton";
+import logo from "@/assets/logo.svg";
 
 const Sidebar = ({
   notifications,
@@ -224,7 +225,7 @@ const Sidebar = ({
           {(!isMobile || !collapsed) && (
             <div className={`${isMobile ? "mt-12" : "mt-4"} mb-6`}>
               <img
-                src="/logo.svg"
+                src={logo}
                 alt="logo"
                 className="cursor-pointer h-10"
                 onClick={() => {
