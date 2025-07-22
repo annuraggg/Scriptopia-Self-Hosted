@@ -1,47 +1,25 @@
-import React, { useState } from "react";
 import Signin from "./pages/Signin/Signin";
 import Signup from "./pages/Signup/Signup";
 import ForgotPassword from "./pages/forgot/Forgotpassword";
 import VerifyEmail from "./pages/verify-email/VerifyEmail";
+import { createBrowserRouter, Navigate, RouterProvider } from "react-router";
 
 function App() {
-  const [currentPath, setCurrentPath] = useState("/sign-in");
+  const basename = import.meta.env.VITE_BASENAME || "/";
 
-  const navigate = (path: string) => {
-    setCurrentPath(path);
-    window.history.pushState({}, "", path);
-  };
+  const router = createBrowserRouter(
+    [
+      { path: "/", element: <Navigate to="/sign-in" /> },
+      { path: "/sign-in", element: <Signin /> },
+      { path: "/sign-up", element: <Signup /> },
+      { path: "/forgot-password", element: <ForgotPassword /> },
+      { path: "/verify-email", element: <VerifyEmail /> },
+      { path: "*", element: <Navigate to="/sign-in" /> },
+    ],
+    { basename }
+  );
 
-  const renderCurrentPage = () => {
-    switch (currentPath) {
-      case "/sign-in":
-        return <Signin onNavigate={navigate} />;
-      case "/sign-up":
-        return <Signup onNavigate={navigate} />;
-      case "/forgot-password":
-        return <ForgotPassword onNavigate={navigate} />;
-      case "/verify-email":
-        return <VerifyEmail onNavigate={navigate} />;
-      default:
-        return <Signin onNavigate={navigate} />;
-    }
-  };
-
-  React.useEffect(() => {
-    const handlePopState = () => {
-      setCurrentPath(window.location.pathname);
-    };
-
-    window.addEventListener("popstate", handlePopState);
-
-    setCurrentPath(window.location.pathname);
-
-    return () => {
-      window.removeEventListener("popstate", handlePopState);
-    };
-  }, []);
-
-  return <div className="App">{renderCurrentPage()}</div>;
+  return <RouterProvider router={router} />;
 }
 
 export default App;
