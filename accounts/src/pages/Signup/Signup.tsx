@@ -91,7 +91,7 @@ const Signup: React.FC<SignupProps> = ({ onNavigate }) => {
           <div className="bg-white rounded-2xl shadow-xl p-8 text-center">
             <div className="flex items-center space-x-2 justify-center mb-6">
               <div className="w-6 h-6 bg-black rounded-sm flex items-center justify-center">
-                <link rel="icon" type="image/svg+xml" href="/logo.svg" />
+                <link rel="icon" type="image/svg+xml" href={`${import.meta.env.VITE_BASENAME}/logo.svg`} />
               </div>
               <span className="text-xl font-semibold text-gray-900">
                 Scriptopia
@@ -163,7 +163,7 @@ const Signup: React.FC<SignupProps> = ({ onNavigate }) => {
           <div>
             <div className="flex items-center space-x-2 mb-4">
               <div className="w-6 h-6 bg-black rounded-sm flex items-center justify-center">
-                <link rel="icon" type="image/svg+xml" href="/logo.svg" />
+                <link rel="icon" type="image/svg+xml" href={`${import.meta.env.VITE_BASENAME}/logo.svg`} />
               </div>
               <span className="text-xl font-semibold text-gray-900">
                 Scriptopia
