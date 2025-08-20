@@ -6,10 +6,16 @@ const AuthContext = createContext<{
   user: any;
   isAuthenticated: boolean;
   getToken: () => Promise<string>;
+  isSignedIn: boolean;
+  isLoaded: boolean;
+  userId: string | null;
 }>({
   user: null,
   isAuthenticated: false,
   getToken: async () => "",
+  isSignedIn: false,
+  isLoaded: false,
+  userId: null,
 });
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
@@ -52,6 +58,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         user,
         isAuthenticated: !!user,
         getToken,
+        isSignedIn: !!user,
+        isLoaded: !isPending,
+        userId: user?.id || null,
       }}
     >
       {children}
