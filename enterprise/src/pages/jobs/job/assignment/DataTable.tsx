@@ -45,7 +45,7 @@ import { NumberInput } from "@heroui/number-input";
 import AssignmentSubmissionVanilla from "@shared-types/AssignmentSubmission";
 import { IconChevronDown, IconMenu2 } from "@tabler/icons-react";
 import { toast } from "sonner";
-import { useAuth } from "@clerk/clerk-react";
+import { useAuth } from "@/contexts/useAuth";
 import ax from "@/config/axios";
 
 interface AssignmentSubmission extends AssignmentSubmissionVanilla {

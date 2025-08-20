@@ -14,7 +14,8 @@ import {
 import { Select, SelectItem } from "@heroui/select";
 import { useState } from "react";
 import { toast } from "sonner";
-import { useAuth, useUser } from "@clerk/clerk-react";
+import { useAuth, useUser } from "@/components/auth/AuthComponents";
+import { useAuth } from "@/contexts/useAuth";
 import ax from "@/config/axios";
 import { useDispatch } from "react-redux";
 import { setOrganization } from "@/reducers/organizationReducer";

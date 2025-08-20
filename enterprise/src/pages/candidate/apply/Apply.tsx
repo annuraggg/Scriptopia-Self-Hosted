@@ -13,7 +13,8 @@ import {
   CircleHelpIcon,
   ScanSearchIcon,
 } from "lucide-react";
-import { useAuth, useUser } from "@clerk/clerk-react";
+import { useAuth, useUser } from "@/components/auth/AuthComponents";
+import { useAuth } from "@/contexts/useAuth";
 import ax from "@/config/axios";
 import { toast } from "sonner";
 

@@ -7,7 +7,7 @@ import {
   Button,
 } from "@heroui/react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "@clerk/clerk-react";
+import { useAuth } from "@/contexts/useAuth";
 
 const LanderNavbar = () => {
   const navigate = useNavigate();

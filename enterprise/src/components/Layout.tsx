@@ -4,8 +4,8 @@ import {
   RedirectToSignIn,
   SignedIn,
   SignedOut,
-  useAuth,
-} from "@clerk/clerk-react";
+} from "@/components/auth/AuthComponents";
+import { useAuth } from "@/contexts/useAuth";
 import { useEffect, useState } from "react";
 import ax from "@/config/axios";
 import { toast } from "sonner";

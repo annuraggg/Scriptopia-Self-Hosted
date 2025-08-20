@@ -1,4 +1,5 @@
-import { UserButton } from "@clerk/clerk-react";
+import { UserButton } from "@/components/auth/AuthComponents";
+import { useAuth } from "@/contexts/useAuth";
 import { Link } from "@heroui/link";
 import { Button } from "@heroui/button";
 import { Menu, X } from "lucide-react";

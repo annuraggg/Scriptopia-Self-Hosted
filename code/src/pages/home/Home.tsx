@@ -6,7 +6,7 @@ import StreakCalender from "./StreakCalendar";
 import { useQuery } from "@tanstack/react-query";
 import ax from "@/config/axios";
 import Loader from "@/components/Loader";
-import { useAuth } from "@clerk/clerk-react";
+import { useAuth } from "@/contexts/useAuth";
 
 const Home = () => {
   const { getToken } = useAuth();

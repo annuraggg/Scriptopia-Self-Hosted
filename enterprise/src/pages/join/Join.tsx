@@ -1,5 +1,6 @@
 import ax from "@/config/axios";
-import { SignOutButton, useAuth, useUser } from "@clerk/clerk-react";
+import { SignOutButton, useUser } from "@/components/auth/AuthComponents";
+import { useAuth } from "@/contexts/useAuth";
 import { Avatar } from "@heroui/avatar";
 import { Button } from "@heroui/button";
 import { Card, CardBody, CardFooter, CardHeader } from "@heroui/card";

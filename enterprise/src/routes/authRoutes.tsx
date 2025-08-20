@@ -1,5 +1,5 @@
 import { Suspense, lazy } from "react";
-import { SignedIn, SignedOut, RedirectToSignIn } from "@clerk/clerk-react";
+import { SignedIn, SignedOut, RedirectToSignIn } from "@/components/auth/AuthComponents";
 import Loader from "../components/Loader";
 
 // Lazy load components

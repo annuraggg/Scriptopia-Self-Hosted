@@ -13,7 +13,7 @@ import {
 } from "@heroui/react";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { useAuth } from "@clerk/clerk-react";
+import { useAuth } from "@/contexts/useAuth";
 import ax from "@/config/axios";
 import { toast } from "sonner";
 

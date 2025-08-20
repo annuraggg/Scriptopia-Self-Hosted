@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
 import { authClient } from "@/lib/auth-client";
+import { useAuth } from "@/contexts/useAuth";
 
 interface SignedInProps {
   children: ReactNode;
@@ -31,4 +32,38 @@ export function RedirectToSignIn({ redirectUrl }: RedirectToSignInProps) {
   window.location.href = `${accountsUrl}/sign-in?redirect=${encodeURIComponent(currentUrl)}`;
   
   return null;
+}
+
+export function SignOutButton({ children }: { children?: ReactNode }) {
+  const handleSignOut = () => {
+    authClient.signOut();
+  };
+
+  return (
+    <button onClick={handleSignOut} className="text-sm">
+      {children || "Sign out"}
+    </button>
+  );
+}
+
+export function UserButton() {
+  const { user } = useAuth();
+  
+  if (!user) return null;
+  
+  return (
+    <div className="flex items-center space-x-2">
+      <div className="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center text-white text-sm">
+        {user.email?.charAt(0).toUpperCase() || "U"}
+      </div>
+      <span className="text-sm">{user.email}</span>
+      <SignOutButton />
+    </div>
+  );
+}
+
+// Hook to provide useUser functionality
+export function useUser() {
+  const { user } = useAuth();
+  return { user, isSignedIn: !!user };
 }

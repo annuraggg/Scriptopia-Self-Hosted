@@ -4,7 +4,7 @@ import JobDetails from "./JobDetails";
 import Workflow from "./Workflow";
 import { today, getLocalTimeZone, DateValue } from "@internationalized/date";
 import Summary from "./Summary";
-import { useAuth } from "@clerk/clerk-react";
+import { useAuth } from "@/contexts/useAuth";
 import ax from "@/config/axios";
 import {
   Posting,

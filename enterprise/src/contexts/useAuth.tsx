@@ -5,9 +5,11 @@ import { authClient } from "@/lib/auth-client";
 const AuthContext = createContext<{
   user: any;
   isAuthenticated: boolean;
+  getToken: () => Promise<string>;
 }>({
   user: null,
   isAuthenticated: false,
+  getToken: async () => "",
 });
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
@@ -22,11 +24,20 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }, [isPending]);
 
+  const getToken = async () => {
+    if (data?.session) {
+      // BetterAuth session token
+      return data.session.token || "";
+    }
+    return "";
+  };
+
   return (
     <AuthContext.Provider
       value={{
         user,
         isAuthenticated: !!user,
+        getToken,
       }}
     >
       {children}

@@ -11,7 +11,7 @@ import {
 import { CoinsIcon, ExternalLinkIcon, Copy } from "lucide-react";
 import { toast } from "sonner";
 import ax from "@/config/axios";
-import { useAuth } from "@clerk/clerk-react";
+import { useAuth } from "@/contexts/useAuth";
 
 interface WalletProps {
   userId: string;

@@ -14,7 +14,7 @@ import {
   ModalFooter,
   useDisclosure,
 } from "@heroui/modal";
-import { useAuth } from "@clerk/clerk-react";
+import { useAuth } from "@/contexts/useAuth";
 import { useOutletContext } from "react-router-dom";
 import { toast } from "sonner";
 import ax from "@/config/axios";

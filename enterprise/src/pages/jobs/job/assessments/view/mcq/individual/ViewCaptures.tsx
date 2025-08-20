@@ -1,6 +1,6 @@
 import Loader from "@/components/Loader";
 import ax from "@/config/axios";
-import { useAuth } from "@clerk/clerk-react";
+import { useAuth } from "@/contexts/useAuth";
 import { Button } from "@heroui/button";
 import { Image } from "@heroui/image";
 import {

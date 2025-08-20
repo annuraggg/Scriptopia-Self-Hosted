@@ -15,7 +15,8 @@ import {
 import { toast } from "sonner";
 import { useOutletContext } from "react-router-dom";
 import { Posting } from "@shared-types/Posting";
-import { useAuth, useUser } from "@clerk/clerk-react";
+import { useAuth, useUser } from "@/components/auth/AuthComponents";
+import { useAuth } from "@/contexts/useAuth";
 import ax from "@/config/axios";
 import { useNavigate } from "react-router-dom";
 

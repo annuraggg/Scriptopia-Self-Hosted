@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { useAuth, useUser } from "@clerk/clerk-react";
+import { useAuth, useUser } from "@/components/auth/AuthComponents";
+import { useAuth } from "@/contexts/useAuth";
 import { useOutletContext } from "react-router-dom";
 import { toast } from "sonner";
 import ax from "@/config/axios";
