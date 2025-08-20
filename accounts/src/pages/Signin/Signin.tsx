@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Eye, EyeOff } from "lucide-react";
 import { authClient } from "../../config/auth-client";
+import { redirectAfterAuth } from "../../utils/redirects";
 
 interface SigninProps {
   onNavigate?: (path: string) => void;
@@ -33,11 +34,8 @@ const Signin: React.FC<SigninProps> = ({ onNavigate }) => {
 
     if (data) {
       setIsLoading(false);
-      if (onNavigate) {
-        onNavigate("/dashboard");
-      } else {
-        window.location.href = "/dashboard";
-      }
+      // Use platform-aware redirect
+      redirectAfterAuth(data.user);
     }
   };
 
