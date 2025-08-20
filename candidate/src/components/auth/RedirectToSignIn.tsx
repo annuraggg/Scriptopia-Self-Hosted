@@ -8,7 +8,9 @@ function RedirectToSignIn() {
 
   useEffect(() => {
     if (!isPending && !session) {
-      window.location.href = import.meta.env.VITE_ACCOUNTS_CENTER
+      const url = new URL(import.meta.env.VITE_ACCOUNTS_CENTER as string);
+      url.searchParams.set("platform", "candidates");
+      window.location.href = url.toString();
     }
   }, [isPending, session, navigate]);
 

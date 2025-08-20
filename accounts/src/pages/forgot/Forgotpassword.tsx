@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { CheckCircle } from "lucide-react";
+import { authClient } from "@/config/auth-client";
 
 interface ForgotPasswordProps {
   onNavigate?: (path: string) => void;
@@ -30,15 +31,20 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({ onNavigate }) => {
       return;
     }
 
-    setTimeout(() => {
-      if (email === "notfound@example.com") {
-        setError("No account found with this email address");
+    try {
+      const platform = new URLSearchParams(window.location.search).get("platform");
+      const resetURL = `${import.meta.env.VITE_ACCOUNTS_CENTER as string}/reset-password${platform ? `?platform=${platform}` : ""}`;
+      const res = await authClient.forgetPassword({ email, redirectTo: resetURL });
+      if (res.error) {
+        setError(res.error.message || "Failed to send reset email");
       } else {
         setIsSuccess(true);
-        setError("");
       }
+    } catch (err: any) {
+      setError(err?.message || "Failed to send reset email");
+    } finally {
       setIsLoading(false);
-    }, 2000);
+    }
   };
 
   if (isSuccess) {
@@ -60,21 +66,11 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({ onNavigate }) => {
                   scriptopia
                 </span>
               </div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">
-                Check your email
-              </h2>
-              <p className="text-gray-600">
-                We've sent a password reset link to {email}
-              </p>
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">Check your email</h2>
+              <p className="text-gray-600">We've sent a password reset link to {email}</p>
             </div>
-
             <div className="flex justify-center my-8">
-              <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ duration: 0.5, delay: 0.2 }}
-                className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center"
-              >
+              <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ duration: 0.5, delay: 0.2 }} className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
                 <CheckCircle className="w-8 h-8 text-green-600" />
               </motion.div>
             </div>
@@ -93,14 +89,13 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({ onNavigate }) => {
             <div className="space-y-3">
               <button
                 onClick={() => setIsSuccess(false)}
-                className="w-full flex justify-center py-3 px-4 border border-gray-300 text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+                className="w-full bg-purple-600 hover:bg-purple-700 text-white rounded-lg py-2"
               >
-                Resend email
+                Use a different email
               </button>
-
               <button
                 onClick={() => onNavigate?.("/sign-in")}
-                className="w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+                className="w-full text-purple-600 hover:underline"
               >
                 Back to sign in
               </button>
@@ -129,12 +124,8 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({ onNavigate }) => {
                 scriptopia
               </span>
             </div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">
-              Reset your password
-            </h2>
-            <p className="text-gray-600">
-              Enter your email to receive a password reset link
-            </p>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">Forgot your password?</h2>
+            <p className="text-gray-600 mb-6">Enter your email and we'll send you a link to reset your password.</p>
           </div>
 
           {error && (
@@ -147,62 +138,16 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({ onNavigate }) => {
             </motion.div>
           )}
 
-          <div className="mt-8">
-            <form onSubmit={handleSubmit}>
-              <div className="mb-6">
-                <label
-                  htmlFor="email"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
-                  Email address
-                </label>
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent focus:z-10 sm:text-sm"
-                  placeholder=""
-                />
-              </div>
-
-              <button
-                type="submit"
-                disabled={isLoading}
-                className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-50 disabled:cursor-not-allowed mb-6"
-              >
-                {isLoading ? (
-                  <div className="flex items-center">
-                    <motion.div
-                      animate={{ rotate: 360 }}
-                      transition={{
-                        duration: 1,
-                        repeat: Infinity,
-                        ease: "linear",
-                      }}
-                      className="w-4 h-4 border-2 border-white border-t-transparent rounded-full mr-2"
-                    />
-                    Sending reset link...
-                  </div>
-                ) : (
-                  "CONTINUE"
-                )}
-              </button>
-            </form>
-
-            <div className="text-center">
-              <span className="text-sm text-gray-600">
-                Remember your password?{" "}
-                <button
-                  onClick={() => onNavigate?.("/sign-in")}
-                  className="font-medium text-purple-600 hover:text-purple-500"
-                >
-                  Sign in
-                </button>
-              </span>
+          <form onSubmit={handleSubmit}>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-1">Email address</label>
+              <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} className="w-full border rounded-lg px-3 py-3" />
             </div>
+            {error && <p className="text-red-600 text-sm mb-2">{error}</p>}
+            <button type="submit" disabled={isLoading} className="w-full bg-purple-600 hover:bg-purple-700 text-white rounded-lg py-2 disabled:opacity-50">{isLoading ? "Sending..." : "Send reset link"}</button>
+          </form>
+          <div className="text-center mt-6">
+            <button onClick={() => onNavigate?.("/sign-in")} className="text-sm text-purple-600 hover:underline">Back to sign in</button>
           </div>
         </div>
       </motion.div>
