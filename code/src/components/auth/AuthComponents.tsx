@@ -63,6 +63,25 @@ export function UserButton() {
 
 // Hook to provide useUser functionality
 export function useUser() {
-  const { data: session } = authClient.useSession();
-  return { user: session?.user, isSignedIn: !!session };
+  const { data: session, isPending } = authClient.useSession();
+  
+  const mappedUser = session?.user ? {
+    ...session.user,
+    // Clerk compatibility fields
+    primaryEmailAddress: {
+      emailAddress: session.user.email
+    },
+    emailAddresses: [{
+      emailAddress: session.user.email
+    }],
+    imageUrl: session.user.image || undefined,
+    // Fallback for publicMetadata - this should come from server session customization
+    publicMetadata: (session.user as any).publicMetadata || {},
+  } : null;
+  
+  return { 
+    user: mappedUser, 
+    isSignedIn: !!session,
+    isLoaded: !isPending
+  };
 }

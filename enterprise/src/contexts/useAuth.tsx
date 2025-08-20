@@ -20,9 +20,23 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     if (isPending) return; // wait for session to load
     if (data) {
-      setUser(data.user);
+      // Map BetterAuth user to Clerk-like format for backward compatibility
+      const mappedUser = {
+        ...data.user,
+        // Clerk compatibility fields
+        primaryEmailAddress: {
+          emailAddress: data.user.email
+        },
+        emailAddresses: [{
+          emailAddress: data.user.email
+        }],
+        imageUrl: data.user.image || undefined,
+        // Fallback for publicMetadata - this should come from server session customization
+        publicMetadata: (data.user as any).publicMetadata || {},
+      };
+      setUser(mappedUser);
     }
-  }, [isPending]);
+  }, [data, isPending]);
 
   const getToken = async () => {
     if (data?.session) {

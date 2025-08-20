@@ -12,7 +12,6 @@ import {
 } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import { UserButton /*useAuth*/ } from "@/components/auth/AuthComponents";
-import { useAuth } from "@/contexts/useAuth";
 import { Badge } from "@heroui/badge";
 import { Button } from "@heroui/button";
 import { MemberWithPermission } from "@shared-types/MemberWithPermission";

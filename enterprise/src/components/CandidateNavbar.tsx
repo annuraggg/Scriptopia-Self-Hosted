@@ -1,5 +1,4 @@
 import { UserButton } from "@/components/auth/AuthComponents";
-import { useAuth } from "@/contexts/useAuth";
 
 const CandidateNavbar = () => {
   return (

@@ -1,6 +1,5 @@
 import { ReactNode } from "react";
 import { authClient } from "@/lib/auth-client";
-import { useAuth } from "@/contexts/useAuth";
 
 interface SignedInProps {
   children: ReactNode;
@@ -12,6 +11,13 @@ interface SignedOutProps {
 
 interface RedirectToSignInProps {
   redirectUrl?: string;
+}
+
+interface SignOutButtonProps {
+  children?: ReactNode;
+  signOutOptions?: {
+    redirectUrl?: string;
+  };
 }
 
 export function SignedIn({ children }: SignedInProps) {
@@ -34,9 +40,12 @@ export function RedirectToSignIn({ redirectUrl }: RedirectToSignInProps) {
   return null;
 }
 
-export function SignOutButton({ children }: { children?: ReactNode }) {
+export function SignOutButton({ children, signOutOptions }: SignOutButtonProps) {
   const handleSignOut = () => {
     authClient.signOut();
+    if (signOutOptions?.redirectUrl) {
+      window.location.href = signOutOptions.redirectUrl;
+    }
   };
 
   return (
@@ -47,16 +56,16 @@ export function SignOutButton({ children }: { children?: ReactNode }) {
 }
 
 export function UserButton() {
-  const { user } = useAuth();
+  const { data: session } = authClient.useSession();
   
-  if (!user) return null;
+  if (!session) return null;
   
   return (
     <div className="flex items-center space-x-2">
       <div className="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center text-white text-sm">
-        {user.email?.charAt(0).toUpperCase() || "U"}
+        {session.user.email?.charAt(0).toUpperCase() || "U"}
       </div>
-      <span className="text-sm">{user.email}</span>
+      <span className="text-sm">{session.user.email}</span>
       <SignOutButton />
     </div>
   );
@@ -64,6 +73,25 @@ export function UserButton() {
 
 // Hook to provide useUser functionality
 export function useUser() {
-  const { user } = useAuth();
-  return { user, isSignedIn: !!user };
+  const { data: session, isPending } = authClient.useSession();
+  
+  const mappedUser = session?.user ? {
+    ...session.user,
+    // Clerk compatibility fields
+    primaryEmailAddress: {
+      emailAddress: session.user.email
+    },
+    emailAddresses: [{
+      emailAddress: session.user.email
+    }],
+    imageUrl: session.user.image || undefined,
+    // Fallback for publicMetadata - this should come from server session customization
+    publicMetadata: (session.user as any).publicMetadata || {},
+  } : null;
+  
+  return { 
+    user: mappedUser, 
+    isSignedIn: !!session,
+    isLoaded: !isPending
+  };
 }

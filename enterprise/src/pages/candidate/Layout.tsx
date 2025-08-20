@@ -1,6 +1,5 @@
 import CandidateNavbar from "@/components/CandidateNavbar";
 import { RedirectToSignIn, SignedIn, SignedOut } from "@/components/auth/AuthComponents";
-import { useAuth } from "@/contexts/useAuth";
 import { Organization } from "@shared-types/Organization";
 import { Posting } from "@shared-types/Posting";
 import { useEffect, useState } from "react";
