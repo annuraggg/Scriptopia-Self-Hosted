@@ -4,7 +4,6 @@ import JobDetails from "./JobDetails";
 import Workflow from "./Workflow";
 import { today, getLocalTimeZone, DateValue } from "@internationalized/date";
 import Summary from "./Summary";
-import { useAuth } from "@clerk/clerk-react";
 import ax from "@/config/axios";
 import {
   Posting,
@@ -66,8 +65,8 @@ const CreateJob = () => {
   // Workflow States
   const [addedComponents, setAddedComponents] = useState<Component[]>([]);
 
-  const { getToken } = useAuth();
-  const axios = ax(getToken);
+  
+  const axios = ax();
   const [loading, setLoading] = useState(false);
   const { organization, setOrganization } = useOutletContext() as RootContext;
   const navigate = useNavigate();

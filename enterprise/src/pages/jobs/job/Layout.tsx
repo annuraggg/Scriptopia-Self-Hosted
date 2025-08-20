@@ -1,7 +1,6 @@
 import { Outlet } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import { Posting } from "@shared-types/Posting";
-import { useAuth } from "@clerk/clerk-react";
 import ax from "@/config/axios";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -12,8 +11,8 @@ const Layout = () => {
   const [postingLoading, setPostingLoading] = useState(true);
   const [refetch, setRefetch] = useState(false);
 
-  const { getToken } = useAuth();
-  const axios = ax(getToken);
+  
+  const axios = ax();
   useEffect(() => {
     setPostingLoading(true);
     axios

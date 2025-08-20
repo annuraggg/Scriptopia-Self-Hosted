@@ -2,7 +2,6 @@ import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import Sidebar from "./Sidebar";
 import ax from "@/config/axios";
-import { useAuth } from "@clerk/clerk-react";
 import MCQAssess from "./MCQAssess";
 import CodeAssess from "./CodeAssess";
 import { toast } from "sonner";
@@ -14,8 +13,8 @@ const Assessments = () => {
   const [active, setActive] = useState(0);
   const [loading, setLoading] = useState(false);
 
-  const { getToken } = useAuth();
-  const axios = ax(getToken);
+  
+  const axios = ax();
 
   const [data, setData] = useState<{
     mcqCreatedAssessments: MCQAssessment[];

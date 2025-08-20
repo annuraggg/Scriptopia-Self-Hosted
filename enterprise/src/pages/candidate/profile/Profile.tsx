@@ -1,6 +1,5 @@
 import Loader from "@/components/Loader";
 import ax from "@/config/axios";
-import { useAuth } from "@clerk/clerk-react";
 import { Card, CardBody, CardHeader } from "@heroui/card";
 import { Candidate } from "@shared-types/Candidate";
 import { useEffect, useState } from "react";
@@ -10,8 +9,8 @@ const Profile = () => {
   const [candidate, setCandidate] = useState<Candidate | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const { getToken } = useAuth();
-  const axios = ax(getToken);
+  
+  const axios = ax();
 
   useEffect(() => {
     const id = window.location.pathname.split("/").pop();

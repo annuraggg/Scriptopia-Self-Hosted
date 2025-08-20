@@ -1,11 +1,6 @@
 import { Outlet } from "react-router-dom";
 import Sidebar from "./Sidebar";
-import {
-  RedirectToSignIn,
-  SignedIn,
-  SignedOut,
-  useAuth,
-} from "@clerk/clerk-react";
+import { useAuth } from "@/contexts/useAuth";
 import { useEffect, useState } from "react";
 import ax from "@/config/axios";
 import { toast } from "sonner";
@@ -16,6 +11,7 @@ import { Button } from "@heroui/button";
 import { AnimatePresence, motion } from "framer-motion";
 
 const Layout = () => {
+  const { isAuthenticated } = useAuth();
   const [notifications, setNotifications] = useState([]);
   const [organization, setOrganization] = useState<OWP>({} as OWP);
   const [user, setUser] = useState<MWP>({} as MWP);
@@ -23,8 +19,14 @@ const Layout = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
-  const { getToken } = useAuth();
-  const axios = ax(getToken);
+  const axios = ax();
+
+  // Redirect to accounts if not authenticated
+  useEffect(() => {
+    if (!isAuthenticated) {
+      window.location.href = process.env.ACCOUNTS_FRONTEND_URL || "/login";
+    }
+  }, [isAuthenticated]);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -70,7 +72,7 @@ const Layout = () => {
 
   return (
     <>
-      <SignedIn>
+      {isAuthenticated ? (
         <div className="relative min-h-screen">
           {/* Mobile Header */}
           <div className="sm:hidden fixed top-0 left-0 right-0 h-16 border-b z-40 px-5 flex items-center justify-between">
@@ -142,10 +144,9 @@ const Layout = () => {
             </div>
           </div>
         </div>
-      </SignedIn>
-      <SignedOut>
-        <RedirectToSignIn />
-      </SignedOut>
+      ) : (
+        <div>Loading...</div>
+      )}
     </>
   );
 };

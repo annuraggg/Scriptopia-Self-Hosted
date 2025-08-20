@@ -18,7 +18,6 @@ import { Download, UserCheck, UserX } from "lucide-react";
 import { Input } from "@heroui/input";
 import { Button } from "@heroui/button";
 import { useState } from "react";
-import { useAuth } from "@clerk/clerk-react";
 import ax from "@/config/axios";
 import { toast } from "sonner";
 import { useOutletContext } from "react-router-dom";
@@ -45,8 +44,8 @@ const DataTableNew = ({ data: vanillaData }: DataTableProps) => {
   }, [vanillaData]);
 
   const pages = Math.ceil(data.length / rowsPerPage);
-  const { getToken } = useAuth();
-  const axios = ax(getToken);
+  
+  const axios = ax();
   const { posting } = useOutletContext() as { posting: Posting };
 
   const items = useMemo(() => {

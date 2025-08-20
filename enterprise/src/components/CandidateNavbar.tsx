@@ -1,4 +1,4 @@
-import { UserButton } from "@clerk/clerk-react";
+import UserButton from "@/components/auth/UserButton";
 
 const CandidateNavbar = () => {
   return (

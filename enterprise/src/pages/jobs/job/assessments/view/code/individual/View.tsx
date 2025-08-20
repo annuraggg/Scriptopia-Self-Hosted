@@ -2,7 +2,6 @@ import { Tab, Tabs } from "@heroui/tabs";
 import Overview from "./Overview";
 import { useEffect, useState } from "react";
 import { ExtendedCodeAssessmentSubmission as ECAS } from "@shared-types/ExtendedCodeAssessmentSubmission";
-import { useAuth } from "@clerk/clerk-react";
 import ax from "@/config/axios";
 import { toast } from "sonner";
 import Result from "./Result";
@@ -13,8 +12,8 @@ const View = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [refetch, setRefetch] = useState<boolean>(false);
 
-  const { getToken } = useAuth();
-  const axios = ax(getToken);
+  
+  const axios = ax();
 
   useEffect(() => {
     const fetchSubmission = async (): Promise<void> => {
@@ -37,7 +36,7 @@ const View = () => {
     };
 
     fetchSubmission();
-  }, [getToken, refetch]);
+  }, [refetch]);
 
   if (loading) {
     return <Loader />;

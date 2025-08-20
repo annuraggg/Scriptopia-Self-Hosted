@@ -1,5 +1,5 @@
 import { Suspense, lazy } from "react";
-import { SignedIn, SignedOut, RedirectToSignIn } from "@clerk/clerk-react";
+import AuthGuard from "../components/auth/AuthGuard";
 import Loader from "../components/Loader";
 
 // Lazy load components
@@ -12,12 +12,9 @@ const authRoutes = [
     path: "/start",
     element: (
       <Suspense fallback={<Loader />}>
-        <SignedIn>
+        <AuthGuard>
           <Start />
-        </SignedIn>
-        <SignedOut>
-          <RedirectToSignIn />
-        </SignedOut>
+        </AuthGuard>
       </Suspense>
     ),
   },
@@ -25,12 +22,9 @@ const authRoutes = [
     path: "/onboarding",
     element: (
       <Suspense fallback={<Loader />}>
-        <SignedIn>
+        <AuthGuard>
           <Onboarding />
-        </SignedIn>
-        <SignedOut>
-          <RedirectToSignIn />
-        </SignedOut>
+        </AuthGuard>
       </Suspense>
     ),
   },
@@ -38,12 +32,9 @@ const authRoutes = [
     path: "/join",
     element: (
       <Suspense fallback={<Loader />}>
-        <SignedIn>
+        <AuthGuard>
           <Join />
-        </SignedIn>
-        <SignedOut>
-          <RedirectToSignIn />
-        </SignedOut>
+        </AuthGuard>
       </Suspense>
     ),
   },

@@ -1,5 +1,4 @@
 import ax from "@/config/axios";
-import { useAuth } from "@clerk/clerk-react";
 import { Input, Textarea } from "@heroui/input";
 import { Button } from "@heroui/button";
 import { useState } from "react";
@@ -12,8 +11,8 @@ const Configure = () => {
 
   const [loading, setLoading] = useState(false);
 
-  const { getToken } = useAuth();
-  const axios = ax(getToken);
+  
+  const axios = ax();
 
   const save = async () => {
     setLoading(true);

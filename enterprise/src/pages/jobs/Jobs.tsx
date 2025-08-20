@@ -32,7 +32,6 @@ import {
   FilterIcon,
 } from "lucide-react";
 import Filter from "./Filter";
-import { useAuth } from "@clerk/clerk-react";
 import ax from "@/config/axios";
 import { toast } from "sonner";
 import { Posting } from "@shared-types/Posting";
@@ -177,8 +176,7 @@ const Postings: React.FC = () => {
     setDepartments(organization?.departments || []);
   }, [rerender]);
 
-  const { getToken } = useAuth();
-  const axios = ax(getToken);
+  const axios = ax();
 
   const handleDelete = () => {
     const newOrganization = { ...organization };

@@ -1,7 +1,6 @@
 import { Tabs, Tab } from "@heroui/tabs";
 import Analytics from "./Analytics";
 import McqAssessmentResultsTable from "./MCQResultsTable";
-import { useAuth } from "@clerk/clerk-react";
 import ax from "@/config/axios";
 import { useEffect, useState } from "react";
 import { MCQAssessment } from "@shared-types/MCQAssessment";
@@ -14,8 +13,8 @@ const McqAssessmentResults = () => {
   const [assessment, setAssessment] = useState<MCQAssessment | null>(null);
   const [submissions, setSubmissions] = useState<MCQAssessmentSubmission[]>([]);
 
-  const { getToken } = useAuth();
-  const axios = ax(getToken);
+  
+  const axios = ax();
 
   const fetchAssessmentData = () => {
     const id = window.location.pathname.split("/")[5];

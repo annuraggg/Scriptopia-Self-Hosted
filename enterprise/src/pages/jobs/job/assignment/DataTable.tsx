@@ -45,7 +45,6 @@ import { NumberInput } from "@heroui/number-input";
 import AssignmentSubmissionVanilla from "@shared-types/AssignmentSubmission";
 import { IconChevronDown, IconMenu2 } from "@tabler/icons-react";
 import { toast } from "sonner";
-import { useAuth } from "@clerk/clerk-react";
 import ax from "@/config/axios";
 
 interface AssignmentSubmission extends AssignmentSubmissionVanilla {
@@ -78,8 +77,8 @@ export default function DataTable({
   const [pageIndex, setPageIndex] = useState(0);
   const [processedData, setProcessedData] = useState<any[]>([]);
   const [gradeInputs, setGradeInputs] = useState<Record<string, string>>({});
-  const { getToken } = useAuth();
-  const axios = ax(getToken);
+  
+  const axios = ax();
 
   useEffect(() => {
     // Process the data to match the table structure

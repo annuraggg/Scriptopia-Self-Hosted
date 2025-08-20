@@ -15,7 +15,7 @@ import {
 import { toast } from "sonner";
 import { useOutletContext } from "react-router-dom";
 import { Posting } from "@shared-types/Posting";
-import { useAuth, useUser } from "@clerk/clerk-react";
+import { useAuth } from "@/contexts/useAuth";
 import ax from "@/config/axios";
 import { useNavigate } from "react-router-dom";
 
@@ -51,9 +51,9 @@ const Review = ({
   const { posting } = useOutletContext() as { posting: Posting };
   const navigate = useNavigate();
 
-  const { getToken } = useAuth();
-  const { user } = useUser();
-  const axios = ax(getToken);
+  
+  const { user } = useAuth();
+  const axios = ax();
   const handleSubmit = () => {
     setLoading(true);
     const formData = new FormData();

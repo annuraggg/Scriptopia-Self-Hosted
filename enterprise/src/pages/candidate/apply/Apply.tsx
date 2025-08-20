@@ -13,7 +13,7 @@ import {
   CircleHelpIcon,
   ScanSearchIcon,
 } from "lucide-react";
-import { useAuth, useUser } from "@clerk/clerk-react";
+import { useAuth } from "@/contexts/useAuth";
 import ax from "@/config/axios";
 import { toast } from "sonner";
 
@@ -61,16 +61,16 @@ const Apply = () => {
     setCurrentStep(newStep);
   };
 
-  const { user, isSignedIn } = useUser();
-  const { getToken } = useAuth();
-  const axios = ax(getToken);
+  const { user, isAuthenticated } = useAuth();
+  
+  const axios = ax();
 
   useEffect(() => {
-    if (user && isSignedIn) {
+    if (user && isAuthenticated) {
       console.log(user?.primaryEmailAddress?.emailAddress);
       setEmail(user?.primaryEmailAddress?.emailAddress || "");
     }
-  }, [isSignedIn, user]);
+  }, [isAuthenticated, user]);
 
   useEffect(() => {
     axios

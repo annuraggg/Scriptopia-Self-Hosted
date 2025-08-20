@@ -4,7 +4,6 @@ import { Input } from "@heroui/input";
 import { useRef, useState } from "react";
 import { Breadcrumbs, BreadcrumbItem } from "@heroui/breadcrumbs";
 import { Upload } from "lucide-react";
-import { useAuth } from "@clerk/clerk-react";
 import ax from "@/config/axios";
 import { toast } from "sonner";
 import {
@@ -31,8 +30,8 @@ const General = () => {
   const { organization, setOrganization } =
     useOutletContext() as SettingsContext;
 
-  const { getToken } = useAuth();
-  const axios = ax(getToken);
+  
+  const axios = ax();
 
   const handleInputChange =
     (key: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
