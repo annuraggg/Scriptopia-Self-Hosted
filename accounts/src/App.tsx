@@ -2,6 +2,8 @@ import Signin from "./pages/Signin/Signin";
 import Signup from "./pages/Signup/Signup";
 import ForgotPassword from "./pages/forgot/Forgotpassword";
 import VerifyEmail from "./pages/verify-email/VerifyEmail";
+import ResetPassword from "./pages/ResetPassword/ResetPassword";
+import NotFound from "./pages/NotFound/NotFound";
 import { createBrowserRouter, Navigate, RouterProvider } from "react-router";
 
 function App() {
@@ -13,8 +15,9 @@ function App() {
       { path: "/sign-in", element: <Signin /> },
       { path: "/sign-up", element: <Signup /> },
       { path: "/forgot-password", element: <ForgotPassword /> },
+      { path: "/reset-password", element: <ResetPassword /> },
       { path: "/verify-email", element: <VerifyEmail /> },
-      { path: "*", element: <Navigate to="/sign-in" /> },
+      { path: "*", element: <NotFound /> },
     ],
     { basename }
   );

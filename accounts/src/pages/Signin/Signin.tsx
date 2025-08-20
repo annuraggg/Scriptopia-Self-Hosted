@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Eye, EyeOff } from "lucide-react";
 import { authClient } from "../../config/auth-client";
+import { getRedirectParams, getPostAuthRedirectUrl, performRedirect } from "../../utils/redirectUtils";
 
 interface SigninProps {
   onNavigate?: (path: string) => void;
@@ -33,11 +34,13 @@ const Signin: React.FC<SigninProps> = ({ onNavigate }) => {
 
     if (data) {
       setIsLoading(false);
-      if (onNavigate) {
-        onNavigate("/dashboard");
-      } else {
-        window.location.href = "/dashboard";
-      }
+      
+      // Get redirect parameters from URL
+      const redirectParams = getRedirectParams();
+      const redirectUrl = getPostAuthRedirectUrl(redirectParams);
+      
+      // Perform the redirect
+      performRedirect(redirectUrl);
     }
   };
 

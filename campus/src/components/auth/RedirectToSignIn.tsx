@@ -8,7 +8,12 @@ function RedirectToSignIn() {
 
   useEffect(() => {
     if (!isPending && !session) {
-      window.location.href = import.meta.env.VITE_ACCOUNTS_CENTER
+      // Build redirect URL with returnTo and platform parameters
+      const accountsCenterUrl = import.meta.env.VITE_ACCOUNTS_CENTER;
+      const currentUrl = window.location.href;
+      const redirectUrl = `${accountsCenterUrl}/sign-in?platform=campus&returnTo=${encodeURIComponent(currentUrl)}`;
+      
+      window.location.href = redirectUrl;
     }
   }, [isPending, session, navigate]);
 

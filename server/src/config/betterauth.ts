@@ -11,7 +11,19 @@ const db = client.db(process.env.MONGO_DB);
 
 export const auth = betterAuth({
   database: mongodbAdapter(db),
-  emailAndPassword: { enabled: true, requireEmailVerification: true },
+  emailAndPassword: { 
+    enabled: true, 
+    requireEmailVerification: true,
+    forgetPassword: {
+      sendResetPasswordEmail: async ({ user, token }: { user: any; token: string }) => {
+        await sendEmail({
+          to: user.email,
+          subject: "Reset your password",
+          text: `Click the link to reset your password: ${process.env.ACCOUNTS_FRONTEND_URL}/reset-password?token=${token}`,
+        });
+      },
+    },
+  },
   basePath: "/users/auth",
   user: {
     modelName: "users",
