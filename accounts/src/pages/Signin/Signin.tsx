@@ -14,6 +14,37 @@ const Signin: React.FC<SigninProps> = ({ onNavigate }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
+  const handleRedirectAfterSignin = () => {
+    // Check for platform query parameter
+    const urlParams = new URLSearchParams(window.location.search);
+    const platform = urlParams.get('platform');
+    const returnUrl = urlParams.get('returnUrl');
+    
+    // If returnUrl is specified, use it
+    if (returnUrl) {
+      window.location.href = decodeURIComponent(returnUrl);
+      return;
+    }
+    
+    // Platform-specific redirects
+    switch (platform) {
+      case 'campus':
+        window.location.href = import.meta.env.VITE_CAMPUS_FRONTEND_URL || '/campus';
+        break;
+      case 'candidate':
+        window.location.href = import.meta.env.VITE_CANDIDATE_FRONTEND_URL || '/candidate';
+        break;
+      default:
+        // Default redirect behavior
+        if (onNavigate) {
+          onNavigate("/dashboard");
+        } else {
+          // Default to accounts dashboard or main platform
+          window.location.href = "/dashboard";
+        }
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -33,11 +64,7 @@ const Signin: React.FC<SigninProps> = ({ onNavigate }) => {
 
     if (data) {
       setIsLoading(false);
-      if (onNavigate) {
-        onNavigate("/dashboard");
-      } else {
-        window.location.href = "/dashboard";
-      }
+      handleRedirectAfterSignin();
     }
   };
 
