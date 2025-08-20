@@ -13,7 +13,7 @@ import {
 } from "@heroui/react";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { useAuth } from "@clerk/clerk-react";
+import { useAuth } from "@/contexts/useAuth";
 import ax from "@/config/axios";
 import { toast } from "sonner";
 
@@ -24,11 +24,11 @@ const ViewAssessment = () => {
   const [qualified, setQualified] = useState(0);
   const [cheating, setCheating] = useState({ no: 0, light: 0, heavy: 0 });
 
-  const { getToken, isLoaded } = useAuth();
+  const { isAuthenticated } = useAuth();
   useEffect(() => {
-    if (isLoaded) {
+    if (isAuthenticated) {
       const id = window.location.pathname.split("/")[2];
-      const axios = ax(getToken);
+      const axios = ax();
       axios
         .get(`/assessments/${id}/get-submissions`)
         .then((res) => {
@@ -41,7 +41,7 @@ const ViewAssessment = () => {
           toast?.error(err?.response?.data?.message || "Error");
         });
     }
-  }, [getToken, isLoaded]);
+  }, [isAuthenticated]);
 
   const calculateTime = (time: number) => {
     const minutes = Math.floor(time / 60);

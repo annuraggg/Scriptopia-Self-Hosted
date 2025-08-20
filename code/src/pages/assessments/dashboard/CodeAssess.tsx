@@ -11,7 +11,6 @@ import {
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import ax from "@/config/axios";
-import { useAuth } from "@clerk/clerk-react";
 import { CodeAssessment } from "@shared-types/CodeAssessment";
 import confirmDelete from "@/components/ui/confirm-delete";
 import { Chip } from "@heroui/react";
@@ -58,8 +57,8 @@ const CodeAssess = ({
     );
   }, [createdAssessments, searchTerm]);
 
-  const { getToken } = useAuth();
-  const axios = ax(getToken);
+  
+  const axios = ax();
 
   const handleDelete = async (id: string) => {
     try {

@@ -23,7 +23,6 @@ import { Divider } from "@heroui/divider";
 import { Tooltip } from "@heroui/tooltip";
 import { Switch } from "@heroui/switch";
 import { DatePicker } from "@heroui/date-picker";
-import { useAuth } from "@clerk/clerk-react";
 import ax from "@/config/axios";
 import { toast } from "sonner";
 import { motion, Reorder } from "framer-motion"; // Added framer-motion for animation
@@ -105,8 +104,8 @@ const Create = () => {
     );
   };
 
-  const { getToken } = useAuth();
-  const axios = ax(getToken);
+  
+  const axios = ax();
 
   const componentMap = {
     ATS: "rs",

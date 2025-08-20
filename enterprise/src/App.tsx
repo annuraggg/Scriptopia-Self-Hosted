@@ -4,16 +4,16 @@ import { useEffect } from "react";
 import { RouterProvider } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setOrganization } from "./reducers/organizationReducer";
-import { useUser } from "@clerk/clerk-react";
+import { useAuth } from "@/contexts/useAuth";
 import router from "./routes";
 
 function App() {
-  const { user, isSignedIn } = useUser();
+  const { user, isAuthenticated } = useAuth();
   const dispatch = useDispatch();
 
   // Sync user data with Redux
   useEffect(() => {
-    if (isSignedIn) {
+    if (isAuthenticated && user) {
       const data = {
         _id: user?.publicMetadata?.orgId,
         role: user?.publicMetadata?.orgRole,
@@ -22,7 +22,7 @@ function App() {
       };
       dispatch(setOrganization(data));
     }
-  }, [isSignedIn, user, dispatch]);
+  }, [isAuthenticated, user, dispatch]);
 
   return <RouterProvider router={router} />;
 }

@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useAuth } from "@clerk/clerk-react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { toast } from "sonner";
 import ax from "@/config/axios";
@@ -41,8 +40,8 @@ const Posting = () => {
 
   const [applied, setApplied] = useState(false);
   const navigate = useNavigate();
-  const { getToken } = useAuth();
-  const axios = ax(getToken);
+  
+  const axios = ax();
 
   useEffect(() => {
     axios

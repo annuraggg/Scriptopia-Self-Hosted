@@ -28,7 +28,6 @@ import {
   useDisclosure,
 } from "@heroui/modal";
 import ax from "@/config/axios";
-import { useAuth } from "@clerk/clerk-react";
 
 interface SidebarProps {
   posting: Posting;
@@ -56,8 +55,8 @@ const Sidebar = ({ posting, loading, isMobile, onClose }: SidebarProps) => {
     [posting]
   );
 
-  const { getToken } = useAuth();
-  const axios = ax(getToken);
+  
+  const axios = ax();
 
   const getFilteredStepsCount = (types: string[]): number =>
     workflowSteps.filter((step) => types.includes(step?.type)).length;

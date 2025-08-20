@@ -1,5 +1,6 @@
 import ax from "@/config/axios";
-import { SignOutButton, useAuth, useUser } from "@clerk/clerk-react";
+import { useAuth } from "@/contexts/useAuth";
+import { authClient } from "@/lib/auth-client";
 import { Avatar } from "@heroui/avatar";
 import { Button } from "@heroui/button";
 import { Card, CardBody, CardFooter, CardHeader } from "@heroui/card";
@@ -27,14 +28,14 @@ interface Token {
 
 const Join = () => {
   const [loading, setLoading] = useState(true);
-  const { isSignedIn, user, isLoaded } = useUser();
+  const { isAuthenticated, user } = useAuth();
   const [submitLoading, setSubmitLoading] = useState(false);
   const [error, setError] = useState(false);
 
   const [token, setToken] = useState<Token>({} as Token);
 
-  const { getToken } = useAuth();
-  const axios = ax(getToken);
+  
+  const axios = ax();
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const token = urlParams.get("token");
@@ -78,7 +79,7 @@ const Join = () => {
       } transition-all flex flex-col gap-5`}
     >
       <div>
-        {!isSignedIn || !isLoaded || loading ? (
+        {!isAuthenticated || loading ? (
           <CircularProgress />
         ) : error ? (
           <Card>
@@ -151,11 +152,11 @@ const Join = () => {
             </span>
           </p>
 
-          <SignOutButton signOutOptions={{ redirectUrl: "/join" }}>
+          <button onClick={() => authClient.signOut()}>
             <a className="underline cursor-pointer">
               Sign In to a different account
             </a>
-          </SignOutButton>
+          </button>
         </CardBody>
       </Card>
     </div>

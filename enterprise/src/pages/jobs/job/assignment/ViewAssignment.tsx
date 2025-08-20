@@ -16,7 +16,6 @@ import {
 import { ExtendedPosting } from "@shared-types/ExtendedPosting";
 import AssignmentSubmissionVanilla from "@shared-types/AssignmentSubmission";
 import { toast } from "sonner";
-import { useAuth } from "@clerk/clerk-react";
 import ax from "@/config/axios";
 
 type AssignmentSubmission = AssignmentSubmissionVanilla & {
@@ -36,8 +35,8 @@ const ViewAssignment = () => {
   const [submissions, setSubmissions] = useState<AssignmentSubmission[]>([]);
   const [activeTab, setActiveTab] = useState("overview");
 
-  const { getToken } = useAuth();
-  const axios = ax(getToken);
+  
+  const axios = ax();
 
   useEffect(() => {
     if (posting) {

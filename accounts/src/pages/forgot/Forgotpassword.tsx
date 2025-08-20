@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { CheckCircle } from "lucide-react";
+import { authClient } from "../../config/auth-client";
 
 interface ForgotPasswordProps {
   onNavigate?: (path: string) => void;
@@ -30,15 +31,18 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({ onNavigate }) => {
       return;
     }
 
-    setTimeout(() => {
-      if (email === "notfound@example.com") {
-        setError("No account found with this email address");
-      } else {
-        setIsSuccess(true);
-        setError("");
-      }
+    try {
+      await authClient.forgetPassword({
+        email,
+        redirectTo: `${window.location.origin}/reset-password`, // This would be the reset password page
+      });
+      setIsSuccess(true);
+      setError("");
+    } catch (error: any) {
+      setError(error.message || "Failed to send reset email. Please try again.");
+    } finally {
       setIsLoading(false);
-    }, 2000);
+    }
   };
 
   if (isSuccess) {

@@ -6,15 +6,14 @@ import { useQueries } from "@tanstack/react-query";
 import ax from "@/config/axios";
 import Loader from "@/components/Loader";
 import ErrorPage from "@/components/ErrorPage";
-import { useAuth } from "@clerk/clerk-react";
 import MCQAssess from "./MCQAssess";
 import CodeAssess from "./CodeAssess";
 
 const Assessments = () => {
   const [active, setActive] = useState(0);
 
-  const { getToken } = useAuth();
-  const axios = ax(getToken);
+  
+  const axios = ax();
 
   const data = useQueries({
     queries: [

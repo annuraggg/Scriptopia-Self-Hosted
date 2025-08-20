@@ -2,7 +2,6 @@
 import Top from "./Top";
 import Bottom from "./Bottom";
 import { motion } from "framer-motion";
-import { useAuth } from "@clerk/clerk-react";
 import ax from "@/config/axios";
 import { useEffect, useState } from "react";
 import { MCQAssessment } from "@shared-types/MCQAssessment";
@@ -13,10 +12,10 @@ const ViewAssessment = () => {
   const [assessment, setAssessment] = useState<MCQAssessment>({} as MCQAssessment);
   const [submission, setSubmission] = useState<IAssessSub>({} as IAssessSub);
 
-  const { getToken } = useAuth();
+  
 
   useEffect(() => {
-    const axios = ax(getToken);
+    const axios = ax();
     const assessmentId = window.location.pathname.split("/")[3];
     const submissionId = window.location.pathname.split("/")[5];
 

@@ -11,7 +11,6 @@ import {
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import ax from "@/config/axios";
-import { useAuth } from "@clerk/clerk-react";
 import { MCQAssessment } from "@shared-types/MCQAssessment";
 import confirmDelete from "@/components/ui/confirm-delete";
 import { Chip } from "@heroui/react";
@@ -56,8 +55,8 @@ const MCQAssess: React.FC<{ createdAssessments: MCQAssessment[] }> = ({
     );
   }, [createdAssessments, searchTerm]);
 
-  const { getToken } = useAuth();
-  const axios = ax(getToken);
+  
+  const axios = ax();
 
   const handleDelete = async (id: string) => {
     try {

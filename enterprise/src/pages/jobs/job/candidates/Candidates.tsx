@@ -1,14 +1,13 @@
 import { motion } from "framer-motion";
 import { DataTable } from "./DataTable";
 import { useEffect, useState } from "react";
-import { useAuth } from "@clerk/clerk-react";
 import ax from "@/config/axios";
 
 const Candidates = () => {
   const [candidatesData, setCandidatesData] = useState([]);
 
-  const { getToken } = useAuth();
-  const axios = ax(getToken);
+  
+  const axios = ax();
 
   useEffect(() => {
     axios.get("/organizations/candidates").then((res) => {

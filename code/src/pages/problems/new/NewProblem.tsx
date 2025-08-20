@@ -8,7 +8,6 @@ import QualityGate from "./QualityGate";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { toast } from "sonner";
 import { Delta } from "quill/core";
-import { useAuth } from "@clerk/clerk-react";
 import ax from "@/config/axios";
 import { CustomStub as CustomSDSL, TestCase } from "@shared-types/Problem";
 import Sdsl from "./Sdsl";
@@ -66,9 +65,9 @@ const NewProblem = () => {
   const [minimumTwoTags, setMinimumTwoTags] = useState(false);
   const [minimum100Words, setMinimum100Words] = useState(false);
 
-  const { getToken } = useAuth();
+  
   const buildRequestData = () => {
-    const axios = ax(getToken);
+    const axios = ax();
     setLoading(true);
 
     return axios

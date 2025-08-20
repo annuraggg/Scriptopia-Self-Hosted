@@ -21,7 +21,6 @@ import {
   getLocalTimeZone,
   parseAbsoluteToLocal,
 } from "@internationalized/date";
-import { useAuth } from "@clerk/clerk-react";
 import ax from "@/config/axios";
 import { toast } from "sonner";
 import {
@@ -128,7 +127,7 @@ const New = () => {
     setFeedbackEmail(assessment.feedbackEmail);
   };
 
-  const { getToken } = useAuth();
+  
 
   const getParam = (name: string) => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -184,7 +183,7 @@ const New = () => {
     //   "localhost:5175",
     // ];
 
-    const axios = ax(getToken);
+    const axios = ax();
     axios
       .post("/assessments/mcq", reqBody)
       .then(() => {

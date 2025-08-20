@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useAuth, useUser } from "@clerk/clerk-react";
+import { useAuth } from "@/contexts/useAuth";
 import { useOutletContext } from "react-router-dom";
 import { toast } from "sonner";
 import ax from "@/config/axios";
@@ -24,9 +24,9 @@ const Assignment = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const { user } = useUser();
-  const { getToken } = useAuth();
-  const axios = ax(getToken);
+  const { user } = useAuth();
+  
+  const axios = ax();
 
   useEffect(() => {
     const fetchAssignment = async () => {

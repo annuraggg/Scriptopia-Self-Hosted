@@ -5,7 +5,7 @@ import Contact from "./Contact";
 import Team from "./Team";
 import { Button } from "@heroui/button";
 import { toast } from "sonner";
-import { useAuth, useUser } from "@clerk/clerk-react";
+import { useAuth } from "@/contexts/useAuth";
 import { setOrganization } from "@/reducers/organizationReducer";
 import { useDispatch } from "react-redux";
 import ax from "@/config/axios";
@@ -81,14 +81,14 @@ const Onboarding = () => {
     return true;
   };
 
-  const { getToken } = useAuth();
-  const { user } = useUser();
+  
+  const { user } = useAuth();
   const dispatch = useDispatch();
 
   const submit = () => {
     if (!validate()) return;
 
-    const axios = ax(getToken);
+    const axios = ax();
     setLoading(true);
     axios
       .post("/organizations/create", {

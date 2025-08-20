@@ -23,7 +23,6 @@ import {
   parseAbsoluteToLocal,
 } from "@internationalized/date";
 import Languages from "./Languages";
-import { useAuth } from "@clerk/clerk-react";
 import ax from "@/config/axios";
 import { toast } from "sonner";
 import { Problem as VanillaProblem } from "@shared-types/Problem";
@@ -116,11 +115,11 @@ const New = () => {
 
   const [submitting, setSubmitting] = useState(false);
 
-  const { getToken } = useAuth();
+  
 
   useEffect(() => {
     setIsLoading(true);
-    const axios = ax(getToken);
+    const axios = ax();
     axios
       .get("/problems/all/1")
       .then((data) => {
@@ -177,7 +176,7 @@ const New = () => {
       step,
     };
 
-    const axios = ax(getToken);
+    const axios = ax();
     // const safeUrls = [
     //   "https://enterprise.scriptopia.tech/",
     //   "https://scriptopia.tech/",

@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { ExtendedMCQAssessmentSubmission } from "@shared-types/ExtendedMCQAssessmentSubmission";
 import { CheckCircle, XCircle, User, Mail, Award } from "lucide-react";
 import { Option } from "@shared-types/MCQAssessment";
-import { useAuth } from "@clerk/clerk-react";
 import ax from "@/config/axios";
 import { toast } from "sonner";
 import { NumberInput } from "@heroui/number-input";
@@ -147,8 +146,8 @@ const AssessmentResults: React.FC<AssessmentResultsProps> = ({
 
   const isPassed = scorePercentage >= assessmentId.passingPercentage;
 
-  const { getToken } = useAuth();
-  const axios = ax(getToken);
+  
+  const axios = ax();
 
   // Handle local state update without sending to server
   const handleGradeChange = (mcqId: string, newGrade: number) => {

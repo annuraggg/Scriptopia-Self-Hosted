@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "@clerk/clerk-react";
+import { useAuth } from "@/contexts/useAuth";
 import { ArrowRight, Code2, Brain, Trophy, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -10,10 +10,10 @@ import { SparklesCore } from "@/components/ui/sparkles";
 
 const Lander = () => {
   const navigate = useNavigate();
-  const { isSignedIn } = useAuth();
+  const { isAuthenticated } = useAuth();
 
   const handleGetStarted = () => {
-    if (isSignedIn) {
+    if (isAuthenticated) {
       navigate("/dashboard");
     } else {
       navigate("/sign-in");

@@ -14,7 +14,7 @@ import {
 import { Select, SelectItem } from "@heroui/select";
 import { useState } from "react";
 import { toast } from "sonner";
-import { useAuth, useUser } from "@clerk/clerk-react";
+import { useAuth } from "@/contexts/useAuth";
 import ax from "@/config/axios";
 import { useDispatch } from "react-redux";
 import { setOrganization } from "@/reducers/organizationReducer";
@@ -93,10 +93,10 @@ const Start = () => {
     }, 2000);
   };
 
-  const { getToken } = useAuth();
-  const { user } = useUser();
+  
+  const { user } = useAuth();
   const submit = () => {
-    const axios = ax(getToken);
+    const axios = ax();
     setSecondLoading(true);
     axios
       .post("/organizations/create", {

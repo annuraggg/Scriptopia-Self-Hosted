@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
-import { useAuth } from "@clerk/clerk-react";
 import { toast } from "sonner";
 import {
   Phone,
@@ -30,8 +29,8 @@ const Pipeline = () => {
   );
   const [searchTerm, setSearchTerm] = useState("");
 
-  const { getToken } = useAuth();
-  const axios = ax(getToken);
+  
+  const axios = ax();
 
   useEffect(() => {
     const postingId = window.location.pathname.split("/")[2];

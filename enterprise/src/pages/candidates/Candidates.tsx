@@ -4,7 +4,6 @@ import { DataTable } from "./DataTable";
 import { RootState } from "@/types/Reducer";
 import { Breadcrumbs, BreadcrumbItem } from "@heroui/breadcrumbs";
 import { useSelector } from "react-redux";
-import { useAuth } from "@clerk/clerk-react";
 import ax from "@/config/axios";
 import { Spinner } from "@heroui/spinner";
 
@@ -26,9 +25,9 @@ const Candidates = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const { getToken } = useAuth();
+  
   useEffect(() => {
-    const axios = ax(getToken);
+    const axios = ax();
     axios
       .get("/organizations/candidates")
       .then((response) => {

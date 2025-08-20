@@ -2,7 +2,6 @@
 import ViewUserAssessmentTop from "./ViewUserAssessmentTop";
 import ViewUserAssessmentBottom from "./ViewUserAssessmentBottom";
 import { motion } from "framer-motion";
-import { useAuth } from "@clerk/clerk-react";
 import ax from "@/config/axios";
 import { useEffect, useState } from "react";
 import { Assessment } from "@shared-types/Assessment";
@@ -13,10 +12,10 @@ const ViewUserAssessment = () => {
   const [assessment, setAssessment] = useState<Assessment>({} as Assessment);
   const [submission, setSubmission] = useState<IAssessSub>({} as IAssessSub);
 
-  const { getToken } = useAuth();
+  
 
   useEffect(() => {
-    const axios = ax(getToken);
+    const axios = ax();
     const submissionId = window.location.pathname.split("/")[4];
     const assessmentId = window.location.pathname.split("/")[2];
 

@@ -14,7 +14,6 @@ import {
   ModalFooter,
   useDisclosure,
 } from "@heroui/modal";
-import { useAuth } from "@clerk/clerk-react";
 import { useOutletContext } from "react-router-dom";
 import { toast } from "sonner";
 import ax from "@/config/axios";
@@ -105,8 +104,8 @@ const getStepStyles = (type: StepType, status: string) => {
 const Show: React.FC<ShowProps> = ({ workflowData }) => {
   const { posting, setPosting, refetch } = useOutletContext() as PostingContext;
   const [loading, setLoading] = useState<boolean>(false);
-  const { getToken } = useAuth();
-  const axios = ax(getToken);
+  
+  const axios = ax();
 
   const {
     isOpen: isAdvanceModalOpen,
