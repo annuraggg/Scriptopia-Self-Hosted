@@ -45,6 +45,16 @@ export const auth = betterAuth({
       });
     },
   },
+  // NEW: password reset email flow
+  passwordReset: {
+    sendResetPasswordEmail: async ({ user, token }: { user: any; token: string }) => {
+      await sendEmail({
+        to: user.email,
+        subject: "Reset your password",
+        text: `Reset your password: ${process.env.ACCOUNTS_FRONTEND_URL}/reset-password?token=${token}`,
+      });
+    },
+  },
   plugins: [
     customSession(async ({ user, session }) => {
       const publicMetadata = await User.findById(user.id)
