@@ -8,14 +8,13 @@ import ConundrumCubes from "./ConundrumCubes";
 import MyProblems from "./MyProblems";
 import Loader from "@/components/Loader";
 import ErrorPage from "@/components/ErrorPage";
-import { useAuth } from "@clerk/clerk-react";
 import ax from "@/config/axios";
 
 const Problems = () => {
   const [active, setActive] = useState(0);
 
-  const { getToken } = useAuth();
-  const axios = ax(getToken);
+  
+  const axios = ax();
 
   const data = useQueries({
     queries: [

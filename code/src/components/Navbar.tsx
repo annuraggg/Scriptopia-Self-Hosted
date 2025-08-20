@@ -1,12 +1,12 @@
-import { UserButton } from "@clerk/clerk-react";
+import UserButton from "./auth/UserButton";
 import { useTheme } from './theme-provider';
 import { Button } from "@heroui/react";
 import { Moon, Sun } from 'lucide-react';
 import Wallet from './Wallet';
-import { useAuth } from "@clerk/clerk-react";
+import { useAuth } from "@/contexts/useAuth";
 
 const Navbar = ({ refetch }: { refetch: boolean }) => {
-  const { userId } = useAuth();
+  const { user, isAuthenticated } = useAuth();
   const links = [
     {
       path: "/problems",
@@ -55,7 +55,7 @@ const Navbar = ({ refetch }: { refetch: boolean }) => {
           >
             {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
           </Button>
-          {userId && <Wallet userId={userId} refetch={refetch} />}
+          {isAuthenticated && <Wallet userId={user?.id} refetch={refetch} />}
           <UserButton />
         </div>
       </div>

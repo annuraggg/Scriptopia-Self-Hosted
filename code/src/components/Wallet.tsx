@@ -11,7 +11,6 @@ import {
 import { CoinsIcon, ExternalLinkIcon, Copy } from "lucide-react";
 import { toast } from "sonner";
 import ax from "@/config/axios";
-import { useAuth } from "@clerk/clerk-react";
 
 interface WalletProps {
   userId: string;
@@ -24,8 +23,8 @@ const Wallet: React.FC<WalletProps> = ({ userId, refetch }) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
-  const { getToken } = useAuth();
-  const axios = ax(getToken);
+  
+  const axios = ax();
 
 
 

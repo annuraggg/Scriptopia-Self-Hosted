@@ -17,7 +17,6 @@ import {
 import { Button, Card, CardBody, Spinner } from "@heroui/react";
 import { CpuIcon, TimerIcon, CoinsIcon } from "lucide-react";
 import { Submission } from "@shared-types/Submission";
-import { useAuth } from "@clerk/clerk-react";
 import defaultLanguages from "@/data/languages";
 import { Problem as ProblemType } from "@shared-types/Problem";
 import { Delta } from "quill/core";
@@ -115,8 +114,8 @@ const Problem = ({
 
   setRefetch?: any;
 }) => {
-  const { getToken } = useAuth();
-  const axios = ax(getToken);
+  
+  const axios = ax();
 
   const [code, setCode] = useState<string>("");
   const [language, setLanguage] = useState<string>(defaultLanguage);

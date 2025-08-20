@@ -7,14 +7,14 @@ import {
   Button,
 } from "@heroui/react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "@clerk/clerk-react";
+import { useAuth } from "@/contexts/useAuth";
 
 const LanderNavbar = () => {
   const navigate = useNavigate();
-  const { isSignedIn } = useAuth();
+  const { isAuthenticated } = useAuth();
 
   const handleGetStarted = () => {
-    if (isSignedIn) {
+    if (isAuthenticated) {
       navigate("/dashboard");
     } else {
       navigate("/sign-in");

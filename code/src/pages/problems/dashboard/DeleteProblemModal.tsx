@@ -12,7 +12,6 @@ import {
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle, CheckCircle2 } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useAuth } from "@clerk/clerk-react";
 import ax from "@/config/axios";
 
 interface Assessment {
@@ -36,9 +35,9 @@ const DeleteProblemModal = ({
 }: DeleteProblemModalProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [error, setError] = useState<string | null>(null);
-  const { getToken } = useAuth();
+  
   const queryClient = useQueryClient();
-  const axios = ax(getToken);
+  const axios = ax();
 
   const {
     data,

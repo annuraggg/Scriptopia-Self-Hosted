@@ -6,11 +6,10 @@ import StreakCalender from "./StreakCalendar";
 import { useQuery } from "@tanstack/react-query";
 import ax from "@/config/axios";
 import Loader from "@/components/Loader";
-import { useAuth } from "@clerk/clerk-react";
 
 const Home = () => {
-  const { getToken } = useAuth();
-  const axios = ax(getToken);
+  
+  const axios = ax();
 
   const { data, isLoading } = useQuery({
     queryKey: ["dashboard-get-problems"],
